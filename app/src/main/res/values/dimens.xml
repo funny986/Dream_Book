@@ -1,0 +1,18 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Размер тулбара -->
+    <dimen name="marg_toolbar">80dp</dimen>
+    <dimen name="main_toolbar_width">380dp</dimen>
+    <dimen name="means_toolbar_width">380dp</dimen>
+    <dimen name="means_search_marginLeft">30dp</dimen>
+
+    <!-- Отступ в записи-->
+    <dimen name="marg_l_r">50dip</dimen>
+
+    <!-- ListView Толкований -->
+    <item name="shadowDx" type="integer">2</item>
+    <item name="shadowDy" type="integer">2</item>
+    <item name="shadowRadius" type="integer">4</item>
+
+</resources>

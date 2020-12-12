@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nav_graph"
+            app:startDestination="@+id/nav_notes">
+
+
+    <fragment
+            android:id="@+id/nav_notes"
+            android:name="com.dreambook.NotesFragment"
+            android:label="Мои сноведения"
+            tools:layout="@layout/fragment_notes">
+
+        <action android:id="@+id/action_Notes_to_Record"
+                app:destination="@id/nav_record"/>
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_record"
+            android:name="com.dreambook.RecordingFragment"
+            android:label="Записать"
+            tools:layout="@layout/fragment_recording">
+
+        <action android:id="@+id/action_Record_to_Notes"
+                app:destination="@id/nav_notes"/>
+
+        <action android:id="@+id/action_Record_to_Ready"
+                app:destination="@id/nav_ready"/>
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_ready"
+            android:name="com.dreambook.RecordingFragmentReady"
+            android:label="Запись"
+            tools:layout="@layout/fragment_recording_ready">
+
+        <action android:id="@+id/action_Ready_to_Record"
+           app:destination="@id/nav_record"/>
+
+        <action android:id="@+id/action_Ready_to_Notes"
+                app:destination="@id/nav_notes"/>
+
+
+        <argument
+                android:name="nameNote"
+                app:argType="string"/>
+        <argument
+                android:name="note"
+                app:argType="string"/>
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_means"
+            android:name="com.dreambook.MeansFragment"
+            android:label="Толкование "
+            tools:layout="@layout/fragment_means">
+
+    </fragment>
+
+<!--    <activity-->
+<!--                android:id="@+id/nav_means_activity"-->
+<!--                android:name="com.dreambook.MeansActivity"-->
+<!--                android:label="Значения"-->
+<!--                    app:launchSingleTop="true"-->
+<!--                    app:popUpTo="@id/nav_ready"-->
+<!--                    app:popUpToInclusive="true"-->
+<!--    tools:layout="@layout/activity_means">-->
+
+<!--    </activity>-->
+
+</navigation>

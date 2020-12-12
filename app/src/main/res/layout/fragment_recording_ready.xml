@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".RecordingFragment"
+        android:background="@drawable/scroll_old"
+        android:id="@+id/fragment_recording_ready"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            style="@style/MyMargin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintVertical_bias="0.043"
+            android:id="@+id/linearLayout">
+
+        <TextView android:layout_width="88dp"
+                  android:layout_height="wrap_content"
+                  android:text="@string/name_dream"
+                  android:textColor="@color/colorPrimary"
+                  android:textSize="15dp"
+                  app:layout_constraintStart_toStartOf="@+id/linearLayout"
+                  app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+                  app:layout_constraintTop_toTopOf="@+id/linearLayout"
+                  app:layout_constraintEnd_toEndOf="@+id/linearLayout"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_note_tv"
+                android:textSize="15dp"
+                android:maxLines="1"
+        />
+
+    </LinearLayout>
+    <LinearLayout android:layout_width="312dp"
+                  android:layout_height="551dp"
+                  android:orientation="vertical"
+                  android:id="@+id/linearLayout3"
+                  style="@style/MyMargin"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintHorizontal_bias="0.494"
+                  app:layout_constraintVertical_bias="0.307">
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_horizontal"
+                  android:text="Содержание"
+                  android:textColor="@color/colorPrimary"
+                  android:textSize="15dp"
+        />
+        <TextView android:layout_width="287dp"
+                  android:layout_height="526dp"
+                  android:id="@+id/record_tv"
+                  android:layout_gravity="center_horizontal"
+                  android:hint="Содержание"
+                  android:textSize="15dp"
+                  android:textColor="@color/colorPrimary"
+        />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
