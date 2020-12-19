@@ -9,9 +9,11 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "words" )
 public class Words {
 
-    public Words(int id, char tableName, String word, String mean){
+    public Words(int id, int type, //int gender,
+                 char tableName, String word, String mean){
         this.id = id;
-//        this.tableID = tableID;
+        this.type = type;
+//        this.gender = gender;
         this.tableName = tableName;
         this.word = word;
         this.mean = mean;
@@ -21,8 +23,11 @@ public class Words {
     @ColumnInfo(name = "id")
     int id;
 
-//    @ColumnInfo(name = "table_id")
-//    int tableID;
+    @ColumnInfo(name = "type")
+    int type;
+
+//    @ColumnInfo(name = "gender")
+//    int gender;
 
     @ColumnInfo(name = "table_name")
     char tableName;

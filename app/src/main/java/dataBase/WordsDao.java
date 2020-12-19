@@ -14,6 +14,9 @@ public interface WordsDao {
     @Query("SELECT * FROM words ")
     List<Words> getAllWords();
 
+//    @Query("SELECT * FROM words WHERE gender = :gender")
+//    List<Words> getAllWordsGender(int gender);
+
     @Query("SELECT * FROM words WHERE table_name = :tableName")
     List<Words> getWordsListTable(char tableName);
 
@@ -21,6 +24,8 @@ public interface WordsDao {
     @Query("SELECT * FROM words WHERE word = :word")
     Words getWordMean(String word);
 
+    @Query("SELECT * FROM words WHERE type = :type")
+    List<Words> getWordType(int type);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Words words);
