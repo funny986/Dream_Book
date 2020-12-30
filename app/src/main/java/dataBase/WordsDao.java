@@ -27,6 +27,9 @@ public interface WordsDao {
     @Query("SELECT * FROM words WHERE type = :type")
     List<Words> getWordType(int type);
 
+//    @Query("SELECT mean FROM words WHERE word = :word")
+//    String getMean(String word);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Words words);
 

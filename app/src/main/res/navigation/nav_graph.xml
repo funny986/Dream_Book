@@ -59,9 +59,24 @@
             android:label="Толкование "
             tools:layout="@layout/fragment_means">
 
+        <action android:id="@+id/action_Word_to_Mean"
+                app:destination="@id/nav_word"/>
+
     </fragment>
 
-<!--    <activity-->
+    <fragment
+            android:id="@+id/nav_word"
+            android:name="com.dreambook.WordMeanFragment"
+            android:label="Толкование"
+            tools:layout="@layout/fragment_word_mean">
+
+        <argument
+                android:name="word_mean"
+                app:argType="string"/>
+
+    </fragment>
+
+    <!--    <activity-->
 <!--                android:id="@+id/nav_means_activity"-->
 <!--                android:name="com.dreambook.MeansActivity"-->
 <!--                android:label="Значения"-->

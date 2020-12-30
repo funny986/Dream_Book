@@ -12,5 +12,6 @@
     <color name="gradientEnd">#BBB</color>
 
     <color name="transparent">@null</color>
+    <color name="black_overlay">#66000000</color>
     <!-- Фрагмент записи -->
 </resources>

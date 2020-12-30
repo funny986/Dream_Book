@@ -9,7 +9,7 @@
 
             <gradient
                     android:centerY="0.0"
-                    android:endColor="@color/gradientEnd"
+                    android:endColor="@color/transparent"
                     android:gradientRadius="500dp"
                     android:startColor="@color/gradientStart"
 

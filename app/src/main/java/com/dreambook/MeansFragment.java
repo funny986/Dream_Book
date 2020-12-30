@@ -75,6 +75,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         super.onResume();
         AppBarLayout appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
         appBarLayout.setExpanded(false);
+        appBarLayout.setVisibility(View.VISIBLE);
             }
 
     public int getScreenHeight() {
@@ -105,6 +106,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             simbol[i].setTextColor(Color.BLACK);
             simbol[i].setTextSize(heightDisplay);
             simbol[i].setLayoutParams(params);
+            simbol[i].setOnClickListener(this);
             layout.addView(simbol[i]);
         }
      }
@@ -172,10 +174,8 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(50));
         adapter = new RecycleViewAdptr(getContext(), wordList);
-        adapter.setmData(wordList);
+        adapter.setmData(wordList, this);
         recyclerView.setAdapter(adapter);
-
-//        TextView textView = view.findViewById(R.id.tv_list);
 
         String from = "";
         Bundle bundle = getArguments();

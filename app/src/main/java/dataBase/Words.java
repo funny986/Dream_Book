@@ -35,7 +35,7 @@ public class Words {
     @ColumnInfo(name = "word")
     String word;
 
-    @ColumnInfo(name = "value")
+    @ColumnInfo(name = "mean")
     String mean;
 
 

@@ -14,5 +14,6 @@
     <item name="shadowDx" type="integer">2</item>
     <item name="shadowDy" type="integer">2</item>
     <item name="shadowRadius" type="integer">4</item>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>
