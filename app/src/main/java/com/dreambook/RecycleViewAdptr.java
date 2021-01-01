@@ -31,6 +31,7 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
     public void setmData(List<Words> Data, Fragment fragment) {
         this.mData = Data;
         this.myFragment = fragment;
+        notifyDataSetChanged();
     }
 
     public RecycleViewAdptr(Context context, List<Words> mData) {

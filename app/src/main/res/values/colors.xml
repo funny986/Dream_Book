@@ -3,6 +3,7 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="primaryColor">#E6D8D8</color>
 
     <!-- палитра custom list-lay -->
     <color name="borderLow">#999</color>
@@ -14,4 +15,11 @@
     <color name="transparent">@null</color>
     <color name="black_overlay">#66000000</color>
     <!-- Фрагмент записи -->
+
+    <!-- ToolBar  -->
+    <color name="toolbarbg">@color/primaryColor</color>
+    <color name="navChecked">#A59595</color>
+    <color name="navUnChecked">@color/primaryColor</color>
+
+
 </resources>

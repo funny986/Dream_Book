@@ -5,6 +5,11 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <solid android:color="@android:color/white"/>
+
     <corners android:radius="50dp"/>
+
+    <size android:height="15dp"
+        android:width="150dp"/>
+
 </shape>
 

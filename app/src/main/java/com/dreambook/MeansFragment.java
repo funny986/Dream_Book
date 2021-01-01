@@ -11,18 +11,13 @@ import android.os.Bundle;
 import android.text.style.LineHeightSpan;
 import android.util.DisplayMetrics;
 import android.view.*;
-import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.solver.state.State;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.util.Consumer;
-import androidx.core.view.NestedScrollingChildHelper;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,15 +29,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import dataBase.Words;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.datatype.Duration;
 import java.util.*;
 
-import static android.content.Context.*;
 import static com.dreambook.MainActivity.database;
-//import static com.dreambook.MainActivity.nestedScrollView;
 
 public class MeansFragment extends Fragment implements View.OnClickListener
-                                             ,SearchView.OnQueryTextListener{
+                                             , SearchView.OnQueryTextListener{
     public MeansFragment() {}
 
     public final char[] ALPHABET = {'а','б','в','г', 'д', 'е','ё','ж','з','и','й','к','л','м','н', 'о', 'п','р','т','у'
@@ -52,22 +44,29 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     @SuppressLint("StaticFieldLeak")
     private RecycleViewAdptr adapter;
     private Toolbar toolbar;
+    private int hrl;
+    private int min;
+    private TextView textView;
 
+    public View mainView;
     public SearchView searchView;
     public Drawable drawable;
     private List<Words> searchList, wordList;
+    private List<String> list;
+    private LinearLayoutManager layoutManager;
 
+    int firstVisiblePosition, lastVisiblePosition, lastCompleteVisiblePosition;
 
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-//                outState.putStringArrayList("words_list", );
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        nestedScrollView.setNestedScrollingEnabled(true);
+        searchView.setQuery("", true);
+        searchView.clearFocus();
     }
 
     @Override
@@ -77,6 +76,21 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         appBarLayout.setExpanded(false);
         appBarLayout.setVisibility(View.VISIBLE);
             }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
+        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(null);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     public int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -89,54 +103,74 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     private void alphabetPanel(@NotNull View view){
          LinearLayout layout = view.findViewById(R.id.alphabet);
          BottomNavigationView bottomNavigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
-         int tool = toolbar.getHeight();////196
-         int hrl =  bottomNavigationView.getHeight(); //196
-         int min = getScreenHeight() - hrl- tool;//2516 // 2320 минус тулбар
+        int tool = toolbar.getHeight();////196
+        hrl =  bottomNavigationView.getHeight(); //196
+         min = getScreenHeight() - hrl- tool;//2516 // 2320 минус тулбар
          float summ2 = (float) min / ALPHABET.length;//80
          float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 5f;
-         ConstraintLayout.LayoutParams params =
-                 new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+         LinearLayout.LayoutParams params =
+                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                  LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMarginEnd(2);
-        TextView[] simbol = new TextView[ALPHABET.length];
-        for (int i = 0; i < ALPHABET.length; i++){
-            simbol[i] = new TextView(getContext());
-            simbol[i].setId(View.generateViewId());
-            simbol[i].setText(String.valueOf(ALPHABET[i]));
-            simbol[i].setTextColor(Color.BLACK);
-            simbol[i].setTextSize(heightDisplay);
-            simbol[i].setLayoutParams(params);
-            simbol[i].setOnClickListener(this);
-            layout.addView(simbol[i]);
+//        params.setMarginEnd(2);
+        for (char c : ALPHABET) {
+            textView = new TextView(getContext());
+            textView.setLayoutParams(params);
+            textView.setId(View.generateViewId());
+            textView.setText(String.valueOf(c));
+            textView.setTextSize(heightDisplay);
+            textView.setOnClickListener(this);
+            textView.setSelected(false);
+            textView.setTextColor(getActivity().getColor(R.color.alph_selector));
+            textView.setTag(String.valueOf(c));
+            layout.addView(textView);
         }
-     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-                FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
-                fab.setVisibility(View.INVISIBLE);
-        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(null);
-        searchList = new ArrayList<>();
     }
 
+
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onClick(View view) {
+
     }
+//    int findFirstVisibleItemPosition();
+//    int findFirstCompletelyVisibleItemPosition();
+//    int findLastVisibleItemPosition();
+//    int findLastCompletelyVisibleItemPosition();
+
+    public void setCheckVisibleChar(char firstLetter, char lastLetter){
+//        simbol
+        String tag = String.valueOf(firstLetter);
+        textView = mainView.findViewWithTag(tag);
+        textView.isSelected();
+//        textView.setSelected(true);
+    }
+
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        // User pressed the search button
+        searchView.clearFocus();
+        View view = Objects.requireNonNull(getActivity()).getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        // User changed the text
-        return false;
+        List<Words> tempString = new ArrayList<>();
+        searchList.clear();
+        for (Words tempCont : wordList) {
+            String temp = tempCont.getWord();
+            if (temp.toLowerCase().contains(newText.toLowerCase())) {
+                tempString.add(tempCont);
+            }
+        }
+        searchList = tempString;
+        adapter.setmData(searchList, getParentFragment());
+        return true;
     }
 
     @Override
@@ -145,45 +179,42 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         searchList = new ArrayList<>();
         searchView = Objects.requireNonNull(getActivity()).findViewById(R.id.search_in);
         searchView.setVisibility(View.VISIBLE);
-        drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background_means);
+        drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
         searchView.setIconifiedByDefault(false);
-    }
-
-    public boolean onOptionsItemSelected(@NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.search_button:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_means, container, false);
-        alphabetPanel(view);
-        wordList = database.wordsDao().getAllWords();
-        recyclerView = view.findViewById(R.id.means_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mainView = inflater.inflate(R.layout.fragment_means, container, false);
+        alphabetPanel(mainView);
+        wordList = database.wordsDao().listForFragment();
+        recyclerView = mainView.findViewById(R.id.means_recyclerview);
+        layoutManager = new LinearLayoutManager(getActivity());
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(50));
         adapter = new RecycleViewAdptr(getContext(), wordList);
-        adapter.setmData(wordList, this);
+        adapter.setmData(wordList, getParentFragment());
+        min = getScreenHeight() - hrl;
+        recyclerView.getLayoutParams().height = min;
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        String from = "";
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            from = bundle.getString("fromSearch");
-            if (from != null){}
-//                textView.setText(from);
-        }
-        return view;
+//        layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NotNull RecyclerView rv, int dx, int dy) {
+                assert layoutManager != null;
+                firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+                lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                char lastWord =  adapter.mData.get(lastCompleteVisiblePosition).getTableName();
+                char firstWord = adapter.mData.get(firstVisiblePosition).getTableName();
+                setCheckVisibleChar(firstWord, lastWord);
+            }
+        });
+        return mainView;
     }
 }

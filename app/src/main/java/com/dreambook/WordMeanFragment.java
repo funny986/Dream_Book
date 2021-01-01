@@ -50,7 +50,8 @@ public class WordMeanFragment extends Fragment {
         assert getArguments() != null;
         String word = getArguments().getString("word_mean");
         word = word.toLowerCase();
-        String mean = database.wordsDao().getWordMean(word).getMean();
+//        String mean = database.wordsDao().getWordMean(word).getMean();
+        String mean = database.wordsDao().getMean(word);
         interpretation.setText(mean);
         SearchView searchView = getActivity().findViewById(R.id.search_in);
         searchView.setVisibility(View.INVISIBLE);

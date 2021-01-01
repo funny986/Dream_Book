@@ -1,7 +1,10 @@
 package com.dreambook;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
@@ -29,11 +32,9 @@ import java.util.Objects;
 import static dataBase.Base.setDataBase;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     public static MeaningDatabase database;
-//    public static NestedScrollView nestedScrollView;
-
 
     public static final String APP_PREFERENCE = "launch";
     public static final String APP_PREFERENCE_COUNT = "count";
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static BottomNavigationView.OnNavigationItemSelectedListener listnr;
 
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,16 +162,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        nestedScrollView = findViewById(R.id.scrolling_content);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+       bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
              setListnr(listener());
              listnr = listener();
              bottomNavigationView.setOnNavigationItemSelectedListener(listnr);
         fab = findViewById(R.id.fab);
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 //        setDataBase(database);///////////////////////////////////////////
         fab.setOnClickListener(this);
+
     }
 
 }

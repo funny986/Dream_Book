@@ -14,8 +14,8 @@ public interface WordsDao {
     @Query("SELECT * FROM words ")
     List<Words> getAllWords();
 
-//    @Query("SELECT * FROM words WHERE gender = :gender")
-//    List<Words> getAllWordsGender(int gender);
+    @Query("SELECT * FROM words WHERE gender = :gender")
+    List<Words> getAllWordsGender(int gender);
 
     @Query("SELECT * FROM words WHERE table_name = :tableName")
     List<Words> getWordsListTable(char tableName);
@@ -25,10 +25,13 @@ public interface WordsDao {
     Words getWordMean(String word);
 
     @Query("SELECT * FROM words WHERE type = :type")
-    List<Words> getWordType(int type);
+    List<Words> getWordsByType(int type);
 
-//    @Query("SELECT mean FROM words WHERE word = :word")
-//    String getMean(String word);
+    @Query("SELECT mean FROM words WHERE word = :word")
+    String getMean(String word);
+
+    @Query("SELECT * FROM words WHERE gender = 0 AND (type = 1 OR type = 2)")
+    List<Words> listForFragment();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Words words);
