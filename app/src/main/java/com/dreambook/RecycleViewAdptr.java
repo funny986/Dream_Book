@@ -22,6 +22,7 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
     public Context mContext;
     public List<Words> mData;
     public Fragment myFragment;
+    public int heightItem;
 
     @Override
     public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
@@ -45,7 +46,7 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
         final View view;
         view = LayoutInflater.from(mContext).inflate(R.layout.item_word, parent, false);
         final MyViewHolder myviewholder = new MyViewHolder(view);
-                myviewholder.itemView.setOnClickListener(new View.OnClickListener() {
+        myviewholder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String arg = myviewholder.word.getText().toString();
@@ -77,6 +78,7 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             word = itemView.findViewById(R.id.word_tv);
+
         }
     }
 }

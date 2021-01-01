@@ -3,12 +3,8 @@ package com.dreambook;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.location.GnssAntennaInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.style.LineHeightSpan;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
@@ -17,7 +13,6 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,8 +32,8 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                                              , SearchView.OnQueryTextListener{
     public MeansFragment() {}
 
-    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е','ё','ж','з','и','й','к','л','м','н', 'о', 'п','р','т','у'
-                            ,'ф','х','ц', 'ч','ш','щ','э','ю','я'};
+    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','й','к','л','м','н', 'о', 'п','р','т','у'
+                            ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //28
 
     private RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
@@ -46,16 +41,19 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     private Toolbar toolbar;
     private int hrl;
     private int min;
-    private TextView textView;
+    private String tag;
+    private TextView[] simbol;
+    private final ArrayList<Character> letter = new ArrayList<>(28);
 
     public View mainView;
     public SearchView searchView;
     public Drawable drawable;
+    public AppBarLayout appBarLayout;
     private List<Words> searchList, wordList;
     private List<String> list;
     private LinearLayoutManager layoutManager;
 
-    int firstVisiblePosition, lastVisiblePosition, lastCompleteVisiblePosition;
+    int firstVisiblePosition, items, lastCompleteVisiblePosition;
 
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
@@ -72,7 +70,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        AppBarLayout appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
+        appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
         appBarLayout.setExpanded(false);
         appBarLayout.setVisibility(View.VISIBLE);
             }
@@ -107,45 +105,56 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         hrl =  bottomNavigationView.getHeight(); //196
          min = getScreenHeight() - hrl- tool;//2516 // 2320 минус тулбар
          float summ2 = (float) min / ALPHABET.length;//80
-         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 5f;
+         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 5.1f;
          LinearLayout.LayoutParams params =
                  new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                  LinearLayout.LayoutParams.WRAP_CONTENT);
-//        params.setMarginEnd(2);
-        for (char c : ALPHABET) {
-            textView = new TextView(getContext());
-            textView.setLayoutParams(params);
-            textView.setId(View.generateViewId());
-            textView.setText(String.valueOf(c));
-            textView.setTextSize(heightDisplay);
-            textView.setOnClickListener(this);
-            textView.setSelected(false);
-            textView.setTextColor(getActivity().getColor(R.color.alph_selector));
-            textView.setTag(String.valueOf(c));
-            layout.addView(textView);
+        simbol = new TextView[ALPHABET.length];
+        for (int i = 0; i < ALPHABET.length; i++) {
+            tag = String.valueOf(ALPHABET[i]);
+            simbol[i] = new TextView(getContext());
+            simbol[i].setId(View.generateViewId());
+            simbol[i].setText(tag);
+            simbol[i].setTextSize(heightDisplay);
+            simbol[i].setLayoutParams(params);
+            simbol[i].setTag(tag);
+            simbol[i].setOnClickListener(this);
+            layout.addView(simbol[i]);
+            letter.add(ALPHABET[i]);
         }
-
     }
-
 
     @Override
-    public void onClick(View view) {
-
+    public void onClick(@NotNull View view) {
+            appBarLayout.setExpanded(false);
+            appBarLayout.setVisibility(View.VISIBLE);
+        char click = view.getTag().toString().charAt(0);
+        int position = 0;
+        for (Words words : wordList) {
+            if (words.getTableName() == click) break;
+            position++;
+        }
+        items = lastCompleteVisiblePosition - firstVisiblePosition;
+        if (lastCompleteVisiblePosition < position) {
+            recyclerView.scrollToPosition(position - items);
+            position += items;
+        }
+        else  {
+            recyclerView.scrollToPosition(position + items);
+        }
+        recyclerView.smoothScrollToPosition(position);
     }
-//    int findFirstVisibleItemPosition();
-//    int findFirstCompletelyVisibleItemPosition();
-//    int findLastVisibleItemPosition();
-//    int findLastCompletelyVisibleItemPosition();
 
     public void setCheckVisibleChar(char firstLetter, char lastLetter){
-//        simbol
-        String tag = String.valueOf(firstLetter);
-        textView = mainView.findViewWithTag(tag);
-        textView.isSelected();
-//        textView.setSelected(true);
+        int strt = letter.indexOf(firstLetter);
+        int end = letter.indexOf(lastLetter);
+        for (int j = 0; j < simbol.length; j++) {
+            if (j >= strt && j <= end)
+                simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navChecked));
+            else
+                simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navUnChecked));
+        }
     }
-
-
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -193,22 +202,19 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         wordList = database.wordsDao().listForFragment();
         recyclerView = mainView.findViewById(R.id.means_recyclerview);
         layoutManager = new LinearLayoutManager(getActivity());
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(50));
-        adapter = new RecycleViewAdptr(getContext(), wordList);
-        adapter.setmData(wordList, getParentFragment());
+            adapter = new RecycleViewAdptr(getContext(), wordList);
+            adapter.setmData(wordList, getParentFragment());
         min = getScreenHeight() - hrl;
         recyclerView.getLayoutParams().height = min;
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-
-//        layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NotNull RecyclerView rv, int dx, int dy) {
                 assert layoutManager != null;
-                firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+                firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
                 lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
                 char lastWord =  adapter.mData.get(lastCompleteVisiblePosition).getTableName();
                 char firstWord = adapter.mData.get(firstVisiblePosition).getTableName();

@@ -171,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 //        setDataBase(database);///////////////////////////////////////////
         fab.setOnClickListener(this);
-
     }
 
 }

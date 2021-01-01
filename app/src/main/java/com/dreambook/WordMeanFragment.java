@@ -46,7 +46,7 @@ public class WordMeanFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_word_mean, container, false);
-        TextView interpretation = view.findViewById(R.id.word_tv);
+        TextView interpretation = view.findViewById(R.id.mean_tv);
         assert getArguments() != null;
         String word = getArguments().getString("word_mean");
         word = word.toLowerCase();
