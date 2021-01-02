@@ -1,47 +1,44 @@
 package com.dreambook;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.res.Resources;
 import android.view.*;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.widget.NestedScrollView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import android.content.SharedPreferences;
-import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import androidx.preference.ListPreference;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import dataBase.*;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
+import dataBase.*;
 import static dataBase.Base.setDataBase;
 
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+                                                    GenderSet{
 
     public static MeaningDatabase database;
 
-    public static final String APP_PREFERENCE = "launch";
+    public static final String APP_PREFERENCE = "settings";
     public static final String APP_PREFERENCE_COUNT = "count";
-    private SharedPreferences preferences;
+    public static final String AUTOR_GENDER = "gender";
+
+    public SharedPreferences preferences;
     private boolean count;
+
+    public int autorgender;
+
     private final int VERSION = 1;
 
+    public Bundle args;
     public BottomNavigationView bottomNavigationView;
     public FloatingActionButton fab;
     public Toolbar toolbar;
@@ -60,45 +57,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             setDataBase(database);
             count = true;
         }
+        if (preferences.contains(AUTOR_GENDER)) {
+            autorgender = preferences.getInt(AUTOR_GENDER, 0);
+        }
+    }
+    protected void onResume(){
+        super.onResume();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(APP_PREFERENCE_COUNT, count);
+        editor.putInt(AUTOR_GENDER, autorgender);
+        args.putInt(AUTOR_GENDER, autorgender);
+        editor.apply();
     }
 
-//    protected void onResume(){
-//        super.onResume();
-//        if (preferences.contains(APP_PREFERENCE_COUNT)) {
-//            count = preferences.getBoolean(APP_PREFERENCE_COUNT, false);
-//        }
-//        if (!count ) {
-//            setDataBase(database);
-//            count = true;
-//        }
-//    }
+    @Override
+    public void genderSet(int gender) {
+        getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE).edit().putInt(AUTOR_GENDER, gender)
+                .apply();
+    }
+
+    @Override
+    public int getAutorGender() {
+        return autorgender;
+    }
 
     protected void onPause(){
         super.onPause();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(APP_PREFERENCE_COUNT, count);
-        editor.apply();
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putBoolean(APP_PREFERENCE_COUNT, count);
+//        editor.putInt(AUTOR_GENDER, autorgender);
+//        editor.apply();
     }
 
     protected void onDestroy(){
         super.onDestroy();
         database.close();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(@NotNull Menu menu) {
-//        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-//                removeActiveFragments();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -134,9 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fab.setVisibility(View.VISIBLE);
                 break;
             case R.id.action_means:
-                navController.navigate(R.id.nav_means);
+                navController.navigate(R.id.nav_means, args);
                 break;
             case R.id.action_setting:
+                navController.navigate(R.id.nav_setting);
                 break;
         }
         return true;
@@ -153,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static BottomNavigationView.OnNavigationItemSelectedListener listnr;
 
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,16 +155,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-       bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
              setListnr(listener());
              listnr = listener();
              bottomNavigationView.setOnNavigationItemSelectedListener(listnr);
         fab = findViewById(R.id.fab);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//        setDataBase(database);///////////////////////////////////////////
         fab.setOnClickListener(this);
+        args = new Bundle();
     }
-
 }
 

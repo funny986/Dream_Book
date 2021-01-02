@@ -1,0 +1,15 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="gender_style">
+        <item>Не задан</item>
+        <item>Мужской</item>
+        <item>Женский</item>
+    </string-array>
+
+<!--    <integer-array name="gender_entries">-->
+<!--        <item>0</item>-->
+<!--        <item>1</item>-->
+<!--        <item>2</item>-->
+<!--    </integer-array>-->
+
+</resources>

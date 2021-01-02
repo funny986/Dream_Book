@@ -38,7 +38,6 @@ public class RecordingFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-
     }
 
     @Override
@@ -50,22 +49,20 @@ public class RecordingFragment extends Fragment {
         final FloatingActionButton floatingButton = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
         SearchView searchView = getActivity().findViewById(R.id.search_in);
         searchView.setVisibility(View.INVISIBLE);
-
-        floatingButton.setVisibility(View.VISIBLE);
-        floatingButton.setImageResource(R.drawable.ic_done_24);
-        floatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RecordingFragmentDirections.ActionRecordToReady action =
-                        RecordingFragmentDirections.actionRecordToReady(
-                                nameNote.getText().toString(),
-                                record.getText().toString());
-                NavHostFragment.findNavController(RecordingFragment.this)
-                        .navigate(action);
-                floatingButton.setVisibility(View.INVISIBLE);
-
-            }
-        });
+                floatingButton.setVisibility(View.VISIBLE);
+                floatingButton.setImageResource(R.drawable.ic_done_24);
+                floatingButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RecordingFragmentDirections.ActionRecordToReady action =
+                                RecordingFragmentDirections.actionRecordToReady(
+                                        nameNote.getText().toString(),
+                                        record.getText().toString());
+                        NavHostFragment.findNavController(RecordingFragment.this)
+                                .navigate(action);
+                        floatingButton.setVisibility(View.INVISIBLE);
+                    }
+                });
         setHasOptionsMenu(true);
         return view;
     }

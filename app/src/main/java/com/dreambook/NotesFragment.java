@@ -1,6 +1,7 @@
 package com.dreambook;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -31,7 +32,7 @@ import java.util.Objects;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN;
 import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
-import static com.dreambook.MainActivity.database;
+import static com.dreambook.MainActivity.*;
 
 public class NotesFragment extends Fragment implements View.OnFocusChangeListener {
 
@@ -45,6 +46,9 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
     public SearchView searchView;
     public Drawable drawable;
 
+    Activity activity;
+    public int genderForNote;
+
     public NotesFragment(){}
 
     @Override
@@ -52,6 +56,10 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
         super.onResume();
         AppBarLayout appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
         appBarLayout.setExpanded(false);
+        appBarLayout.setVisibility(View.VISIBLE);
+        genderForNote = activity
+                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
+                .getInt(AUTOR_GENDER, 0);
     }
 
     @Override
@@ -65,10 +73,16 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         searchView = Objects.requireNonNull(getActivity()).findViewById(R.id.search_in);
-        //        searchView.setFocusableInTouchMode(false);
-//        searchView.setFocusable(false);
-
     }
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        if (context instanceof Activity){
+            activity = (Activity) context;
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);

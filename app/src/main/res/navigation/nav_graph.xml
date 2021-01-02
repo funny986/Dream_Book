@@ -15,6 +15,10 @@
         <action android:id="@+id/action_Notes_to_Record"
                 app:destination="@id/nav_record"/>
 
+        <argument
+                android:name="gender"
+                app:argType="integer"/>
+
     </fragment>
 
     <fragment
@@ -62,6 +66,11 @@
         <action android:id="@+id/action_Word_to_Mean"
                 app:destination="@id/nav_word"/>
 
+        <argument
+                android:name="gender"
+                app:argType="integer"/>
+
+
     </fragment>
 
     <fragment
@@ -76,15 +85,10 @@
 
     </fragment>
 
-    <!--    <activity-->
-<!--                android:id="@+id/nav_means_activity"-->
-<!--                android:name="com.dreambook.MeansActivity"-->
-<!--                android:label="Значения"-->
-<!--                    app:launchSingleTop="true"-->
-<!--                    app:popUpTo="@id/nav_ready"-->
-<!--                    app:popUpToInclusive="true"-->
-<!--    tools:layout="@layout/activity_means">-->
-
-<!--    </activity>-->
-
+    <fragment
+            android:id="@+id/nav_setting"
+            android:name="com.dreambook.SettingsFragment"
+            android:label="Настройки"
+            tools:layout="@layout/fragment_setting">
+    </fragment>
 </navigation>

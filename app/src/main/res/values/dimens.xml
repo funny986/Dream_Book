@@ -15,11 +15,14 @@
     <dimen name="marg_l_r">50dip</dimen>
 
     <!-- ListView Толкований -->
+    <!-- Градиенты фона  -->
     <item name="shadowDx" type="integer">2</item>
     <item name="shadowDy" type="integer">2</item>
     <item name="shadowRadius" type="integer">4</item>
-    <dimen name="text_margin">15dp</dimen>
 
+    <!-- Параметры текста толкования -->
+    <dimen name="text_margin">15dp</dimen>
+    <dimen name="txt_size">20dp</dimen>
     <dimen name="height_item">27dp</dimen>
 
 </resources>

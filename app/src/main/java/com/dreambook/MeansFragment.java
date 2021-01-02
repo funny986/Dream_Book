@@ -54,6 +54,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     private LinearLayoutManager layoutManager;
 
     int firstVisiblePosition, items, lastCompleteVisiblePosition;
+    public int genderForNote;
 
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
@@ -73,7 +74,9 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
         appBarLayout.setExpanded(false);
         appBarLayout.setVisibility(View.VISIBLE);
-            }
+        assert getArguments() != null;
+        genderForNote = MeansFragmentArgs.fromBundle(getArguments()).getGender();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
