@@ -7,25 +7,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import dataBase.Notes;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static com.dreambook.MainActivity.*;
 
 public class RecordingFragmentReady extends Fragment {
 
-    public RecordingFragmentReady() {
-    }
+    public RecordingFragmentReady() {}
+
+    private MenuItem item;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,14 +39,29 @@ public class RecordingFragmentReady extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        AppBarLayout appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
-        appBarLayout.setExpanded(false);
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        menu.clear();
         super.onCreateOptionsMenu(menu, inflater);
+        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
+        item = menu.findItem(R.id.sorting);
+        item.setVisible(false);
+        item = menu.findItem(R.id.save_note);
+        item.setIcon(R.drawable.ic_record_24);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.save_note:
+                                database.notesDao().insert(note);
+                                item.setIcon(R.drawable.ic_check);
+                                NavHostFragment.findNavController(RecordingFragmentReady.this)
+                                        .navigate(R.id.nav_notes);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -70,12 +81,12 @@ public class RecordingFragmentReady extends Fragment {
         name = RecordingFragmentReadyArgs.fromBundle(getArguments()).getNameNote();
         recNote = RecordingFragmentReadyArgs.fromBundle(getArguments()).getNote();
             if (name.equals("")) name = "Без названия";
-            Date date = new Date();
-            DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-            String dateStr = df.format(date);
+            String dateStr = RecordingFragmentReadyArgs.fromBundle(getArguments()).getDateNote();
         int id;
         nameNote.setText(name);
         record.setText(recNote);
+        TextView datetv = view.findViewById(R.id.date_tv);
+        datetv.setText(dateStr);
         List<Notes> list = database.notesDao().getIdList();
         if (list.size() == 0) id = 1;
         else {
@@ -84,44 +95,7 @@ public class RecordingFragmentReady extends Fragment {
         }
         note = new Notes(id, name, recNote, dateStr);
         bottomNavigation = getActivity().findViewById(R.id.bottom_navigation);
-        bottomNavigation.getMenu()
-                .getItem(0)
-                .setIcon(R.drawable.ic_delete_24)
-                .setTitle("Удалить");
-        bottomNavigation.getMenu()
-                .getItem(1)
-                .setIcon(R.drawable.ic_record_24)
-                .setTitle("Править");
-        bottomNavigation.getMenu()
-                .getItem(2)
-                .setIcon(R.drawable.ic_done_24)
-                .setTitle("Записать");
-        floatingAction = Objects.requireNonNull(getActivity())
-                .findViewById(R.id.fab);
-        bottomNavigation.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_notes:
-                                floatingAction.setVisibility(View.VISIBLE);
-                                NavHostFragment.findNavController(RecordingFragmentReady.this)
-                                        .navigate(R.id.nav_notes);
-                                break;
-                            case R.id.action_means:
-                                NavHostFragment.findNavController(RecordingFragmentReady.this)
-                                        .popBackStack();
-                                break;
-                            case R.id.action_setting:
-                                database.notesDao().insert(note);
-                                floatingAction.setVisibility(View.VISIBLE);
-                                NavHostFragment.findNavController(RecordingFragmentReady.this)
-                                        .navigate(R.id.nav_notes);
-                                break;
-                        }
-                        return true;
-                    }
-                });
+        bottomNavigation.setVisibility(View.INVISIBLE);
         return view;
     }
 }

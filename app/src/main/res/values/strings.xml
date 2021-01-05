@@ -37,9 +37,9 @@
     <string name="messages_header">Ваш пол</string>
     <string name="sync_header">Sync</string>
 
-<!--        <string name="notset">Не задан</string>-->
-<!--        <string name="male">Мужской</string>-->
-<!--        <string name="female">Женский</string>-->
+    <!--        <string name="notset">Не задан</string>-->
+    <!--        <string name="male">Мужской</string>-->
+    <!--        <string name="female">Женский</string>-->
 
     <string-array name="genders">
         <item>Не задан</item>
@@ -56,4 +56,5 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="save">Сохранить</string>
 </resources>

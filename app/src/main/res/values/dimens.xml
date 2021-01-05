@@ -11,8 +11,11 @@
 
     <dimen name="means_search_marginLeft">30dp</dimen>
 
-    <!-- Отступ в записи-->
+    <!-- Редактирование и сохранение записи-->
     <dimen name="marg_l_r">50dip</dimen>
+    <dimen name="textSize">15sp</dimen>
+    <dimen name="height_view">40dp</dimen>
+    <dimen name="padd_text">5dp</dimen>
 
     <!-- ListView Толкований -->
     <!-- Градиенты фона  -->

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -22,12 +23,6 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
     public Context mContext;
     public List<Words> mData;
     public Fragment myFragment;
-    public int heightItem;
-
-    @Override
-    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
 
     public void setmData(List<Words> Data, Fragment fragment) {
         this.mData = Data;
@@ -50,6 +45,9 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
             @Override
             public void onClick(View v) {
                 String arg = myviewholder.word.getText().toString();
+                Toast.makeText(mContext, "Толкование  " + arg,
+                        Toast.LENGTH_SHORT)
+                        .show();
                 MeansFragmentDirections.ActionWordToMean action =
                         MeansFragmentDirections.actionWordToMean(arg);
                 NavHostFragment.findNavController(myFragment)
@@ -78,7 +76,6 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             word = itemView.findViewById(R.id.word_tv);
-
         }
     }
 }

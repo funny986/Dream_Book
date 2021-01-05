@@ -1,6 +1,5 @@
 package com.dreambook;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -9,26 +8,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import dataBase.Notes;
 
 import java.util.List;
 
+public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>
+        {
 
-public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
-
-    Context mContext;
+    public Context mContext;
     public List<Notes> mData;
-    Dialog myDialog;
+    public Fragment fragment;
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void setmData(List<Notes> Data) {
+    public void setmData(List<Notes> Data, Fragment fragment) {
         this.mData = Data;
+        this.fragment = fragment;
         notifyDataSetChanged();
     }
 
@@ -36,85 +37,63 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         this.mContext = context;
         this.mData = mData;
     }
+    public String note;
+    private ClickInterface mClickInterface;
+
+            public interface ClickInterface {
+                void clickEventOne(Notes obj);
+            }
+
+            public void setClickInterface(ClickInterface clickInterface) {
+                mClickInterface = clickInterface;
+            }
+
+            private class MyClickListener implements View.OnClickListener {
+
+                private int mPosition;
+                private boolean mClickable;
+
+                void setPosition(int position) {
+                    mPosition = position;
+                }
+
+                void setClickable(boolean clickable) {
+                    mClickable = clickable;
+                }
+
+                @Override
+                public void onClick(View v) {
+                    if(mClickable) {
+                        mClickInterface.clickEventOne(mData.get(mPosition));
+                    }
+                }
+            }
 
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             view = LayoutInflater.from(mContext).inflate(R.layout.item_note, parent, false);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-//
-//            final MyViewHolder myViewHolder = new MyViewHolder(view);
-//
-//            myDialog = new Dialog(parent.getContext());
-//            myDialog.setContentView(R.layout.note_dialog);
-//            myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-//            myViewHolder.item_note.setOnClickListener(new View.OnClickListener() {
-//                @SuppressLint("SetTextI18n")
+//            final MyViewHolder myviewholder = new MyViewHolder(view);
+//            myviewholder.itemView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
-
-//                    TextView dialog_lastname_tv = myDialog.findViewById(R.id.dialod_lastname_id);
-//                    TextView dialog_firstname_tv = myDialog.findViewById(R.id.dialod_firstname_id);
-//                    TextView dialog_middlename_tv = myDialog.findViewById(R.id.dialod_middlename_id);
-//                    TextView dialog_position_tv = myDialog.findViewById(R.id.dialod_positionname_id);
-//                    final TextView dialog_phone_tv = myDialog.findViewById(R.id.dialog_phone_id);
-//                    TextView dialog_inner_phone = myDialog.findViewById(R.id.dialog_inner_phone_id);
 //
-//                    String mobile = mData.get(myViewHolder.getAdapterPosition()).getMobile();
-//                    Button phone = myDialog.findViewById(R.id.dialog_button_name);
-//                    Button msg = myDialog.findViewById(R.id.dialog_button_message);
-
-//                    if (mobile != null){
-//                        dialog_phone_tv.setVisibility(View.VISIBLE);
-////                        inputNumberPhoneMask(dialog_phone_tv, true);
-//                        dialog_phone_tv.setText(mobile);
-//                        phone.setVisibility(View.VISIBLE);
-//                        msg.setVisibility(View.VISIBLE);
-//                    }
-//                    else {
-//                        dialog_phone_tv.setVisibility(View.INVISIBLE);
-//                        phone.setVisibility(View.INVISIBLE);
-//                        msg.setVisibility(View.INVISIBLE);
-//                    }
-//                    inputNumberPhoneMask(dialog_inner_phone, false);
+////                    int posit = myviewholder.getAdapterPosition();
+//                    String arg1 = myviewholder.noteName.getText().toString();
+//                    String arg2 = myviewholder.noteDate.getText().toString();
 //
-//                    dialog_lastname_tv.setText(mData.get(myViewHolder.getAdapterPosition()).getLastName());
-//                    dialog_firstname_tv.setText(mData.get(myViewHolder.getAdapterPosition()).getFirstName());
-//                    dialog_middlename_tv.setText(mData.get(myViewHolder.getAdapterPosition()).getMiddleName());
-//                    dialog_position_tv.setText(mData.get(myViewHolder.getAdapterPosition()).getPositionName());
-//                    dialog_inner_phone.setText(mData.get(myViewHolder.getAdapterPosition()).getInnerPhone());
-//                    Toast.makeText(mContext, "" + mData.get(myViewHolder.getAdapterPosition()).getLastName(),
-//                            Toast.LENGTH_SHORT)
-//                            .show();
-//                    myDialog.show();
-
-//                    phone.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent intent = new Intent(Intent.ACTION_DIAL);
-//                            intent.setData(Uri.parse("tel:" + dialog_phone_tv.getText()));
-//                            mContext.startActivity(intent);
-//                        }
-//                    });
-//                    msg.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            Intent sms = new Intent(Intent.ACTION_SENDTO);
-//                            sms.setData(Uri.parse("smsto:" + dialog_phone_tv.getText()));
-//                            mContext.startActivity(sms);
-//                        }
-//                    });
+////                   String arg = database.notesDao().getNoteById(posit);
+//                        Toast.makeText(mContext, "Просмотр записи: " + myviewholder.noteName.getText().toString(),
+//                                Toast.LENGTH_SHORT)
+//                                .show();
+//                NotesFragmentDirections.ActionNotesToInterpretation action =
+//                        NotesFragmentDirections.actionNotesToInterpretation(arg1, arg2);
+//                NavHostFragment.findNavController(fragment)
+//                        .navigate(action);
 //                }
 //            });
-//            return myViewHolder;
-            return new MyViewHolder(view);
+           return new MyViewHolder(view);
         }
 
         @Override
@@ -122,10 +101,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         String name = mData.get(position).getNameNote();
         String date = mData.get(position).getDate();
-        String note = mData.get(position).getNote();
-        holder.noteName.setText(name);
-        holder.noteDate.setText(date);
-        holder.noteContent.setText(note);
+            holder.noteName.setText(name);
+            holder.noteDate.setText(date);
+            holder.myClickListener.setClickable(true);
+            holder.myClickListener.setPosition(position);
         }
 
         @Override
@@ -133,15 +112,20 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             return mData.size();
         }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        private final TextView noteName, noteDate, noteContent;
+    protected class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener
+             {
+
+        private final TextView noteName, noteDate;
+        MyClickListener myClickListener;
+        View v1;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             noteName = itemView.findViewById(R.id.card_note_name);
             noteDate = itemView.findViewById(R.id.card_note_date);
-            noteContent = itemView.findViewById(R.id.card_note_content);
+            myClickListener = new MyClickListener();
+            itemView.setOnClickListener(myClickListener);
         }
 
         @Override

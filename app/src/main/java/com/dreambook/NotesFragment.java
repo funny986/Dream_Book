@@ -8,9 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.AdapterView;
 import android.widget.SearchView;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -30,11 +31,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
-import static android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN;
-import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
 import static com.dreambook.MainActivity.*;
 
-public class NotesFragment extends Fragment implements View.OnFocusChangeListener {
+public class NotesFragment extends Fragment implements View.OnFocusChangeListener{
 
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
@@ -45,6 +44,7 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
 
     public SearchView searchView;
     public Drawable drawable;
+    public MenuItem item;
 
     Activity activity;
     public int genderForNote;
@@ -60,6 +60,7 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
         genderForNote = activity
                 .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
                 .getInt(AUTOR_GENDER, 0);
+        bottomNavigation.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -85,7 +86,10 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
 
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
+                item = menu.findItem(R.id.save_note);
+                item.setVisible(false);
         MenuItem menuItem = menu.findItem(R.id.id_sort_datenew);
         menuItem.setChecked(true);
         searchView.setVisibility(View.VISIBLE);
@@ -115,11 +119,10 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
                     }
                 }
                 searchList = tempString;
-                adapter.setmData(searchList);
+                adapter.setmData(searchList, getParentFragment());
                 return true;
             }
                     });
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -145,21 +148,23 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
             case R.id.id_sort_name:
                 item.setChecked(!item.isChecked());
                 noteList = database.notesDao().getNotesListByName();
-                adapter.setmData(noteList);
+                adapter.setmData(noteList, getParentFragment());
                 break;
             case R.id.id_sort_datenew:
                 item.setChecked(!item.isChecked());
                 noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(sortNewDateFirst(noteList));
+                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
                 break;
             case R.id.id_sort_dateold:
                 item.setChecked(!item.isChecked());
                 noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(noteList);
+                adapter.setmData(noteList, getParentFragment());
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration{
 
@@ -186,8 +191,23 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
         recyclerView.addItemDecoration(new SpacesItemDecoration(50));
         adapter = new RecycleViewAdapter(getContext(), noteList);
         noteList = sortNewDateFirst(noteList);
-        adapter.setmData(noteList);
+        adapter.setmData(noteList, getParentFragment());
         recyclerView.setAdapter(adapter);
+        adapter.setClickInterface(new RecycleViewAdapter.ClickInterface() {
+            @Override
+            public void clickEventOne(Notes obj) {
+                int id = obj.getId();
+                String toast = database.notesDao().getNoteById(id).getNameNote();
+                Toast.makeText(getContext(), "Просмотр записи: " + toast,
+                Toast.LENGTH_SHORT)
+                .show();
+
+                NotesFragmentDirections.ActionNotesToInterpretation action =
+                NotesFragmentDirections.actionNotesToInterpretation(id);
+        NavHostFragment.findNavController(NotesFragment.this)
+                .navigate(action);
+            }
+        });
         setHasOptionsMenu(true);
         return view;
     }
@@ -198,23 +218,27 @@ public class NotesFragment extends Fragment implements View.OnFocusChangeListene
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
         bottomNavigation.getMenu()
                 .getItem(0)
-                .setIcon(R.drawable.ic_baseline_event_note_24)
+                .setIcon(R.drawable.ic_crescent)
                 .setTitle(R.string.my_dreams);
         bottomNavigation.getMenu()
                 .getItem(1)
-                .setIcon(R.drawable.ic_translate_24)
+                .setIcon(R.drawable.ic_book)
                 .setTitle(R.string.dream_means);
         bottomNavigation.getMenu()
                 .getItem(2)
                 .setIcon(R.drawable.ic_settings_24)
                 .setTitle(R.string.setting);
         bottomNavigation.setOnNavigationItemSelectedListener(MainActivity.getListnr());
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        final FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         fab.setImageResource(R.drawable.ic_record_24);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bottomNavigation.setVisibility(View.INVISIBLE);
+                item.setVisible(true);
+                fab.setVisibility(View.INVISIBLE);
+                searchView.setVisibility(View.INVISIBLE);
                 NavHostFragment.findNavController(NotesFragment.this).navigate(R.id.nav_record);
             }
         });

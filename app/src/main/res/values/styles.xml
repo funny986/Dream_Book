@@ -41,10 +41,14 @@
 </style>
 
 
-    <!-- Отступы в записях -->
+    <!-- Записи  -->
     <style name="MyMargin">
         <item name="android:layout_marginLeft">@dimen/marg_l_r</item>
         <item name="android:layout_marginRight">@dimen/marg_l_r</item>
+    </style>
+    <style name="RecordStyle">
+        <item name="android:paddingLeft">@dimen/padd_text</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <!--  Кастомный стиль темы приложения   -->

@@ -16,8 +16,11 @@ public interface NotesDao {
     @Query("SELECT * FROM Notes ORDER by id")
     List<Notes> getIdList();
 
-    @Query("SELECT * FROM Notes WHERE date = :date")
-    Notes getDateNote(String date);
+    @Query("SELECT * FROM Notes WHERE id = :id")
+    Notes getNoteById(int id);
+
+    @Query("SELECT note FROM Notes WHERE date = :date")
+    String getNoteByDate(String date);
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
