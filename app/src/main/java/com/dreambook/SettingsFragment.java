@@ -6,11 +6,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +17,10 @@ import java.util.Objects;
 import static com.dreambook.MainActivity.AUTOR_GENDER;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
-        SharedPreferences.OnSharedPreferenceChangeListener, GenderSet {
+        SharedPreferences.OnSharedPreferenceChangeListener, GenderSet, MoveAddSearchItem {
+
+    public View itemSearch;
+    public Toolbar toolbar;
 
     @Override
     public void genderSet(int gender) {
@@ -33,10 +34,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onResume() {
         super.onResume();
-        AppBarLayout appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
-        appBarLayout.setExpanded(false);
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
+//        itemSearch = toolbar.findViewById(R.id.search_in);
+        delItemSearch(toolbar, itemSearch);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            moveAdd(toolbar, itemSearch);
+        }
+        catch (IllegalArgumentException ignored){};
     }
 
     @Override
@@ -44,18 +55,25 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         super.onPause();
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+        try {
+            moveAdd(toolbar, itemSearch);
+        }
+        catch (IllegalArgumentException ignored){};
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
+        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-        Toolbar toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+          toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(null);
-        SearchView searchView = getActivity().findViewById(R.id.search_in);
-        searchView.setVisibility(View.INVISIBLE);
+        itemSearch = toolbar.findViewById(R.id.search_in);
+        delItemSearch(toolbar, itemSearch);
+        toolbar.setTitle("Настройки");
+        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_setting);
+        toolbar.setTitleMarginStart(margin);
     }
 
     @Override
@@ -91,5 +109,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             if (g.equals(strings[2]))
                 ((GenderSet)activity).genderSet(2);
         }
+    }
+
+    @Override
+    public void moveAdd(@NotNull Toolbar toolbar, View view) {
+        toolbar.addView(view);
+    }
+
+    @Override
+    public void delItemSearch(Toolbar toolbar, View view) {
+        toolbar.removeView(view);
     }
 }

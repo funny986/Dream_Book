@@ -76,6 +76,7 @@ public class RecycleViewAdptr extends RecyclerView.Adapter<RecycleViewAdptr.MyVi
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             word = itemView.findViewById(R.id.word_tv);
+
         }
     }
 }

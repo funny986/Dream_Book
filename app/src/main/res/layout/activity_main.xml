@@ -7,29 +7,36 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-    <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar"
-            android:layout_width="match_parent"
-            app:expanded="false"
-            android:background="@color/transparent"
-            android:layout_height="40dp"
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_marginTop="@dimen/toolbar_down"
+            style="@style/ToolbarCustom"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_width="@dimen/main_toolbar_width"
+            android:background="@drawable/toolbar_background"
+           >
 
-            android:fitsSystemWindows="true">
+        <SearchView
+                style="@style/MySearchStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/search_height"
+                android:visibility="invisible"
+                android:imeOptions="actionSearch"
+                android:layout_marginStart="@dimen/means_search_marginLeft"
+                android:background="@drawable/search_background"
+                android:id="@+id/search_in"/>
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_app_bar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+    </androidx.appcompat.widget.Toolbar>
 
-            <include layout="@layout/toolbar"/>
+    <include layout="@layout/fragment_container"
+             android:layout_marginTop="35dp"
+             android:layout_alignParentTop="true"
+             android:layout_above="@+id/bottom_navigation"
+             android:layout_marginBottom="0dp"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent" android:layout_marginEnd="0dp"
+             android:layout_alignParentEnd="true"/>
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <include layout="@layout/fragment_container"/>
 
     <RelativeLayout
             android:layout_width="match_parent"
@@ -40,28 +47,36 @@
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_record_24"
-                android:backgroundTintMode="src_over"
+                app:srcCompat="@drawable/ic_record_dark"
                 app:fabSize="mini"
+                app:backgroundTint="@color/primaryColor"
+                android:layout_gravity="bottom|end"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginStart="@dimen/fab_margin"
+                android:layout_marginEnd="19dp"
+                android:layout_marginBottom="35dp"
                 android:layout_above="@+id/bottom_navigation"
-                android:layout_marginBottom="43dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="354dp"
-                android:layout_marginEnd="10dp"/>
+                android:layout_alignParentEnd="true">
 
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_navigation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:itemIconTint="@color/bottom_navigation_item_background_colors"
+                app:itemBackground="@color/colorPrimary"
+                 app:itemIconTint="@color/bottom_navigation_item_background_colors"
                 app:itemTextColor="@color/bottom_navigation_item_background_colors"
                 app:labelVisibilityMode="unlabeled"
                 android:layout_alignParentBottom="true"
                 app:menu="@menu/menu_bottom_navigation"/>
+
+<!--        <include layout="@layout/fragment_container"-->
+<!--                 android:layout_marginTop="35dp"-->
+<!--                 android:layout_alignParentTop="true"-->
+<!--                 android:layout_above="@+id/bottom_navigation"-->
+<!--                 android:layout_marginBottom="0dp"-->
+<!--                 android:layout_height="wrap_content"-->
+<!--                 android:layout_width="match_parent" android:layout_marginEnd="0dp"-->
+<!--                 android:layout_alignParentEnd="true"/>-->
     </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-<!--        app:itemBackground="@color/colorPrimary"-->
-<!--        app:itemIconTint="@color/bottom_navigation_item_background_colors"-->
-<!--        app:itemTextColor="@color/bottom_navigation_item_background_colors"-->
-

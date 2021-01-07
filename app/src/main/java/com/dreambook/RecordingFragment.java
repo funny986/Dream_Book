@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.EditText;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.navigation.fragment.NavHostFragment;
-import com.google.android.material.appbar.AppBarLayout;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
@@ -18,19 +18,22 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+
 public class RecordingFragment extends Fragment {
 
     private View view;
     private EditText nameNote, record;
     private String dateStr;
+    private Toolbar toolbar;
+    private View itemSearch;
 
     public RecordingFragment() {}
 
     @Override
     public void onResume() {
         super.onResume();
-        AppBarLayout appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
-        appBarLayout.setExpanded(true);
+        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_recording);
+        toolbar.setTitleMarginStart(margin);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class RecordingFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
+        requireActivity().getMenuInflater().inflate(R.menu.main, menu);
         MenuItem item = menu.findItem(R.id.sorting);
         item.setVisible(false);
 
@@ -51,7 +54,6 @@ public class RecordingFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_note:
-
                         RecordingFragmentDirections.ActionRecordToReady action =
                 RecordingFragmentDirections.actionRecordToReady(
                         nameNote.getText().toString(),
@@ -59,7 +61,9 @@ public class RecordingFragment extends Fragment {
                         dateStr);
                 NavHostFragment.findNavController(RecordingFragment.this)
                                 .navigate(action);
-
+                break;
+            case android.R.id.home:
+                 toolbar.addView(itemSearch);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -76,6 +80,11 @@ public class RecordingFragment extends Fragment {
         dateStr = df.format(date);
         TextView tvDate = view.findViewById(R.id.date_tv);
         tvDate.setText(dateStr);
+        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+        toolbar.setTitleMarginStart(380);
+        itemSearch = toolbar.findViewById(R.id.search_in);
+        toolbar.removeView(itemSearch);
+        toolbar.setTitle("Записать сон");
         setHasOptionsMenu(true);
         return view;
     }

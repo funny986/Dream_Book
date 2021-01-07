@@ -1,7 +1,6 @@
 package com.dreambook;
 
 import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.view.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import androidx.preference.ListPreference;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Objects;
@@ -24,26 +22,36 @@ import org.jetbrains.annotations.NotNull;
 
 import static dataBase.Base.setDataBase;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-                                                    GenderSet{
+public class MainActivity extends AppCompatActivity implements GenderSet, MoveAddSearchItem{
 
     public static MeaningDatabase database;
 
     public static final String APP_PREFERENCE = "settings";
     public static final String APP_PREFERENCE_COUNT = "count";
     public static final String AUTOR_GENDER = "gender";
+    public static final String BOX_STATE = "checkboxstate";
 
     public SharedPreferences preferences;
     private boolean count;
 
-    public int autorgender;
+    public int autorgender, checkState;
 
     private final int VERSION = 1;
 
     public Bundle args;
     public BottomNavigationView bottomNavigationView;
     public FloatingActionButton fab;
-    public Toolbar toolbar;
+    public   Toolbar toolbar;
+    public static View itemSearch;
+
+    public View getItemSearch() {
+        return itemSearch;
+    }
+
+    public void setItemSearch(View itemSearch) {
+        this.itemSearch = itemSearch;
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outSt) {
@@ -68,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(APP_PREFERENCE_COUNT, count);
         editor.putInt(AUTOR_GENDER, autorgender);
+        editor.putInt(BOX_STATE, checkState);
         args.putInt(AUTOR_GENDER, autorgender);
         editor.apply();
     }
@@ -112,26 +121,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navController.navigate(R.id.nav_notes);
     }
 
-    @Override
-    public void onClick(View view) {
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle("Записать ");
-        navController.navigate(R.id.nav_record);
-    }
-
     public BottomNavigationView.OnNavigationItemSelectedListener listener(){
         return new BottomNavigationView.OnNavigationItemSelectedListener() {
-    @Override
+
+            @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-          switch (item.getItemId()) {
+             switch (item.getItemId()) {
             case R.id.action_notes:
+                moveAdd(toolbar, getItemSearch());
                 navController.navigate(R.id.nav_notes);
                 fab.setVisibility(View.VISIBLE);
                 break;
             case R.id.action_means:
+                moveAdd(toolbar, getItemSearch());
                 navController.navigate(R.id.nav_means, args);
                 break;
             case R.id.action_setting:
+                if (item.isChecked()) return false;
+                delItemSearch(toolbar, getItemSearch());
                 navController.navigate(R.id.nav_setting);
                 break;
         }
@@ -150,6 +157,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static BottomNavigationView.OnNavigationItemSelectedListener listnr;
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveAdd(toolbar, getItemSearch());
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -157,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        itemSearch = toolbar.findViewById(R.id.search_in);
+        setItemSearch(itemSearch);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
              setListnr(listener());
@@ -164,8 +179,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              bottomNavigationView.setOnNavigationItemSelectedListener(listnr);
         fab = findViewById(R.id.fab);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        fab.setOnClickListener(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+                navController.navigate(R.id.nav_record);
+            }
+        });
         args = new Bundle();
+    }
+
+    @Override
+    public void moveAdd(@NotNull Toolbar toolbar, View view) {
+        try {
+            toolbar.addView(view);
+        }
+        catch (IllegalStateException | IllegalArgumentException ignore){};
+    }
+
+    @Override
+    public void delItemSearch(@NotNull Toolbar toolbar, View view) {
+        try {
+            toolbar.removeView(view);
+        }
+        catch (IllegalStateException | IllegalArgumentException ignore){};
+
     }
 }
 

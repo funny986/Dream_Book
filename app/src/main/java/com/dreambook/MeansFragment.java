@@ -1,6 +1,7 @@
 package com.dreambook;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -29,23 +30,25 @@ import java.util.*;
 import static com.dreambook.MainActivity.database;
 
 public class MeansFragment extends Fragment implements View.OnClickListener
-                                             , SearchView.OnQueryTextListener{
+                                             , SearchView.OnQueryTextListener, MoveAddSearchItem{
     public MeansFragment() {}
 
-    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','й','к','л','м','н', 'о', 'п','р','т','у'
-                            ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //28
+    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','т','у'
+                            ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //27
 
     private RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
     private RecycleViewAdptr adapter;
     private Toolbar toolbar;
+    private MenuItem menuItem;
     private int hrl;
     private int min;
     private String tag;
     private TextView[] simbol;
-    private final ArrayList<Character> letter = new ArrayList<>(28);
+    private final ArrayList<Character> letter = new ArrayList<>(27);
 
-    public View mainView;
+    public Activity activity;
+    public View mainView, item;
     public SearchView searchView;
     public Drawable drawable;
     public AppBarLayout appBarLayout;
@@ -71,21 +74,32 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
-        appBarLayout.setExpanded(false);
-        appBarLayout.setVisibility(View.VISIBLE);
         assert getArguments() != null;
         genderForNote = MeansFragmentArgs.fromBundle(getArguments()).getGender();
+        try {
+            moveAdd(toolbar, item);
+        }
+        catch (IllegalArgumentException | IllegalStateException ignored){};
+    }
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        if (context instanceof Activity){
+            activity = (Activity) context;
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
+        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+        toolbar = requireActivity().findViewById(R.id.toolbar);
+        item = toolbar.findViewById(R.id.search_in);
         toolbar.setNavigationIcon(null);
+        toolbar.setTitle(null);
     }
 
     @Override
@@ -108,7 +122,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         hrl =  bottomNavigationView.getHeight(); //196
          min = getScreenHeight() - hrl- tool;//2516 // 2320 минус тулбар
          float summ2 = (float) min / ALPHABET.length;//80
-         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 5.1f;
+         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 6.2f;
          LinearLayout.LayoutParams params =
                  new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                  LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -129,21 +143,28 @@ public class MeansFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(@NotNull View view) {
-            appBarLayout.setExpanded(false);
-            appBarLayout.setVisibility(View.VISIBLE);
         char click = view.getTag().toString().charAt(0);
+        boolean exept = false;
+        if (click == 'и') {
+            exept = true;
+            click = 'к';
+        }
         int position = 0;
         for (Words words : wordList) {
             if (words.getTableName() == click) break;
             position++;
         }
         items = lastCompleteVisiblePosition - firstVisiblePosition;
+        if (exept){
+            exept = false;
+            position -=2;
+        }
         if (lastCompleteVisiblePosition < position) {
             recyclerView.scrollToPosition(position - items);
             position += items;
         }
         else  {
-            recyclerView.scrollToPosition(position + items);
+              recyclerView.scrollToPosition(position + items);
         }
         recyclerView.smoothScrollToPosition(position);
     }
@@ -153,7 +174,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         int end = letter.indexOf(lastLetter);
         for (int j = 0; j < simbol.length; j++) {
             if (j >= strt && j <= end)
-                simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navChecked));
+                simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.CheckAlph));
             else
                 simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navUnChecked));
         }
@@ -188,10 +209,15 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
         searchList = new ArrayList<>();
+        menuItem = menu.findItem(R.id.save_note);
+        menuItem.setVisible(false);
+        menuItem = menu.findItem(R.id.sorting);
+        menuItem.setVisible(false);
         searchView = Objects.requireNonNull(getActivity()).findViewById(R.id.search_in);
-        searchView.setVisibility(View.VISIBLE);
         drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
+        moveAdd(toolbar, item);
         searchView.setBackground(drawable);
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
@@ -216,14 +242,31 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NotNull RecyclerView rv, int dx, int dy) {
-                assert layoutManager != null;
-                firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
-                lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
-                char lastWord =  adapter.mData.get(lastCompleteVisiblePosition).getTableName();
-                char firstWord = adapter.mData.get(firstVisiblePosition).getTableName();
-                setCheckVisibleChar(firstWord, lastWord);
+                if (searchView.getQuery().length() == 0) {
+                    assert layoutManager != null;
+                    firstVisiblePosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+                    lastCompleteVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
+                    char lastWord = adapter.mData.get(lastCompleteVisiblePosition).getTableName();
+                    char firstWord = adapter.mData.get(firstVisiblePosition).getTableName();
+                    setCheckVisibleChar(firstWord, lastWord);
+                }
             }
         });
         return mainView;
+    }
+
+    @Override
+    public void moveAdd(@NotNull Toolbar toolbar, View view) {
+        try {
+            toolbar.addView(view);
+            toolbar.setNavigationIcon(null);
+            toolbar.setTitle(null);
+        }
+        catch (IllegalStateException | IllegalArgumentException ignore){};
+    }
+
+    @Override
+    public void delItemSearch(Toolbar toolbar, View view) {
+
     }
 }

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#b2b2b2</color>
-    <color name="colorPrimaryDark">#B89090</color>
+    <color name="colorPrimary">#EAEAEA</color>
+    <color name="colorPrimaryDark">#b2b2b2</color>
     <color name="colorAccent">#03DAC5</color>
 
     <!-- My custom pallete theme -->
-    <color name="primaryColor">#b2b2b2</color>
-    <color name="primaryDarkColor">#B89090</color>
+    <color name="primaryColor">#EAEAEA</color>
+    <color name="primaryDarkColor">#b2b2b2</color>
     <color name="accentColor">#ffffff</color>
 
     <color name="colorTextRecord">@color/colorPrimaryDark</color>
+    <color name="colorEditMean">#493434</color>
 <!--    <color name="primaryColor">#E6D8D8</color>-->
 
 
@@ -27,8 +28,9 @@
 
     <!-- ToolBar  -->
     <color name="toolbarbg">@color/primaryColor</color>
-    <color name="navChecked">#8F6666</color>
-    <color name="navUnChecked">@color/primaryColor</color>
+    <color name="navChecked">#aeaeae</color>
+    <color name="CheckAlph">@color/colorEditMean</color>
+    <color name="navUnChecked">#C6C6C6</color>
 
 
 </resources>

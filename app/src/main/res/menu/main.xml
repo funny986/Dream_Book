@@ -8,6 +8,10 @@
           android:icon="@drawable/ic_check"
           app:showAsAction="always"/>
 
+<!--    <item  android:id="@+id/keyboard_cancel"-->
+<!--           android:title="Отменить"-->
+<!--           app:showAsAction="always"/>-->
+
     <item  android:id="@+id/sorting"
            android:title="@string/menu_sort"
            android:icon="@drawable/ic_sort"

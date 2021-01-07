@@ -9,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import dataBase.Words;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,27 +24,25 @@ import java.util.Objects;
 import static android.content.Context.MODE_PRIVATE;
 import static com.dreambook.MainActivity.*;
 
-public class InterpretationFragment extends Fragment {
+public class InterpretationFragment extends Fragment implements MoveAddSearchItem{
 
     public InterpretationFragment(){}
 
-    private View view;
+    private View view, itemsearch;
+    private Toolbar toolbar;
     private AppBarLayout appBarLayout;
     private SearchView searchView;
-    private Toolbar toolbar;
     private Activity activity;
 
     private List<Words> wordsList;
 
-    public String note;
+    public String note, title;
     private int gender;
 
     @Override
     public void onResume() {
         super.onResume();
-        appBarLayout.setExpanded(false);
-//        appBarLayout.setVisibility(View.INVISIBLE);
-        searchView.setVisibility(View.INVISIBLE);
+        delItemSearch(toolbar, itemsearch);
         gender = activity
                 .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
                 .getInt(AUTOR_GENDER, 0);
@@ -52,7 +51,19 @@ public class InterpretationFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        appBarLayout.setVisibility(View.VISIBLE);
+        this.onDestroyView();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        moveAdd(toolbar, itemsearch);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        moveAdd(toolbar, itemsearch);
     }
 
     @Override
@@ -64,17 +75,43 @@ public class InterpretationFragment extends Fragment {
     }
 
     @Override
+    public void moveAdd(@NotNull Toolbar toolbar, View view) {
+        try {
+            toolbar.addView(view);
+        }
+        catch (IllegalStateException | IllegalArgumentException ignore){};
+    }
+
+    @Override
+    public void delItemSearch(@NotNull Toolbar toolbar, View view) {
+        try {
+            toolbar.removeView(view);
+        }
+        catch (IllegalStateException | IllegalArgumentException ignore){};
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        appBarLayout = requireActivity().findViewById(R.id.app_bar);
-        searchView = getActivity().findViewById(R.id.search_in);
-        setHasOptionsMenu(true);
-        FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
-        fab.setVisibility(View.INVISIBLE);
-//        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
-//        toolbar.setNavigationIcon(null);
         wordsList = database.wordsDao().getAllWordsGender(gender);
+        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
+        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+        itemsearch = toolbar.findViewById(R.id.search_in);
+        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_interpretation);
+        toolbar.setTitleMarginStart(margin);
+        if (getArguments() != null) {
+            int id = getArguments().getInt("noteID");
+            note = database.notesDao()
+                    .getNoteById(id)
+                    .getNote();
+            title = database.notesDao()
+                    .getNoteById(id)
+                    .getNameNote();
+            toolbar.setTitle(title);
+        }
     }
 
     public void interpetation(String note){
@@ -88,14 +125,10 @@ public class InterpretationFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_interpretation, container, false);
-        if (getArguments() != null) {
-//            note = getArguments().getString("note");
-            int id = getArguments().getInt("noteID");
-            note = database.notesDao()
-                    .getNoteById(id)
-                    .getNote();
-            interpetation(note);
-        }
+        interpetation(note);
+
         return view;
     }
+
+
 }

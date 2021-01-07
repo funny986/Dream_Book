@@ -4,7 +4,7 @@
         android:shape="rectangle"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@android:color/white"/>
+    <solid android:color="@color/toolbarbg"/>
 
     <corners android:radius="50dp"/>
 

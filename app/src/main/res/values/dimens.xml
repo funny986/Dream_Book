@@ -1,21 +1,40 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
 
-    <!-- Размер тулбара -->
+    <!--    Tулбар -->
     <dimen name="marg_toolbar">80dp</dimen>
     <dimen name="main_toolbar_width">380dp</dimen>
     <dimen name="means_toolbar_width">380dp</dimen>
     <dimen name="toolbar_height">40dp</dimen>
     <dimen name="search_height">30dp</dimen>
+    <dimen name="titleSise">20dp</dimen>
+    <dimen name="toolbar_down">30dp</dimen>
 
 
     <dimen name="means_search_marginLeft">30dp</dimen>
 
-    <!-- Редактирование и сохранение записи-->
+    <!-- Редактирование и сохранение записи Paddings-->
     <dimen name="marg_l_r">50dip</dimen>
-    <dimen name="textSize">15sp</dimen>
+    <dimen name="textSize">20dp</dimen>
+    <dimen name="textSize_date">18dp</dimen>
     <dimen name="height_view">40dp</dimen>
-    <dimen name="padd_text">5dp</dimen>
+    <dimen name="padd_text">10dp</dimen>
+    <dimen name="padd_text_top">9dp</dimen>
+    <dimen name="padd_text_start">20dp</dimen>
+
+    <dimen name="padd_img">5dp</dimen>
+    <dimen name="padd_img_top">0dp</dimen>
+    <dimen name="padd_img_start">5dp</dimen>
+
+    <!-- Редактирование и сохранение записи Size-->
+
+    <dimen name="textSizeRec">@dimen/textSize</dimen>
+    <dimen name="margin_start_recording">80dp</dimen>
+    <dimen name="margin_start_recordingready">80dp</dimen>
+    <dimen name="margin_start_setting">150dp</dimen>
+    <dimen name="margin_start_wordlist">50dp</dimen>
+    <dimen name="margin_start_wordmean">70dp</dimen>
+    <dimen name="margin_start_interpretation">68dp</dimen>
 
     <!-- ListView Толкований -->
     <!-- Градиенты фона  -->
@@ -23,9 +42,12 @@
     <item name="shadowDy" type="integer">2</item>
     <item name="shadowRadius" type="integer">4</item>
 
-    <!-- Параметры текста толкования -->
+    <!-- Параметры текста толкования и записей. Ресайклер-->
     <dimen name="text_margin">15dp</dimen>
     <dimen name="txt_size">20dp</dimen>
-    <dimen name="height_item">27dp</dimen>
+    <dimen name="height_item_word">27dp</dimen>
+    <dimen name="height_item_note">40dp</dimen>
+
+    <!-- Доп. Параметры textView -->
 
 </resources>

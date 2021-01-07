@@ -1,43 +1,38 @@
 package com.dreambook;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.SearchView;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 import static com.dreambook.MainActivity.database;
 
 public class WordMeanFragment extends Fragment {
 
-    public WordMeanFragment() {}
-    public View view;
-    private AppBarLayout appBarLayout;
+    public WordMeanFragment() {
+    }
+
+    public View view, itemSearch;
+    public Toolbar toolbar;
 
     @Override
     public void onResume() {
         super.onResume();
-        appBarLayout.setExpanded(false);
-        appBarLayout.setVisibility(View.INVISIBLE);
     }
     @Override
     public void onPause() {
         super.onPause();
-        appBarLayout.setVisibility(View.VISIBLE);
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        appBarLayout = Objects.requireNonNull(getActivity()).findViewById(R.id.app_bar);
     }
 
     @Nullable
@@ -50,11 +45,15 @@ public class WordMeanFragment extends Fragment {
         assert getArguments() != null;
         String word = getArguments().getString("word_mean");
         word = word.toLowerCase();
-//        String mean = database.wordsDao().getWordMean(word).getMean();
         String mean = database.wordsDao().getMean(word);
         interpretation.setText(mean);
-        SearchView searchView = getActivity().findViewById(R.id.search_in);
-        searchView.setVisibility(View.INVISIBLE);
+        toolbar = requireActivity().findViewById(R.id.toolbar);
+        itemSearch = toolbar.findViewById(R.id.search_in);
+        toolbar.removeView(itemSearch);
+        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_wordmean);
+        toolbar.setTitleMarginStart(margin);
+        toolbar.setTitle(word);
     return view;
     }
+
 }
