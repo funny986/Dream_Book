@@ -2,14 +2,11 @@ package com.dreambook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.view.*;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.content.SharedPreferences;
 import android.widget.*;
@@ -18,12 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -37,7 +32,7 @@ import java.util.Objects;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.dreambook.MainActivity.*;
 
-public class NotesFragment extends Fragment implements MoveAddSearchItem {
+public class NotesFragment extends Fragment implements MoveAddSearchItem, View.OnClickListener {
 
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
@@ -47,7 +42,6 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
     public BottomNavigationView bottomNavigation;
 
     int checkBoxUse;
-    private boolean isSearchOpen;
 
     public SearchView getSearchView() {
         return this.searchView;
@@ -59,7 +53,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
 
     public SearchView searchView;
     public Drawable drawable;
-    public MenuItem item, keyboard, sort;
+    public MenuItem item, sort;
     public Toolbar toolbar;
     Activity activity;
     SharedPreferences preferences;
@@ -76,6 +70,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
                 .getInt(AUTOR_GENDER, 0);
         bottomNavigation.setVisibility(View.VISIBLE);
         moveAdd(toolbar, getSearchView());
+        hideSoftInput();
     }
 
     @Override
@@ -103,30 +98,12 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
         }
     }
 
-    private void showSoftKeyboard(boolean visible) {
-        final InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (visible) {
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        } else {
-            View view = getActivity().getCurrentFocus();
-            if (view == null) {
-                view = searchView;
-            }
-            if (view != null) {
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-        }
-    }
-
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
         item = menu.findItem(R.id.save_note);
         item.setVisible(false);
-//        keyboard = menu.findItem(R.id.keyboard_cancel);
-//        keyboard.setVisible(false);
         sort = menu.findItem(R.id.sorting);
         checkBoxUse = preferences.getInt(BOX_STATE, 0);
         switch (checkBoxUse) {
@@ -156,20 +133,14 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
         searchView.setBackground(drawable);
         searchView.setIconifiedByDefault(false);
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_hint));
-        Drawable iconOpenSearch = ContextCompat.getDrawable(getContext(), R.drawable.ic_search_24);
-        Drawable iconCloseSearch = ContextCompat.getDrawable(getContext(), R.drawable.ic_clear_24);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchView.clearFocus();
                View view = Objects.requireNonNull(getActivity()).getCurrentFocus();
                 if (view != null) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    hideSoftInput();
                 }
-
-//                sort.setVisible(true);
-//                keyboard.setVisible(false);
                 return true;
             }
 
@@ -185,14 +156,27 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
                 }
                 searchList = tempString;
                 adapter.setmData(searchList, getParentFragment());
-//                sort.setVisible(false);
-//                keyboard.setVisible(true);
-
                 return true;
             }
         });
-        searchView.onWindowFocusChanged(true);
+        searchView.setSubmitButtonEnabled(true);
+        final int searchViewId = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_go_btn", null, null);
+        ImageView searchIcon = searchView.findViewById(searchViewId);
+//        searchIcon.setImageResource(android.R.drawable.ic_menu_search);
+         final int searchViewId2 = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_close_btn", null, null);
+        ImageView searchIconClose = searchView.findViewById(searchViewId2);
+        searchIconClose.setOnClickListener(this);
+        searchIcon.setOnClickListener(this);
    }
+
+    @Override
+    public void onClick(View v) {
+        searchView.clearFocus();
+        searchView.setQuery("", true);
+        hideSoftInput();
+    }
 
     @Override
     public void onPrepareOptionsMenu(@NonNull @NotNull Menu menu) {
@@ -214,7 +198,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
         searchView.setQuery("", true);
         searchView.clearFocus();
-        showSoftKeyboard(false);
+        hideSoftInput();
         switch (item.getItemId()) {
             case R.id.id_sort_name:
                 item.setChecked(!item.isChecked());
@@ -253,6 +237,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
     public void delItemSearch(@NotNull Toolbar toolbar, View view) {
         toolbar.removeView(view);
     }
+
 
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -332,9 +317,9 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem {
         });
     }
 
-    public boolean hideSoftInput() {
+    public void hideSoftInput() {
         InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        return imm.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
     }
 }

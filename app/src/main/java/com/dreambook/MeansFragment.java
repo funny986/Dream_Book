@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -51,7 +50,6 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public View mainView, item;
     public SearchView searchView;
     public Drawable drawable;
-    public AppBarLayout appBarLayout;
     private List<Words> searchList, wordList;
     private List<String> list;
     private LinearLayoutManager layoutManager;
@@ -103,7 +101,8 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull @NotNull View view,
+                              @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -185,8 +184,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         searchView.clearFocus();
         View view = Objects.requireNonNull(getActivity()).getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+           hideSoftInput();
         }
         return false;
     }
@@ -221,6 +219,35 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         searchView.setBackground(drawable);
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(true);
+        final int searchViewId = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_go_btn", null, null);
+        ImageView searchIcon = searchView.findViewById(searchViewId);
+//        searchIcon.setImageResource(android.R.drawable.ic_menu_search);
+        final int searchViewId2 = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_close_btn", null, null);
+        ImageView searchIconClose = searchView.findViewById(searchViewId2);
+        searchIconClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.clearFocus();
+                searchView.setQuery("", true);
+                hideSoftInput();
+            }
+        });
+        searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.clearFocus();
+                hideSoftInput();
+            }
+        });
+    }
+
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
     }
 
     @Override
@@ -269,4 +296,5 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public void delItemSearch(Toolbar toolbar, View view) {
 
     }
+
 }
