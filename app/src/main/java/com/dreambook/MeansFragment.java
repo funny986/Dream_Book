@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
@@ -35,27 +36,27 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','т','у'
                             ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //27
 
-    private RecyclerView recyclerView;
-    @SuppressLint("StaticFieldLeak")
-    private RecycleViewAdptr adapter;
-    private Toolbar toolbar;
-    private MenuItem menuItem;
     private int hrl;
     private int min;
-    private String tag;
-    private TextView[] simbol;
+    private int firstVisiblePosition;
+    private int lastCompleteVisiblePosition;
+    private int genderForNote;
     private final ArrayList<Character> letter = new ArrayList<>(27);
+    boolean skipMark = false;
 
+    private InputMethodManager imm;
     public Activity activity;
     public View mainView, item;
     public SearchView searchView;
     public Drawable drawable;
     private List<Words> searchList, wordList;
-    private List<String> list;
     private LinearLayoutManager layoutManager;
+    private RecyclerView recyclerView;
 
-    int firstVisiblePosition, items, lastCompleteVisiblePosition;
-    public int genderForNote;
+    @SuppressLint("StaticFieldLeak")
+    private RecycleViewAdptr adapter;
+    private Toolbar toolbar;
+    private TextView[] simbol;
 
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
@@ -78,7 +79,11 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             moveAdd(toolbar, item);
         }
         catch (IllegalArgumentException | IllegalStateException ignored){};
-    }
+        skipMark = false;
+        setCheckVisibleChar('а', 'а');
+        imm = (InputMethodManager) requireActivity()
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        }
 
     @Override
     public void onAttach(Context context){
@@ -121,13 +126,13 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         hrl =  bottomNavigationView.getHeight(); //196
          min = getScreenHeight() - hrl- tool;//2516 // 2320 минус тулбар
          float summ2 = (float) min / ALPHABET.length;//80
-         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 6.2f;
+         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 7.1f;
          LinearLayout.LayoutParams params =
                  new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                  LinearLayout.LayoutParams.WRAP_CONTENT);
         simbol = new TextView[ALPHABET.length];
         for (int i = 0; i < ALPHABET.length; i++) {
-            tag = String.valueOf(ALPHABET[i]);
+            String tag = String.valueOf(ALPHABET[i]);
             simbol[i] = new TextView(getContext());
             simbol[i].setId(View.generateViewId());
             simbol[i].setText(tag);
@@ -142,6 +147,8 @@ public class MeansFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(@NotNull View view) {
+        searchView.clearFocus();
+        searchView.setQuery("", true);
         char click = view.getTag().toString().charAt(0);
         boolean exept = false;
         if (click == 'и') {
@@ -153,11 +160,15 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             if (words.getTableName() == click) break;
             position++;
         }
-        items = lastCompleteVisiblePosition - firstVisiblePosition;
+        int items = lastCompleteVisiblePosition - firstVisiblePosition;
         if (exept){
             exept = false;
             position -=2;
         }
+            hideSoftInput();
+            skipMark = false;
+            setCheckVisibleChar(adapter.mData.get(firstVisiblePosition).getTableName(),
+                    adapter.mData.get(lastCompleteVisiblePosition).getTableName());
         if (lastCompleteVisiblePosition < position) {
             recyclerView.scrollToPosition(position - items);
             position += items;
@@ -172,10 +183,15 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         int strt = letter.indexOf(firstLetter);
         int end = letter.indexOf(lastLetter);
         for (int j = 0; j < simbol.length; j++) {
-            if (j >= strt && j <= end)
-                simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.CheckAlph));
-            else
+            if (!skipMark) {
+                if (j >= strt && j <= end)
+                    simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.CheckAlph));
+                else
+                    simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navUnChecked));
+            }
+            else {
                 simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navUnChecked));
+            }
         }
     }
 
@@ -186,6 +202,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         if (view != null) {
            hideSoftInput();
         }
+        skipMark = false;
         return false;
     }
 
@@ -193,6 +210,8 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public boolean onQueryTextChange(String newText) {
         List<Words> tempString = new ArrayList<>();
         searchList.clear();
+        skipMark = true;
+        setCheckVisibleChar('а', 'а');
         for (Words tempCont : wordList) {
             String temp = tempCont.getWord();
             if (temp.toLowerCase().contains(newText.toLowerCase())) {
@@ -209,7 +228,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         super.onCreateOptionsMenu(menu, inflater);
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
         searchList = new ArrayList<>();
-        menuItem = menu.findItem(R.id.save_note);
+        MenuItem menuItem = menu.findItem(R.id.save_note);
         menuItem.setVisible(false);
         menuItem = menu.findItem(R.id.sorting);
         menuItem.setVisible(false);
@@ -219,34 +238,36 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         searchView.setBackground(drawable);
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
-        searchView.setSubmitButtonEnabled(true);
-        final int searchViewId = searchView.getContext().getResources()
-                .getIdentifier("android:id/search_go_btn", null, null);
-        ImageView searchIcon = searchView.findViewById(searchViewId);
-//        searchIcon.setImageResource(android.R.drawable.ic_menu_search);
         final int searchViewId2 = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_close_btn", null, null);
-        ImageView searchIconClose = searchView.findViewById(searchViewId2);
-        searchIconClose.setOnClickListener(new View.OnClickListener() {
+        ImageView searchIconClear = searchView.findViewById(searchViewId2);
+        searchIconClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 searchView.clearFocus();
                 searchView.setQuery("", true);
                 hideSoftInput();
+                skipMark =false;
+                setCheckVisibleChar('а', 'а');
             }
         });
-        searchIcon.setOnClickListener(new View.OnClickListener() {
+        final int searchEditId = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        EditText searchEdit = searchView.findViewById(searchEditId);
+        searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                searchView.clearFocus();
-                hideSoftInput();
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchView.clearFocus();
+                    hideSoftInput();
+                    return true;
+                }
+                return false;
             }
         });
     }
 
     public void hideSoftInput() {
-        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-                .getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
     }
 
@@ -294,7 +315,5 @@ public class MeansFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void delItemSearch(Toolbar toolbar, View view) {
-
     }
-
 }

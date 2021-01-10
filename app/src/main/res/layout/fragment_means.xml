@@ -4,6 +4,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_down"
         xmlns:tools="http://schemas.android.com/tools"
+        android:focusableInTouchMode="true"
         tools:context=".MeansFragment"
         android:id="@+id/fragment_means"
         android:orientation="horizontal"

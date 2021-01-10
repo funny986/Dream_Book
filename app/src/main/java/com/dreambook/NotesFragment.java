@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.content.SharedPreferences;
 import android.widget.*;
@@ -14,7 +15,6 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.dreambook.MainActivity.*;
 
 public class NotesFragment extends Fragment implements MoveAddSearchItem, View.OnClickListener {
@@ -70,7 +69,6 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                 .getInt(AUTOR_GENDER, 0);
         bottomNavigation.setVisibility(View.VISIBLE);
         moveAdd(toolbar, getSearchView());
-        hideSoftInput();
     }
 
     @Override
@@ -159,17 +157,25 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                 return true;
             }
         });
-        searchView.setSubmitButtonEnabled(true);
-        final int searchViewId = searchView.getContext().getResources()
-                .getIdentifier("android:id/search_go_btn", null, null);
-        ImageView searchIcon = searchView.findViewById(searchViewId);
-//        searchIcon.setImageResource(android.R.drawable.ic_menu_search);
          final int searchViewId2 = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_close_btn", null, null);
         ImageView searchIconClose = searchView.findViewById(searchViewId2);
         searchIconClose.setOnClickListener(this);
-        searchIcon.setOnClickListener(this);
-   }
+        final int searchEditId = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        EditText searchEdit = searchView.findViewById(searchEditId);
+        searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchView.clearFocus();
+                    hideSoftInput();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {
@@ -237,8 +243,6 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
     public void delItemSearch(@NotNull Toolbar toolbar, View view) {
         toolbar.removeView(view);
     }
-
-
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
 

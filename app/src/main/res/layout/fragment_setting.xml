@@ -10,5 +10,9 @@
         android:orientation="horizontal"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-
+    <fragment
+            android:id="@+id/settingsFragment"
+            class="com.dreambook.SettingsFragment$PreferenceFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 </LinearLayout>

@@ -74,6 +74,9 @@
                 android:name="noteID"
                 app:argType="integer"/>
 
+        <action android:id="@+id/action_Interpretation_to_Wordmean"
+                app:destination="@id/nav_word"/>
+
     </fragment>
 
     <fragment

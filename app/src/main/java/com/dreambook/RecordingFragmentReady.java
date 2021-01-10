@@ -41,7 +41,6 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         itemSearch = MainActivity.itemSearch;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -125,4 +124,5 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         catch (IllegalStateException | IllegalArgumentException ignore){};
 
     }
+
 }

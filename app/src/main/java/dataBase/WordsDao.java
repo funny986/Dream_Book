@@ -2,6 +2,7 @@ package dataBase;
 
 import androidx.room.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,12 +21,11 @@ public interface WordsDao {
     @Query("SELECT * FROM words WHERE table_name = :tableName")
     List<Words> getWordsListTable(char tableName);
 
-
     @Query("SELECT * FROM words WHERE word = :word")
     Words getWordMean(String word);
 
-    @Query("SELECT * FROM words WHERE type = :type")
-    List<Words> getWordsByType(int type);
+    @Query("SELECT word FROM words WHERE type = :type AND gender = :gender")
+    List<String> getWordsByType(int type, int gender);
 
     @Query("SELECT mean FROM words WHERE word = :word")
     String getMean(String word);

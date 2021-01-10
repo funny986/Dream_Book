@@ -40,7 +40,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:id="@+id/name_note"
-                        android:inputType="textNoSuggestions"
+                        android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:hint="@string/name_note"
                         android:textAppearance="@style/TextAppearanceEditText"
@@ -105,8 +105,8 @@
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText android:layout_width="match_parent"
-                  android:layout_height="516dp"
+        <EditText android:layout_width="389dp"
+                  android:layout_height="549dp"
                   android:id="@+id/record_et"
                   android:gravity="start"
                   android:layout_marginTop="30dp"
@@ -116,7 +116,7 @@
                   android:textAppearance="@style/TextAppearanceEditText"
                   android:textSize="@dimen/textSize"
                   android:textColor="@color/colorEditMean"
-                  android:inputType="textCapSentences|textMultiLine"
+                  android:inputType="textCapSentences|textMultiLine|textPersonName|textCapWords"
         />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

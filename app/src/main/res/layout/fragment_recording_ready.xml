@@ -89,8 +89,8 @@
 
     </LinearLayout>
 
-    <LinearLayout android:layout_width="413dp"
-                  android:layout_height="633dp"
+    <LinearLayout android:layout_width="370dp"
+                  android:layout_height="538dp"
                   android:orientation="vertical"
                   android:id="@+id/linearLayout2"
                   app:layout_constraintTop_toBottomOf="@+id/linearLayout"
@@ -99,14 +99,16 @@
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  style="@style/RecordStyle"
+        <TextView android:layout_width="340dp"
+                  android:layout_height="461dp"
                   android:id="@+id/record_tv"
                   android:gravity="start"
                   android:layout_marginTop="30dp"
                   android:background="@null"
                   android:layout_gravity="center_horizontal"
+                  android:textAppearance="@style/TextAppearanceEditText"
+                  android:textSize="@dimen/textSize"
+                  android:textColor="@color/primaryDarkColor"
                   android:hint="Содержание"
         />
     </LinearLayout>

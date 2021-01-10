@@ -1,10 +1,14 @@
 package com.dreambook;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.view.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements GenderSet, MoveAd
     public BottomNavigationView bottomNavigationView;
     public FloatingActionButton fab;
     public   Toolbar toolbar;
+    @SuppressLint("StaticFieldLeak")
     public static View itemSearch;
 
     public View getItemSearch() {
@@ -49,9 +54,27 @@ public class MainActivity extends AppCompatActivity implements GenderSet, MoveAd
     }
 
     public void setItemSearch(View itemSearch) {
-        this.itemSearch = itemSearch;
+        MainActivity.itemSearch = itemSearch;
     }
 
+    @Override
+    public boolean dispatchTouchEvent(@NonNull MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                v.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveAdd(toolbar, getItemSearch());
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outSt) {
@@ -71,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements GenderSet, MoveAd
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
     }
+
     protected void onResume(){
         super.onResume();
         SharedPreferences.Editor editor = preferences.edit();
@@ -155,12 +179,6 @@ public class MainActivity extends AppCompatActivity implements GenderSet, MoveAd
     }
 
     public static BottomNavigationView.OnNavigationItemSelectedListener listnr;
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        moveAdd(toolbar, getItemSearch());
-    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

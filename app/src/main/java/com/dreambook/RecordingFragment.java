@@ -1,7 +1,9 @@
 package com.dreambook;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
@@ -34,6 +36,15 @@ public class RecordingFragment extends Fragment {
         super.onResume();
         int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_recording);
         toolbar.setTitleMarginStart(margin);
+        nameNote.requestFocus();
+        setSoftInput();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        nameNote.clearFocus();
+        hideSoftInput();
     }
 
     @Override
@@ -93,5 +104,17 @@ public class RecordingFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view,
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
+    }
+
+    public void setSoftInput(){
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+               imm.toggleSoftInput( InputMethodManager.SHOW_FORCED, 0 );
     }
 }

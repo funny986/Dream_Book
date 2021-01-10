@@ -6,7 +6,9 @@ public class Base {
 
     public static final int ROOT_OF_WORD = 0,
                             FULL_WORD = 1,
-                            EXEPT_WORD = 2;
+                            EXEPT_WORD = 2,
+                            DECLENCION_WORD = 3,
+                            DECLENCION_EXEPT_WORD = 4;
 
     public static final int GENDER_GENERAL = 0,
                             GENDER_MALE = 1,
@@ -16,7 +18,9 @@ public class Base {
         int i = 1;
 ////////////////       A           /////////////////
 
-Words words = new Words(i++, FULL_WORD,  GENDER_GENERAL,
+Words words = new Words(i++,
+        FULL_WORD,
+        GENDER_GENERAL,
         'а', "аборт",
         "Если Вам приснилось, что Вы сделали аборт, " +
         "то в реальной жизни Вы столкнулись с ситуацией, которую не можете принять. В то же время, " +
@@ -652,7 +656,7 @@ dataBase.wordsDao().insert(words);
                 "Болты во сне означают, что на Вашем пути возникнут ужасные препятствия. Если болты старые или " +
                         "неисправные, то почти все Ваши ожидания не сбудутся."));
 
-        dataBase.wordsDao().insert(new Words(i++, EXEPT_WORD, GENDER_GENERAL,
+        dataBase.wordsDao().insert(new Words(i++, FULL_WORD, GENDER_GENERAL,
                 'б', "боль",
                 "Чувствовать во сне, что Вы страдаете от боли, означает, что Ваш бизнес часто хромает, а выгоду от " +
                         "ваших идей получает кто-то другой. Если молодая женщина во сне чувствует, что у нее болит сердце," +
