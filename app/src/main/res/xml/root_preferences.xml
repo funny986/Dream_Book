@@ -3,8 +3,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-            
-            app:title="@string/messages_header">
+              app:title="@string/messages_header">
+
 
 <!--        <EditTextPreference-->
 <!--                app:key="signature"-->
@@ -17,16 +17,21 @@
                 app:entries="@array/gender_style"
                 app:entryValues="@array/gender_style"
                 app:defaultValue= "0"
-                android:dialogTitle="Выберите пол:"
+                android:dialogTitle="Укажите пол:"
                 app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
-<!--    <PreferenceCategory-->
-<!--            app:title="@string/sync_header">-->
+    <PreferenceCategory
+            app:title="@string/sync_header">
 
-<!--        <SwitchPreferenceCompat-->
-<!--                app:key="sync"-->
-<!--                app:title="@string/sync_title"/>-->
+        <SwitchPreferenceCompat
+                app:key="darktheme"
+                android:checked="false"
+                android:summaryOff="Темная тема выкл."
+                android:summaryOn="Темная тема вкл."
+                android:switchTextOff="Выкл."
+                android:switchTextOn="Вкл."
+    app:title="@string/sync_title"/>
 
 <!--        <SwitchPreferenceCompat-->
 <!--                app:key="attachment"-->
@@ -35,7 +40,7 @@
 <!--                app:summaryOff="@string/attachment_summary_off"-->
 <!--                app:dependency="sync"/>-->
 
-<!--    </PreferenceCategory>-->
+    </PreferenceCategory>
 
 </PreferenceScreen>
 

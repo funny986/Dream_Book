@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.collection.ArrayMap;
 import androidx.collection.SparseArrayCompat;
-import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -128,12 +126,9 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
 
     public ArrayList<String> listFromNote;
 
-//    public ArrayMap<String, Boolean> tempListMatches;
-
     public ArrayMap<Integer,String> exeptFindFromText; // string - пара слов
     public ArrayMap<Integer, String> fullFindFromText;
 
-    public SparseArrayCompat<String> buildText;
     public SparseArrayCompat<String> wordslink;
 
     private View itemsearch;
@@ -169,6 +164,7 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
     public void onDestroyView() {
         super.onDestroyView();
         moveAdd(toolbar, itemsearch);
+
     }
 
     @Override
@@ -194,14 +190,14 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
     public void moveAdd(@NotNull Toolbar toolbar, View view) {
         try {
             toolbar.addView(view);
-        } catch (IllegalStateException | IllegalArgumentException ignore) {};
+        } catch (IllegalStateException | IllegalArgumentException ignore) {}
     }
 
     @Override
     public void delItemSearch(@NotNull Toolbar toolbar, View view) {
         try {
             toolbar.removeView(view);
-        } catch (IllegalStateException | IllegalArgumentException ignore) {};
+        } catch (IllegalStateException | IllegalArgumentException ignore) {}
     }
 
     @Override
@@ -212,6 +208,66 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
         fab.setVisibility(View.INVISIBLE);
         toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
         itemsearch = toolbar.findViewById(R.id.search_in);
+    }
+
+    public void createTextClick(TextView interpritate){
+        ArrayList<String> stringText = new ArrayList<>(listFromNote);
+        wordslink = new SparseArrayCompat<>();
+        try {
+            setExept = findExept.get().keySet();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            setFull = findFull.get().keySet();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < textsize; i++){
+            String value = stringText.get(i);
+            if (setExept != null && setExept.contains(i)){
+                String combination = exeptFindFromText.get(i);
+                wordslink.put(i, combination);
+                i++;
+            }
+            else {
+                if (setFull != null && setFull.contains(i)){
+                    wordslink.put(i, fullFindFromText.get(i));
+                }
+            }
+        }
+        Linker linker = new Linker(interpritate);
+        ArrayList<String> listOfLinks = new ArrayList<>();
+        for (int i = 0; i < textsize; i++){
+            if (wordslink.get(i) != null)
+                listOfLinks.add(wordslink.get(i));
+        }
+        linker.addStrings(listOfLinks);
+        linker.setAllLinkColors(Color.BLUE);
+        linker.setAllLinkUnderline(false);
+        linker.setListener(new LinkerListener() {
+            @Override
+            public void onLinkClick(String charSequenceClicked) {
+                InterpretationFragmentDirections.ActionInterpretationToWordmean action =
+                        InterpretationFragmentDirections.actionInterpretationToWordmean(charSequenceClicked);
+                NavHostFragment.findNavController(InterpretationFragment.this)
+                        .navigate(action);
+                Toast.makeText(getContext(), charSequenceClicked, Toast.LENGTH_SHORT).show();
+            }
+        });
+        linker.update();
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_interpretation, container, false);
+        TextView interpritate = view.findViewById(R.id.interpretation_tv);
+
         int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_interpretation);
         toolbar.setTitleMarginStart(margin);
         if (getArguments() != null) {
@@ -234,10 +290,10 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
         Matcher matcher = pattern.matcher(note);
         while (matcher.find()) listFromNote.add(note.substring(matcher.start(), matcher.end()));
         textsize = listFromNote.size();
+        interpritate.setText(note);
         /*    главный блок поиска сравнений слов */
         exeptFindFromText = new ArrayMap<>();
         fullFindFromText = new ArrayMap<>();
-
         findExept = executor.submit(new Callable<ArrayMap<Integer, String>>() {
             @Override
             public ArrayMap<Integer, String> call() throws Exception {
@@ -264,22 +320,33 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
                 return exeptFindFromText;
             }
         });
-
         /* Поиск совпадений слов по полному совпадению */
         findFull = executor.submit(new Callable<ArrayMap<Integer, String>>() {
             @Override
             public ArrayMap<Integer, String> call() throws Exception {
                 ArrayList<String> tempListFromNote = new ArrayList<>(listFromNote);
-                ArrayMap<Integer, String> listExept = new ArrayMap<>(findExept.get());
-                Set set = listExept.keySet();
-                for (int i = 0; i < textsize; i++){
-                    String value = tempListFromNote.get(i);
-                    int l = value.toCharArray().length;
-                    if (l > 2) {
-                        if (set.contains(i)) {
-                            i += 1;
+                if (exeptFindFromText.size() != 0) {
+                    ArrayMap<Integer, String> listExept = new ArrayMap<>(exeptFindFromText);
+                    Set set = listExept.keySet();
+                    for (int i = 0; i < textsize; i++) {
+                        String value = tempListFromNote.get(i);
+                        int l = value.toCharArray().length;
+                        if (l > 2) {
+                            if (set.contains(i)) {
+                                i += 1;
+                            } else {
+                                if (fullWordList.contains(value)) {
+                                    fullFindFromText.put(i, value);
+                                }
+                            }
                         }
-                        else {
+                    }
+                }
+                else {
+                    for (int i = 0; i < textsize; i++) {
+                        String value = tempListFromNote.get(i);
+                        int l = value.toCharArray().length;
+                        if (l > 2) {
                             if (fullWordList.contains(value)) {
                                 fullFindFromText.put(i, value);
                             }
@@ -290,59 +357,8 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
             }
         });
         executor.shutdown();
-
         /*  Конец  блока поиска сравнений слов */
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_interpretation, container, false);
-        TextView interpritate = view.findViewById(R.id.interpretation_tv);
-        ArrayList<String> stringText = new ArrayList<>(listFromNote);
-        wordslink = new SparseArrayCompat<>();
-        try {
-            setExept = findExept.get().keySet();
-            setFull = findFull.get().keySet();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-                for (int i = 0; i < textsize; i++){
-                    String value = stringText.get(i);
-                    if (setExept != null && setExept.contains(i)){
-                        String combination = exeptFindFromText.get(i);
-                        wordslink.put(i, combination);
-                        i++;
-                    }
-                    else {
-                        if (setFull != null && setFull.contains(i)){
-                            wordslink.put(i, fullFindFromText.get(i));
-                        }
-                    }
-                }
-        interpritate.setText(note);
-        Linker linker = new Linker(interpritate);
-        ArrayList<String> listOfLinks = new ArrayList<>();
-        for (int i = 0; i < textsize; i++){
-            if (wordslink.get(i) != null)
-                listOfLinks.add(wordslink.get(i));
-        }
-        linker.addStrings(listOfLinks);
-        linker.setAllLinkColors(Color.BLUE);
-        linker.setAllLinkUnderline(false);
-        linker.setListener(new LinkerListener() {
-            @Override
-            public void onLinkClick(String charSequenceClicked) {
-                InterpretationFragmentDirections.ActionInterpretationToWordmean action =
-                        InterpretationFragmentDirections.actionInterpretationToWordmean(charSequenceClicked);
-                NavHostFragment.findNavController(InterpretationFragment.this)
-                        .navigate(action);
-                Toast.makeText(getContext(), charSequenceClicked, Toast.LENGTH_SHORT).show();
-            }
-        });
-        linker.update();
+        createTextClick(interpritate);
         return view;
     }
 

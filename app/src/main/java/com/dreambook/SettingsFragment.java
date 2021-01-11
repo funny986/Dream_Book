@@ -2,6 +2,7 @@ package com.dreambook;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -11,15 +12,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.preference.ListPreference;
-import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.*;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import static com.dreambook.MainActivity.AUTOR_GENDER;
+import static android.content.Context.MODE_PRIVATE;
+import static com.dreambook.MainActivity.*;
 
 public class SettingsFragment extends Fragment {
 
@@ -29,18 +30,26 @@ public class SettingsFragment extends Fragment {
     }
 
     public static class PreferenceFragment extends PreferenceFragmentCompat implements
-            SharedPreferences.OnSharedPreferenceChangeListener, GenderSet, MoveAddSearchItem {
+            SharedPreferences.OnSharedPreferenceChangeListener, PrefSets, MoveAddSearchItem {
 
         public View itemSearch;
         public Toolbar toolbar;
 
         @Override
         public void genderSet(int gender) {
+                    }
+        @Override
+        public void themeSet(boolean theme) {
         }
 
         @Override
         public int getAutorGender() {
             return 0;
+        }
+
+        @Override
+        public boolean getCustomTheme() {
+            return false;
         }
 
         @Override
@@ -58,7 +67,6 @@ public class SettingsFragment extends Fragment {
                 moveAdd(toolbar, itemSearch);
             } catch (IllegalArgumentException ignored) {
             }
-            ;
         }
 
         @Override
@@ -70,7 +78,6 @@ public class SettingsFragment extends Fragment {
                 moveAdd(toolbar, itemSearch);
             } catch (IllegalArgumentException ignored) {
             }
-            ;
         }
 
         @Override
@@ -92,7 +99,7 @@ public class SettingsFragment extends Fragment {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             ListPreference listPreference = getPreferenceScreen().findPreference(AUTOR_GENDER);
-            int ind = ((GenderSet) activity).getAutorGender();
+            int ind = ((PrefSets) activity).getAutorGender();
             if (listPreference != null) {
                 listPreference.setValueIndex(ind);
             }
@@ -115,11 +122,20 @@ public class SettingsFragment extends Fragment {
                 String[] strings = res.getStringArray(R.array.gender_style);
                 String g = sharedPreferences.getString(key, strings[0]);
                 if (g.equals(strings[0]))
-                    ((GenderSet) activity).genderSet(0);
+                    ((PrefSets) activity).genderSet(0);
                 if (g.equals(strings[1]))
-                    ((GenderSet) activity).genderSet(1);
+                    ((PrefSets) activity).genderSet(1);
                 if (g.equals(strings[2]))
-                    ((GenderSet) activity).genderSet(2);
+                    ((PrefSets) activity).genderSet(2);
+            }
+            if (key.equals("darktheme")){
+                SwitchPreferenceCompat switchPreference = getPreferenceScreen().findPreference("darktheme");
+                assert switchPreference != null;
+                boolean switchDark = switchPreference.isChecked();
+                    ((PrefSets) activity).themeSet(switchDark);
+                    activity.finish();
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                    activity.startActivity(intent);
             }
         }
 

@@ -293,7 +293,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
-        bottomNavigation.getMenu()
+                bottomNavigation.getMenu()
                 .getItem(0)
                 .setIcon(R.drawable.ic_crescent)
                 .setTitle(R.string.my_dreams);
