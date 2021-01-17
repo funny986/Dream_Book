@@ -82,12 +82,19 @@
                        android:layout_height="wrap_content"
                        style="@style/IcoRecordStyle"
                        android:src="@drawable/ic_label"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/label_tv"
-                      style="@style/RecordStyle"
-                      />
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:id="@+id/label_et"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:hint="Метки"
+                    android:textAppearance="@style/TextAppearanceEditText"
+                    android:textColor="@color/colorEditMean"
+                    android:layout_marginStart="5dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:textSize="@dimen/textSize_date"
+                    tools:ignore="SpUsage"/>
 
 
         </LinearLayout>

@@ -151,6 +151,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                 searchList.clear();
                 for (Notes tempCont : noteList) {
                     String temp = tempCont.getNameNote();
+                    temp += tempCont.getLabelNote();
                     if (temp.toLowerCase().contains(searchText.toLowerCase())) {
                         tempString.add(tempCont);
                     }

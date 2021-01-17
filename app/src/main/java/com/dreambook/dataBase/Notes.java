@@ -7,11 +7,12 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "notes")
 public class Notes {
 
-        public Notes(int id, String name, String note, String date){
+        public Notes(int id, String name, String note, String date, String label){
             this.id = id;
             this.name = name;
             this.note = note;
             this.date = date;
+            this.label = label;
         }
 
         @PrimaryKey
@@ -20,6 +21,9 @@ public class Notes {
 
     @ColumnInfo(name = "name")
     String name;
+
+    @ColumnInfo(name = "label")
+    String label;
 
         @ColumnInfo(name = "note")
         String note;
@@ -33,6 +37,8 @@ public class Notes {
         }
 
     public String getNameNote(){return name;}
+
+    public String getLabelNote(){return label;}
 
         public String getNote(){return note;}
     public String getDate(){return date;}

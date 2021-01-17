@@ -49,7 +49,7 @@
     <dimen name="text_margin">15dp</dimen>
     <dimen name="txt_size">20dp</dimen>
     <dimen name="height_item_word">27dp</dimen>
-    <dimen name="height_item_note">40dp</dimen>
+    <dimen name="height_item_note">80dp</dimen>
 
     <!-- Доп. Параметры textView -->
 

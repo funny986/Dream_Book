@@ -101,8 +101,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         String name = mData.get(position).getNameNote();
         String date = mData.get(position).getDate();
+        String label = mData.get(position).getLabelNote();
             holder.noteName.setText(name);
             holder.noteDate.setText(date);
+            holder.noteLabels.setText(label);
             holder.myClickListener.setClickable(true);
             holder.myClickListener.setPosition(position);
         }
@@ -116,7 +118,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     protected class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener
              {
 
-        private final TextView noteName, noteDate;
+        private final TextView noteName, noteDate, noteLabels;
         MyClickListener myClickListener;
         View v1;
 
@@ -124,6 +126,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             super(itemView);
             noteName = itemView.findViewById(R.id.card_note_name);
             noteDate = itemView.findViewById(R.id.card_note_date);
+            noteLabels = itemView.findViewById(R.id.card_note_label);
             myClickListener = new MyClickListener();
             itemView.setOnClickListener(myClickListener);
         }

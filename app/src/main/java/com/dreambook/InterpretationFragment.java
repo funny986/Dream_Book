@@ -120,7 +120,6 @@ public class InterpretationFragment extends Fragment implements MoveAddSearchIte
                     .getNoteById(id)
                     .getNameNote();
             toolbar.setTitle(title);
-//            Interpretation interpretation = new Interpretation(interpritate, note, gender);
            Linker linker = new Interpretation(interpritate, note, gender).getLinker();
            linker.setListener(new LinkerListener() {
                @Override

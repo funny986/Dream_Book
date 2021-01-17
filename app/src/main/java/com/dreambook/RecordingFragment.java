@@ -9,6 +9,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class RecordingFragment extends Fragment {
 
     private static final int RESULT_OK = 1;
     private View view;
-    private EditText nameNote, record;
+    private EditText nameNote, record, labels;
     private String dateStr;
     private Toolbar toolbar;
     private View itemSearch;
@@ -85,7 +86,8 @@ public class RecordingFragment extends Fragment {
                 RecordingFragmentDirections.actionRecordToReady(
                         nameNote.getText().toString(),
                         record.getText().toString(),
-                        dateStr);
+                        dateStr,
+                        labels.getText().toString());
                 NavHostFragment.findNavController(RecordingFragment.this)
                                 .navigate(action);
                 break;
@@ -119,6 +121,17 @@ public class RecordingFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_recording, container, false);
         nameNote = view.findViewById(R.id.name_note);
         record = view.findViewById(R.id.record_et);
+        labels = view.findViewById(R.id.label_et);
+        nameNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+                           @Override
+                           public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                               if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                                   record.requestFocus();
+                                   return true;
+                               }
+                               return false;
+                           }
+                       });
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         dateStr = df.format(date);

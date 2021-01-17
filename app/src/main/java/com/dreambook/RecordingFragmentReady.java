@@ -104,10 +104,14 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         View view = inflater.inflate(R.layout.fragment_recording_ready, container, false);
         TextView nameNote = view.findViewById(R.id.name_note_tv);
         TextView record = view.findViewById(R.id.record_tv);
+        TextView label = view.findViewById(R.id.label_tv);
         toolbar.setTitle("Сохранить");
         assert getArguments() != null;
         name = RecordingFragmentReadyArgs.fromBundle(getArguments()).getNameNote();
         noteOrigin = "  " +  RecordingFragmentReadyArgs.fromBundle(getArguments()).getNote();
+        label.setText(RecordingFragmentReadyArgs
+                    .fromBundle(getArguments())
+                    .getLabelNote());
         recNote = noteOrigin;
             if (name.equals("")) name = "Без названия";
             String dateStr = RecordingFragmentReadyArgs.fromBundle(getArguments()).getDateNote();
@@ -134,7 +138,7 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
             int n = list.size() - 1;
             id = list.get(n).getId() + 1;
         }
-        note = new Notes(id, name, noteOrigin, dateStr);
+        note = new Notes(id, name, noteOrigin, dateStr, label.getText().toString());
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
         bottomNavigation.setVisibility(View.INVISIBLE);
         return view;
