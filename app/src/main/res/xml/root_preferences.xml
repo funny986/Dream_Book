@@ -24,14 +24,14 @@
     <PreferenceCategory
             app:title="@string/sync_header">
 
-        <SwitchPreferenceCompat
-                app:key="darktheme"
-                android:checked="false"
-                android:summaryOff="Темная тема выкл."
-                android:summaryOn="Темная тема вкл."
-                android:switchTextOff="Выкл."
-                android:switchTextOn="Вкл."
-    app:title="@string/sync_title"/>
+<!--        <SwitchPreferenceCompat-->
+<!--                app:key="darktheme"-->
+<!--                android:checked="false"-->
+<!--                android:summaryOff="Темная тема выкл."-->
+<!--                android:summaryOn="Темная тема вкл."-->
+<!--                android:switchTextOff="Выкл."-->
+<!--                android:switchTextOn="Вкл."-->
+<!--    app:title="@string/sync_title"/>-->
 
 <!--        <SwitchPreferenceCompat-->
 <!--                app:key="attachment"-->

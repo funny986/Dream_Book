@@ -1,4 +1,4 @@
-package dataBase;
+package com.dreambook.dataBase;
 
 import android.app.Application;
 import androidx.room.Room;

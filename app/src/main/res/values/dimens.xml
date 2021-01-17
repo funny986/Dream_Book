@@ -3,8 +3,8 @@
 
     <!--    Tулбар -->
     <dimen name="marg_toolbar">80dp</dimen>
-    <dimen name="main_toolbar_width">380dp</dimen>
-    <dimen name="means_toolbar_width">380dp</dimen>
+    <dimen name="main_toolbar_width">335dp</dimen>
+    <dimen name="means_toolbar_width">335dp</dimen>
     <dimen name="toolbar_height">40dp</dimen>
     <dimen name="search_height">30dp</dimen>
     <dimen name="titleSise">20dp</dimen>
@@ -41,6 +41,9 @@
     <item name="shadowDx" type="integer">2</item>
     <item name="shadowDy" type="integer">2</item>
     <item name="shadowRadius" type="integer">4</item>
+
+    <dimen name="margindown_out_nav">45dp</dimen>
+
 
     <!-- Параметры текста толкования и записей. Ресайклер-->
     <dimen name="text_margin">15dp</dimen>

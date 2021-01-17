@@ -12,8 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import dataBase.Words;
-import org.jetbrains.annotations.NotNull;
+import com.dreambook.dataBase.Words;
 
 import java.util.List;
 

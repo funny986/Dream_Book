@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Dream Book</string>
     <string name="my_dreams">Мои сны</string>
-    <string name="dream_means">Значения</string>
+    <string name="dream_means">Толкование</string>
     <string name="setting">Настройки</string>
+    <string name="exit_to_app">Закрыть приложение</string>
+
 
     <!-- Фрагмент записи -->
     <string name="name_dream">Название:</string>
@@ -56,6 +58,7 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
     <string name="save">Сохранить</string>
     <string name="name_note">Введите название</string>
 </resources>

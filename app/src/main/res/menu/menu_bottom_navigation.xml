@@ -13,4 +13,10 @@
             android:id="@+id/action_setting"
             android:icon="@drawable/ic_settings_24"
             android:title="@string/setting" />
+
+    <item
+            android:id="@+id/action_exit"
+            android:icon="@drawable/ic_exit_to_app"
+            android:title="@string/exit_to_app" />
+
 </menu>

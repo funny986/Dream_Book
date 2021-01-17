@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import dataBase.Notes;
+import com.dreambook.dataBase.Notes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
 
     public SearchView searchView;
     public Drawable drawable;
-    public MenuItem item, sort;
+    public MenuItem item, sort, recVoice;
     public Toolbar toolbar;
     Activity activity;
     SharedPreferences preferences;
@@ -76,6 +76,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
         super.onPause();
         searchView.setQuery("", true);
         searchView.clearFocus();
+
     }
 
     @Override
@@ -102,6 +103,8 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
         item = menu.findItem(R.id.save_note);
         item.setVisible(false);
+        recVoice = menu.findItem(R.id.record_voice);
+        recVoice.setVisible(false);
         sort = menu.findItem(R.id.sorting);
         checkBoxUse = preferences.getInt(BOX_STATE, 0);
         switch (checkBoxUse) {
@@ -286,6 +289,8 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
             }
         });
         setHasOptionsMenu(true);
+//        hideSoftInput();
+
         return view;
     }
 
@@ -293,18 +298,18 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
-                bottomNavigation.getMenu()
-                .getItem(0)
-                .setIcon(R.drawable.ic_crescent)
-                .setTitle(R.string.my_dreams);
-        bottomNavigation.getMenu()
-                .getItem(1)
-                .setIcon(R.drawable.ic_book)
-                .setTitle(R.string.dream_means);
-        bottomNavigation.getMenu()
-                .getItem(2)
-                .setIcon(R.drawable.ic_settings_24)
-                .setTitle(R.string.setting);
+//                bottomNavigation.getMenu()
+//                .getItem(0)
+//                .setIcon(R.drawable.ic_crescent)
+//                .setTitle(R.string.my_dreams);
+//        bottomNavigation.getMenu()
+//                .getItem(1)
+//                .setIcon(R.drawable.ic_book)
+//                .setTitle(R.string.dream_means);
+//        bottomNavigation.getMenu()
+//                .getItem(2)
+//                .setIcon(R.drawable.ic_settings_24)
+//                .setTitle(R.string.setting);
         bottomNavigation.setOnNavigationItemSelectedListener(MainActivity.getListnr());
         final FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
@@ -314,6 +319,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
             public void onClick(View view) {
                 bottomNavigation.setVisibility(View.INVISIBLE);
                 item.setVisible(true);
+                recVoice.setVisible(true);
                 fab.setVisibility(View.INVISIBLE);
                 searchView.setVisibility(View.INVISIBLE);
                 NavHostFragment.findNavController(NotesFragment.this).navigate(R.id.nav_record);

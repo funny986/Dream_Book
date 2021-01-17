@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import dataBase.Notes;
+import com.dreambook.dataBase.Notes;
 
 import java.util.List;
 

@@ -1,9 +1,7 @@
-package dataBase;
-
+package com.dreambook.dataBase;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "words" )
@@ -42,8 +40,6 @@ public class Words {
     public int getId() {
         return id;
     }
-
-//    public int getTableID(){return tableID;}
 
     public char getTableName(){return tableName;}
 

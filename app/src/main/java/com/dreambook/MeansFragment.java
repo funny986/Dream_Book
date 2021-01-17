@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.*;
@@ -22,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import dataBase.Words;
+import com.dreambook.dataBase.Words;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -38,6 +39,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
 
     private int hrl;
     private int min;
+    private int widthsreen;
     private int firstVisiblePosition;
     private int lastCompleteVisiblePosition;
     private int genderForNote;
@@ -78,7 +80,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         try {
             moveAdd(toolbar, item);
         }
-        catch (IllegalArgumentException | IllegalStateException ignored){};
+        catch (IllegalArgumentException | IllegalStateException ignored){}
         skipMark = false;
         setCheckVisibleChar('а', 'а');
         imm = (InputMethodManager) requireActivity()
@@ -119,28 +121,42 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
-    private void alphabetPanel(@NotNull View view){
-         LinearLayout layout = view.findViewById(R.id.alphabet);
-         BottomNavigationView bottomNavigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
+    float heightSimbol;
+
+    private void alphabetPanel(@NotNull View view) {
+        LinearLayout layout = view.findViewById(R.id.alphabet);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        BottomNavigationView bottomNavigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
         int tool = toolbar.getHeight();////196
-        hrl =  bottomNavigationView.getHeight(); //196
-         min = getScreenHeight() - hrl- tool;//2516 // 2320 минус тулбар
-         float summ2 = (float) min / ALPHABET.length;//80
-         float heightDisplay = convertPixelsToDp(summ2, Objects.requireNonNull(getContext())) - 7.1f;
-         LinearLayout.LayoutParams params =
-                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                 LinearLayout.LayoutParams.WRAP_CONTENT);
+        hrl = bottomNavigationView.getHeight(); //196
+        int heightFull = Resources.getSystem().getDisplayMetrics().heightPixels;
+        min = heightFull - hrl - tool;//2516 // 2320 минус тулбар
+        widthsreen = Resources.getSystem().getDisplayMetrics().widthPixels;
+        float summ2 = (float) min / ALPHABET.length;//80
+        heightSimbol = convertPixelsToDp(summ2, Objects.requireNonNull(getContext()));
+        params.setMarginStart(20);
+        if (heightFull <= 1920)
+            heightSimbol -= 5.5f;
+        if (heightFull > 1920 && heightFull <= 2280) {
+            heightSimbol -= 6.6f;
+            params.setMarginStart(150);
+        }
+        if (heightFull > 2280 && heightFull <= 2880)
+            heightSimbol -= 7.1f;
+
         simbol = new TextView[ALPHABET.length];
         for (int i = 0; i < ALPHABET.length; i++) {
             String tag = String.valueOf(ALPHABET[i]);
             simbol[i] = new TextView(getContext());
             simbol[i].setId(View.generateViewId());
             simbol[i].setText(tag);
-            simbol[i].setTextSize(heightDisplay);
-            simbol[i].setLayoutParams(params);
+            simbol[i].setTextSize(heightSimbol);
             simbol[i].setTag(tag);
             simbol[i].setOnClickListener(this);
-            layout.addView(simbol[i]);
+            layout.addView(simbol[i], params);
             letter.add(ALPHABET[i]);
         }
     }
@@ -232,6 +248,8 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         menuItem.setVisible(false);
         menuItem = menu.findItem(R.id.sorting);
         menuItem.setVisible(false);
+        menuItem = menu.findItem(R.id.record_voice);
+        menuItem.setVisible(false);
         searchView = Objects.requireNonNull(getActivity()).findViewById(R.id.search_in);
         drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         moveAdd(toolbar, item);
@@ -310,7 +328,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             toolbar.setNavigationIcon(null);
             toolbar.setTitle(null);
         }
-        catch (IllegalStateException | IllegalArgumentException ignore){};
+        catch (IllegalStateException | IllegalArgumentException ignore){}
     }
 
     @Override

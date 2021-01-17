@@ -2,7 +2,6 @@ package com.dreambook;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.dreambook.MainActivity.*;
 
 public class SettingsFragment extends Fragment {
@@ -102,6 +100,7 @@ public class SettingsFragment extends Fragment {
             int ind = ((PrefSets) activity).getAutorGender();
             if (listPreference != null) {
                 listPreference.setValueIndex(ind);
+                listPreference.setNegativeButtonText("Отмена");
             }
         }
 
@@ -128,15 +127,15 @@ public class SettingsFragment extends Fragment {
                 if (g.equals(strings[2]))
                     ((PrefSets) activity).genderSet(2);
             }
-            if (key.equals("darktheme")){
-                SwitchPreferenceCompat switchPreference = getPreferenceScreen().findPreference("darktheme");
-                assert switchPreference != null;
-                boolean switchDark = switchPreference.isChecked();
-                    ((PrefSets) activity).themeSet(switchDark);
-                    activity.finish();
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                    activity.startActivity(intent);
-            }
+//            if (key.equals("darktheme")){
+//                SwitchPreferenceCompat switchPreference = getPreferenceScreen().findPreference("darktheme");
+//                assert switchPreference != null;
+//                boolean switchDark = switchPreference.isChecked();
+//                    ((PrefSets) activity).themeSet(switchDark);
+//                    activity.finish();
+//                Intent intent = new Intent(getContext(), MainActivity.class);
+//                    activity.startActivity(intent);
+//            }
         }
 
         @Override

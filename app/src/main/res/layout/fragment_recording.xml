@@ -45,7 +45,7 @@
                         android:hint="@string/name_note"
                         android:textAppearance="@style/TextAppearanceEditText"
                         android:textColor="@color/colorEditMean"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="5dp"
                         android:backgroundTint="@android:color/transparent"
                         android:textSize="@dimen/textSize_date"
                         tools:ignore="SpUsage"/>
@@ -94,30 +94,21 @@
 
     </LinearLayout>
 
-    <LinearLayout android:layout_width="413dp"
-                  android:layout_height="633dp"
-                  android:orientation="vertical"
-                  android:padding="@dimen/padd_text"
-                  android:id="@+id/linearLayout2"
-                  app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  android:layout_marginTop="32dp"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText android:layout_width="389dp"
-                  android:layout_height="549dp"
-                  android:id="@+id/record_et"
-                  android:gravity="start"
-                  android:layout_marginTop="30dp"
-                  android:background="@null"
-                  android:layout_gravity="center_horizontal"
-                  android:hint="Содержание"
-                  android:textAppearance="@style/TextAppearanceEditText"
-                  android:textSize="@dimen/textSize"
-                  android:textColor="@color/colorEditMean"
-                  android:inputType="textCapSentences|textMultiLine|textPersonName|textCapWords"
-        />
-    </LinearLayout>
+    <EditText android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:id="@+id/record_et"
+              android:gravity="start"
+              android:background="@null"
+              android:layout_gravity="center_horizontal"
+              android:hint="Содержание"
+              android:textAppearance="@style/TextAppearanceEditText"
+              android:textSize="@dimen/textSize"
+              android:textColor="@color/colorEditMean"
+              android:inputType="textCapSentences|textMultiLine|textPersonName|textCapWords"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+              android:layout_marginTop="36dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,18 +1,24 @@
 package com.dreambook;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import com.gainwise.linker.Linker;
+import com.gainwise.linker.LinkerListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import dataBase.Notes;
+import com.dreambook.dataBase.Notes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.dreambook.MainActivity.*;
 
@@ -20,13 +26,13 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
 
     public RecordingFragmentReady() {}
 
-    private MenuItem item;
-    private View view, itemSearch;
+    private View itemSearch;
     private Notes note;
-    private TextView nameNote, record;
     public BottomNavigationView bottomNavigation;
     private Toolbar toolbar;
-    public String name, recNote;
+    public String name, recNote, noteOrigin;
+    private Activity activity;
+    private int gender;
 
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
@@ -42,20 +48,33 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
     }
 
     @Override
+    public void onAttach(@NotNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_recordingready);
         toolbar.setTitleMarginStart(margin);
+        gender = activity
+                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
+                .getInt(AUTOR_GENDER, 0);
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         requireActivity().getMenuInflater().inflate(R.menu.main, menu);
-        item = menu.findItem(R.id.sorting);
+        MenuItem item = menu.findItem(R.id.sorting);
         item.setVisible(false);
         item = menu.findItem(R.id.save_note);
         item.setIcon(R.drawable.ic_record_light);
+        item = menu.findItem(R.id.record_voice);
+        item.setVisible(false);
     }
 
     @Override
@@ -82,18 +101,31 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_recording_ready, container, false);
-        nameNote = view.findViewById(R.id.name_note_tv);
-        record = view.findViewById(R.id.record_tv);
+        View view = inflater.inflate(R.layout.fragment_recording_ready, container, false);
+        TextView nameNote = view.findViewById(R.id.name_note_tv);
+        TextView record = view.findViewById(R.id.record_tv);
         toolbar.setTitle("Сохранить");
         assert getArguments() != null;
         name = RecordingFragmentReadyArgs.fromBundle(getArguments()).getNameNote();
-        recNote = RecordingFragmentReadyArgs.fromBundle(getArguments()).getNote();
+        noteOrigin = "  " +  RecordingFragmentReadyArgs.fromBundle(getArguments()).getNote();
+        recNote = noteOrigin;
             if (name.equals("")) name = "Без названия";
             String dateStr = RecordingFragmentReadyArgs.fromBundle(getArguments()).getDateNote();
         int id;
         nameNote.setText(name);
         record.setText(recNote);
+        Linker linker = new Interpretation(record, recNote, gender).getLinker();
+        linker.setListener(new LinkerListener() {
+            @Override
+            public void onLinkClick(String charSequenceClicked) {
+                RecordingFragmentReadyDirections.ActionReadyToWordmean action =
+                        RecordingFragmentReadyDirections.actionReadyToWordmean(charSequenceClicked);
+                NavHostFragment.findNavController(RecordingFragmentReady.this)
+                        .navigate(action);
+                Toast.makeText(getContext(), charSequenceClicked, Toast.LENGTH_SHORT).show();
+            }
+        });
+        linker.update();
         TextView datetv = view.findViewById(R.id.date_tv);
         datetv.setText(dateStr);
         List<Notes> list = database.notesDao().getIdList();
@@ -102,8 +134,8 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
             int n = list.size() - 1;
             id = list.get(n).getId() + 1;
         }
-        note = new Notes(id, name, recNote, dateStr);
-        bottomNavigation = getActivity().findViewById(R.id.bottom_navigation);
+        note = new Notes(id, name, noteOrigin, dateStr);
+        bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
         bottomNavigation.setVisibility(View.INVISIBLE);
         return view;
     }
@@ -113,7 +145,7 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         try {
             toolbar.addView(view);
         }
-        catch (IllegalStateException | IllegalArgumentException ignore){};
+        catch (IllegalStateException | IllegalArgumentException ignore){}
     }
 
     @Override
@@ -121,8 +153,7 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         try {
             toolbar.removeView(view);
         }
-        catch (IllegalStateException | IllegalArgumentException ignore){};
+        catch (IllegalStateException | IllegalArgumentException ignore){}
 
     }
-
 }

@@ -1,4 +1,4 @@
-package dataBase;
+package com.dreambook.dataBase;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

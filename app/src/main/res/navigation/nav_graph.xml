@@ -50,6 +50,10 @@
         <action android:id="@+id/action_Ready_to_Notes"
                 app:destination="@id/nav_notes"/>
 
+        <action android:id="@+id/action_Ready_to_Wordmean"
+                app:destination="@id/nav_word"/>
+
+
 
         <argument
                 android:name="nameNote"

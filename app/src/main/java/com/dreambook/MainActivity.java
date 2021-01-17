@@ -1,8 +1,10 @@
 package com.dreambook;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.view.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,7 +12,6 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -18,15 +19,17 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import androidx.preference.SwitchPreferenceCompat;
+import com.dreambook.dataBase.App;
+import com.dreambook.dataBase.MeaningDatabase;
+import com.dreambook.dialogs.ExitDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.Objects;
 
-import dataBase.*;
 import org.jetbrains.annotations.NotNull;
 
-import static dataBase.Base.setDataBase;
+import static com.dreambook.dataBase.Base.setDataBase;
 
 public class MainActivity extends AppCompatActivity implements PrefSets, MoveAddSearchItem{
 
@@ -97,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
         if (preferences.contains(AUTOR_GENDER)) {
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
-        if (preferences.contains(THEME_DARK)) {
-            darkTheme = preferences.getBoolean(THEME_DARK, false);
-        }
+//        if (preferences.contains(THEME_DARK)) {
+//            darkTheme = preferences.getBoolean(THEME_DARK, false);
+//        }
 
     }
 
@@ -169,6 +172,14 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
 
     public static NavHostFragment hostFragment;
 
+    private void requestRecordAudioPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String requiredPermission = Manifest.permission.RECORD_AUDIO;
+            if (checkCallingOrSelfPermission(requiredPermission) == PackageManager.PERMISSION_DENIED) {
+                requestPermissions(new String[]{requiredPermission}, 101);
+            }
+        }
+    }
     public void setUpNavigation(){
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         hostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -200,6 +211,9 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
                 delItemSearch(toolbar, getItemSearch());
                 navController.navigate(R.id.nav_setting);
                 break;
+            case R.id.action_exit:
+                ExitDialog dialog = new ExitDialog();
+                        dialog.show(getSupportFragmentManager(), "Exit");
         }
         return true;
     }};
@@ -215,16 +229,17 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
 
     public static BottomNavigationView.OnNavigationItemSelectedListener listnr;
 
-    @Override
+        @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
-        darkTheme = preferences.getBoolean(THEME_DARK, false);
-        if (darkTheme) setTheme(R.style.Theme_CustomThemeDark);
-                else   setTheme(R.style.Theme_CustomTheme);
+//        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
+//        darkTheme = preferences.getBoolean(THEME_DARK, false);
+//        if (darkTheme) setTheme(R.style.Theme_CustomThemeDark);
+//                else   setTheme(R.style.Theme_CustomTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        requestRecordAudioPermission();
         database = App.getInstance().getDatabase();
-//        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
+        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         itemSearch = toolbar.findViewById(R.id.search_in);
