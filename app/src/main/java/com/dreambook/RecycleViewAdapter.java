@@ -1,10 +1,8 @@
 package com.dreambook;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dreambook.dataBase.Notes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder>
@@ -37,6 +37,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         this.mContext = context;
         this.mData = mData;
     }
+
     public String note;
     private ClickInterface mClickInterface;
 
@@ -74,27 +75,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             view = LayoutInflater.from(mContext).inflate(R.layout.item_note, parent, false);
-//            final MyViewHolder myviewholder = new MyViewHolder(view);
-//            myviewholder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-////                    int posit = myviewholder.getAdapterPosition();
-//                    String arg1 = myviewholder.noteName.getText().toString();
-//                    String arg2 = myviewholder.noteDate.getText().toString();
-//
-////                   String arg = database.notesDao().getNoteById(posit);
-//                        Toast.makeText(mContext, "Просмотр записи: " + myviewholder.noteName.getText().toString(),
-//                                Toast.LENGTH_SHORT)
-//                                .show();
-//                NotesFragmentDirections.ActionNotesToInterpretation action =
-//                        NotesFragmentDirections.actionNotesToInterpretation(arg1, arg2);
-//                NavHostFragment.findNavController(fragment)
-//                        .navigate(action);
-//                }
-//            });
            return new MyViewHolder(view);
         }
+
+            public void onItemDismiss(int position) {
+                mData.remove(position);
+                notifyItemRemoved(position);
+            }
 
         @Override
         public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
@@ -107,6 +94,16 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             holder.noteLabels.setText(label);
             holder.myClickListener.setClickable(true);
             holder.myClickListener.setPosition(position);
+//            holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+//                @SuppressLint("ClickableViewAccessibility")
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+////                        fragment.
+//                    }
+//                    return false;
+//                }
+//            });
         }
 
         @Override
@@ -120,7 +117,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         private final TextView noteName, noteDate, noteLabels;
         MyClickListener myClickListener;
-        View v1;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -14,9 +14,9 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,7 +31,7 @@ import java.util.Objects;
 
 import static com.dreambook.MainActivity.*;
 
-public class NotesFragment extends Fragment implements MoveAddSearchItem, View.OnClickListener {
+public class NotesFragment extends Fragment implements View.OnClickListener {
 
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
@@ -39,21 +39,10 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
 
     private List<Notes> noteList, searchList;
     public BottomNavigationView bottomNavigation;
-
     int checkBoxUse;
-
-    public SearchView getSearchView() {
-        return this.searchView;
-    }
-
-    public void setSearchView(SearchView searchView) {
-        this.searchView = searchView;
-    }
 
     public SearchView searchView;
     public Drawable drawable;
-    public MenuItem item, sort, recVoice;
-    public Toolbar toolbar;
     Activity activity;
     SharedPreferences preferences;
     public int genderForNote;
@@ -68,7 +57,7 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                 .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
                 .getInt(AUTOR_GENDER, 0);
         bottomNavigation.setVisibility(View.VISIBLE);
-        moveAdd(toolbar, getSearchView());
+        searchList = new ArrayList<>();
     }
 
     @Override
@@ -76,16 +65,12 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
         super.onPause();
         searchView.setQuery("", true);
         searchView.clearFocus();
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        searchView = requireActivity().findViewById(R.id.search_in);
-        setSearchView(searchView);
-        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
-        preferences = getActivity().getPreferences(MODE_PRIVATE);
+        preferences = requireActivity().getPreferences(MODE_PRIVATE);
         checkBoxUse = preferences.getInt(BOX_STATE, 0);
     }
 
@@ -97,42 +82,149 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
         }
     }
 
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
+//        item = menu.findItem(R.id.save_note);
+//        item.setVisible(false);
+//        recVoice = menu.findItem(R.id.record_voice);
+//        recVoice.setVisible(false);
+//        sort = menu.findItem(R.id.sorting);
+//        checkBoxUse = preferences.getInt(BOX_STATE, 0);
+//        switch (checkBoxUse) {
+//            case 0:
+//                MenuItem menuItem = menu.findItem(R.id.id_sort_datenew);
+//                menuItem.setChecked(true);
+//                checkBoxUse = menuItem.getItemId();
+//                break;
+//            case R.id.id_sort_name:
+//                menu.findItem(checkBoxUse).setChecked(true);
+//                noteList = database.notesDao().getNotesListByName();
+//                adapter.setmData(noteList, getParentFragment());
+//                break;
+//            case R.id.id_sort_datenew:
+//                menu.findItem(checkBoxUse).setChecked(true);
+//                noteList = database.notesDao().getNotesListByDate();
+//                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
+//                break;
+//            case R.id.id_sort_dateold:
+//                menu.findItem(checkBoxUse).setChecked(true);
+//                noteList = database.notesDao().getNotesListByDate();
+//                adapter.setmData(noteList, getParentFragment());
+//                break;
+//        }
+
     @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
-        item = menu.findItem(R.id.save_note);
-        item.setVisible(false);
-        recVoice = menu.findItem(R.id.record_voice);
-        recVoice.setVisible(false);
-        sort = menu.findItem(R.id.sorting);
-        checkBoxUse = preferences.getInt(BOX_STATE, 0);
-        switch (checkBoxUse) {
-            case 0:
-                MenuItem menuItem = menu.findItem(R.id.id_sort_datenew);
-                menuItem.setChecked(true);
-                checkBoxUse = menuItem.getItemId();
-                break;
-            case R.id.id_sort_name:
-                menu.findItem(checkBoxUse).setChecked(true);
-                noteList = database.notesDao().getNotesListByName();
-                adapter.setmData(noteList, getParentFragment());
-                break;
-            case R.id.id_sort_datenew:
-                menu.findItem(checkBoxUse).setChecked(true);
-                noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
-                break;
-            case R.id.id_sort_dateold:
-                menu.findItem(checkBoxUse).setChecked(true);
-                noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(noteList, getParentFragment());
-                break;
+    public void onClick(View v) {
+        searchView.clearFocus();
+        searchView.setQuery("", true);
+        hideSoftInput();
+    }
+
+    @NotNull
+    private List<Notes> sortNewDateFirst(@NotNull List<Notes> list) {
+        List<Notes> tempList = new ArrayList<>();
+        int j = list.size() - 1;
+        for (int i = j; i >= 0; i--) {
+            tempList.add(list.get(i));
         }
-        getSearchView().setVisibility(View.VISIBLE);
-        drawable = getActivity().getDrawable(R.drawable.search_background);
+        return tempList;
+    }
+
+//        switch (item.getItemId()) {
+//            case R.id.id_sort_name:
+//                item.setChecked(!item.isChecked());
+//                noteList = database.notesDao().getNotesListByName();
+//                adapter.setmData(noteList, getParentFragment());
+//                checkBoxUse = item.getItemId();
+//                break;
+//            case R.id.id_sort_datenew:
+//                item.setChecked(!item.isChecked());
+//                noteList = database.notesDao().getNotesListByDate();
+//                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
+//                checkBoxUse = item.getItemId();
+//                break;
+//            case R.id.id_sort_dateold:
+//                item.setChecked(!item.isChecked());
+//                noteList = database.notesDao().getNotesListByDate();
+//                adapter.setmData(noteList, getParentFragment());
+//                checkBoxUse = item.getItemId();
+//                break;
+//        }
+//        preferences.edit()
+//                .putInt(BOX_STATE, checkBoxUse)
+//                .apply();
+//        return super.onOptionsItemSelected(item);
+//    }
+
+
+    public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+
+        private final int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(@NotNull Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            outRect.bottom = space;
+        }
+    }
+
+    @Override
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_notes, container, false);
+        noteList = database.notesDao().getNotesListByDate();
+        recyclerView = view.findViewById(R.id.note_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new SpacesItemDecoration(1));
+        adapter = new RecycleViewAdapter(getContext(), noteList);
+        noteList = sortNewDateFirst(noteList);
+        adapter.setmData(noteList, getParentFragment());
+        recyclerView.setAdapter(adapter);
+        adapter.setClickInterface(new RecycleViewAdapter.ClickInterface() {
+            @Override
+            public void clickEventOne(Notes obj) {
+                int id = obj.getId();
+                String toast = database.notesDao().getNoteById(id).getNameNote();
+                Toast.makeText(getContext(), "Просмотр записи: " + toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
+                NotesFragmentDirections.ActionNotesToInterpretation action =
+                        NotesFragmentDirections.actionNotesToInterpretation(id);
+                NavHostFragment.findNavController(NotesFragment.this)
+                        .navigate(action);
+            }
+        });
+        setHasOptionsMenu(true);
+
+        ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder) {
+                final int dragFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                final int swipeFlags = ItemTouchHelper.START ;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.onItemDismiss(viewHolder.getAdapterPosition());
+            }
+        };
+       mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+
+        searchView =view.findViewById(R.id.search_in);
+        drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
-        searchView.setIconifiedByDefault(false);
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -179,148 +271,22 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
                 return false;
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        searchView.clearFocus();
-        searchView.setQuery("", true);
-        hideSoftInput();
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(@NonNull @NotNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        searchList = new ArrayList<>();
-    }
-
-    @NotNull
-    private List<Notes> sortNewDateFirst(@NotNull List<Notes> list) {
-        List<Notes> tempList = new ArrayList<>();
-        int j = list.size() - 1;
-        for (int i = j; i >= 0; i--) {
-            tempList.add(list.get(i));
-        }
-        return tempList;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        searchView.setQuery("", true);
-        searchView.clearFocus();
-        hideSoftInput();
-        switch (item.getItemId()) {
-            case R.id.id_sort_name:
-                item.setChecked(!item.isChecked());
-                noteList = database.notesDao().getNotesListByName();
-                adapter.setmData(noteList, getParentFragment());
-                checkBoxUse = item.getItemId();
-                break;
-            case R.id.id_sort_datenew:
-                item.setChecked(!item.isChecked());
-                noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
-                checkBoxUse = item.getItemId();
-                break;
-            case R.id.id_sort_dateold:
-                item.setChecked(!item.isChecked());
-                noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(noteList, getParentFragment());
-                checkBoxUse = item.getItemId();
-                break;
-        }
-        preferences.edit()
-                .putInt(BOX_STATE, checkBoxUse)
-                .apply();
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void moveAdd(@NotNull Toolbar toolbar, @NotNull View view) {
-        try {
-            toolbar.addView(view);
-        } catch (IllegalStateException | IllegalArgumentException ignore) {
-        }
-    }
-
-    @Override
-    public void delItemSearch(@NotNull Toolbar toolbar, View view) {
-        toolbar.removeView(view);
-    }
-
-    public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-
-        private final int space;
-
-        public SpacesItemDecoration(int space) {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(@NotNull Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.bottom = space;
-        }
-    }
-
-    @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notes, container, false);
-        noteList = database.notesDao().getNotesListByDate();
-        recyclerView = view.findViewById(R.id.note_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new SpacesItemDecoration(50));
-        adapter = new RecycleViewAdapter(getContext(), noteList);
-        noteList = sortNewDateFirst(noteList);
-        adapter.setmData(noteList, getParentFragment());
-        recyclerView.setAdapter(adapter);
-        adapter.setClickInterface(new RecycleViewAdapter.ClickInterface() {
-            @Override
-            public void clickEventOne(Notes obj) {
-                int id = obj.getId();
-                String toast = database.notesDao().getNoteById(id).getNameNote();
-                Toast.makeText(getContext(), "Просмотр записи: " + toast,
-                        Toast.LENGTH_SHORT)
-                        .show();
-                delItemSearch(toolbar, searchView);
-                NotesFragmentDirections.ActionNotesToInterpretation action =
-                        NotesFragmentDirections.actionNotesToInterpretation(id);
-                NavHostFragment.findNavController(NotesFragment.this)
-                        .navigate(action);
-            }
-        });
-        setHasOptionsMenu(true);
-//        hideSoftInput();
-
         return view;
     }
+
+    ItemTouchHelper mItemTouchHelper;
 
     public void onViewCreated(@NonNull @NotNull View view,
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
-//                bottomNavigation.getMenu()
-//                .getItem(0)
-//                .setIcon(R.drawable.ic_crescent)
-//                .setTitle(R.string.my_dreams);
-//        bottomNavigation.getMenu()
-//                .getItem(1)
-//                .setIcon(R.drawable.ic_book)
-//                .setTitle(R.string.dream_means);
-//        bottomNavigation.getMenu()
-//                .getItem(2)
-//                .setIcon(R.drawable.ic_settings_24)
-//                .setTitle(R.string.setting);
         bottomNavigation.setOnNavigationItemSelectedListener(MainActivity.getListnr());
         final FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
-        fab.setImageResource(R.drawable.ic_record_light);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bottomNavigation.setVisibility(View.INVISIBLE);
-                item.setVisible(true);
-                recVoice.setVisible(true);
                 fab.setVisibility(View.INVISIBLE);
                 searchView.setVisibility(View.INVISIBLE);
                 NavHostFragment.findNavController(NotesFragment.this).navigate(R.id.nav_record);
@@ -331,6 +297,6 @@ public class NotesFragment extends Fragment implements MoveAddSearchItem, View.O
     public void hideSoftInput() {
         InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
 }

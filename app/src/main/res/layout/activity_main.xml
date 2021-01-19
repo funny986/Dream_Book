@@ -1,51 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_marginTop="@dimen/toolbar_down"
-            style="@style/ToolbarCustom"
-            android:layout_height="@dimen/toolbar_height"
-            android:layout_width="@dimen/main_toolbar_width"
-            android:background="@drawable/toolbar_background"
-           >
 
-        <SearchView
-                style="@style/MySearchStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:imeOptions="actionSearch"
-                android:layout_marginStart="@dimen/means_search_marginLeft"
-                android:background="@drawable/search_background"
-                android:id="@+id/search_in"/>
+    <fragment
 
-    </androidx.appcompat.widget.Toolbar>
-
-    <include layout="@layout/fragment_container"
-             android:layout_marginTop="35dp"
-             android:layout_alignParentTop="true"
-             android:layout_above="@+id/bottom_navigation"
-             android:layout_marginBottom="0dp"
-             android:layout_height="wrap_content"
-             android:layout_width="match_parent"
-             android:layout_marginEnd="0dp"
-             android:layout_alignParentEnd="true"/>
-
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="false"
+            app:navGraph="@navigation/nav_graph"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/bottom_panel"
-            android:layout_height="match_parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="-2dp">
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
+                style="@style/MyFloat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_record_dark"
@@ -65,11 +49,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:itemBackground="@color/primaryColor"
-                 app:itemIconTint="@color/bottom_navigation_item_background_colors"
+                app:itemIconTint="@color/bottom_navigation_item_background_colors"
                 app:itemTextColor="@color/bottom_navigation_item_background_colors"
                 app:labelVisibilityMode="unlabeled"
                 android:layout_alignParentBottom="true"
                 app:menu="@menu/menu_bottom_navigation"/>
-
     </RelativeLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

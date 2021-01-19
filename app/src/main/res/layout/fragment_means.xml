@@ -4,20 +4,33 @@
         android:layout_height="match_parent"
         xmlns:tools="http://schemas.android.com/tools"
         android:focusableInTouchMode="true"
-        android:layout_marginTop="@dimen/toolbar_down"
         tools:context=".MeansFragment"
         android:id="@+id/fragment_means"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SearchView
+            style="@style/MySearchStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:imeOptions="actionSearch"
+            android:background="@drawable/search_background"
+            android:id="@+id/search_in"
+            android:iconifiedByDefault="false"
+            android:searchIcon="@drawable/ic_search_24"
+            android:closeIcon="@drawable/ic_clear_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/linearLayout2"
-            android:layout_marginEnd="30dp"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/search_in"
+            android:layout_marginTop="72dp">
 
         <androidx.recyclerview.widget.RecyclerView
                 android:gravity="center_vertical"

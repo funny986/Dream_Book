@@ -24,7 +24,7 @@ public class ExitDialog extends DialogFragment {
         super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Закрыть Сонник?")
-                .setIcon(R.drawable.ic_clear_24)
+                .setIcon(R.drawable.ic_cancel_keys)
                 .setCancelable(true)
                 .setPositiveButton("Выйти из приложения", new DialogInterface.OnClickListener() {
                     @Override

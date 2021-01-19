@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.*;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
@@ -22,16 +23,15 @@ import static com.dreambook.MainActivity.*;
 
 public class SettingsFragment extends Fragment {
 
+    public SettingsFragment(){}
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_setting, container, false);
     }
 
     public static class PreferenceFragment extends PreferenceFragmentCompat implements
-            SharedPreferences.OnSharedPreferenceChangeListener, PrefSets, MoveAddSearchItem {
-
-        public View itemSearch;
-        public Toolbar toolbar;
+            SharedPreferences.OnSharedPreferenceChangeListener, PrefSets{
 
         @Override
         public void genderSet(int gender) {
@@ -55,16 +55,6 @@ public class SettingsFragment extends Fragment {
             super.onResume();
             getPreferenceScreen().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
-            delItemSearch(toolbar, itemSearch);
-        }
-
-        @Override
-        public void onDestroy() {
-            super.onDestroy();
-            try {
-                moveAdd(toolbar, itemSearch);
-            } catch (IllegalArgumentException ignored) {
-            }
         }
 
         @Override
@@ -72,11 +62,7 @@ public class SettingsFragment extends Fragment {
             super.onPause();
             getPreferenceScreen().getSharedPreferences()
                     .unregisterOnSharedPreferenceChangeListener(this);
-            try {
-                moveAdd(toolbar, itemSearch);
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
+       }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -84,13 +70,6 @@ public class SettingsFragment extends Fragment {
             setHasOptionsMenu(true);
             FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
             fab.setVisibility(View.INVISIBLE);
-            toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
-            toolbar.setNavigationIcon(null);
-            itemSearch = toolbar.findViewById(R.id.search_in);
-            delItemSearch(toolbar, itemSearch);
-            toolbar.setTitle("Настройки");
-            int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_setting);
-            toolbar.setTitleMarginStart(margin);
         }
 
         @Override
@@ -102,6 +81,16 @@ public class SettingsFragment extends Fragment {
                 listPreference.setValueIndex(ind);
                 listPreference.setNegativeButtonText("Отмена");
             }
+            Preference info = getPreferenceScreen().findPreference("info");
+            assert info != null;
+            info.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    assert getParentFragment() != null;
+                    NavHostFragment.findNavController(getParentFragment()).navigate(R.id.nav_info);
+                    return false;
+                }
+            });
         }
 
         Activity activity;
@@ -112,6 +101,9 @@ public class SettingsFragment extends Fragment {
             if (context instanceof Activity) {
                 activity = (Activity) context;
             }
+        }
+
+        public PreferenceFragment(){
         }
 
         @Override
@@ -138,14 +130,5 @@ public class SettingsFragment extends Fragment {
 //            }
         }
 
-        @Override
-        public void moveAdd(@NotNull Toolbar toolbar, View view) {
-            toolbar.addView(view);
-        }
-
-        @Override
-        public void delItemSearch(@NotNull Toolbar toolbar, View view) {
-            toolbar.removeView(view);
-        }
     }
 }

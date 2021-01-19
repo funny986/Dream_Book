@@ -71,3 +71,28 @@
         //                }
 
 
+
+    <item  android:id="@+id/sorting"
+           android:title="@string/menu_sort"
+           android:icon="@drawable/ic_sort"
+           app:showAsAction="always">
+
+        <menu>
+            <group android:id="@+id/id_group_sort"
+                   android:checkableBehavior="single">
+
+                <item android:id="@+id/id_sort_name"
+                      android:title="@string/menu_sort_name"
+                      />
+
+                <item android:id="@+id/id_sort_datenew"
+                      android:title="@string/menu_sort_datenew"
+                     />
+
+                <item android:id="@+id/id_sort_dateold"
+                      android:title="@string/menu_sort_dateold"
+                     />
+            </group>
+        </menu>
+    </item>
+

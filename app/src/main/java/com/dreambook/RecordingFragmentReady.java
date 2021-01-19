@@ -22,14 +22,12 @@ import java.util.Objects;
 
 import static com.dreambook.MainActivity.*;
 
-public class RecordingFragmentReady extends Fragment implements MoveAddSearchItem{
+public class RecordingFragmentReady extends Fragment{
 
     public RecordingFragmentReady() {}
 
-    private View itemSearch;
     private Notes note;
     public BottomNavigationView bottomNavigation;
-    private Toolbar toolbar;
     public String name, recNote, noteOrigin;
     private Activity activity;
     private int gender;
@@ -42,9 +40,6 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar = requireActivity().findViewById(R.id.toolbar);
-        itemSearch = toolbar.getRootView().findViewById(R.id.search_in);
-        itemSearch = MainActivity.itemSearch;
     }
 
     @Override
@@ -58,38 +53,35 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
     @Override
     public void onResume() {
         super.onResume();
-        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_recordingready);
-        toolbar.setTitleMarginStart(margin);
         gender = activity
                 .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
                 .getInt(AUTOR_GENDER, 0);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        requireActivity().getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.sorting);
-        item.setVisible(false);
-        item = menu.findItem(R.id.save_note);
-        item.setIcon(R.drawable.ic_record_light);
-        item = menu.findItem(R.id.record_voice);
-        item.setVisible(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.save_note:
-                moveAdd(toolbar, itemSearch);
-                database.notesDao().insert(note);
-                        item.setIcon(R.drawable.ic_check);
-                NavHostFragment.findNavController(RecordingFragmentReady.this)
-                                .navigate(R.id.nav_notes);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        requireActivity().getMenuInflater().inflate(R.menu.main, menu);
+//        MenuItem item = menu.findItem(R.id.sorting);
+//        item.setVisible(false);
+//        item = menu.findItem(R.id.save_note);
+//        item.setIcon(R.drawable.ic_record_light);
+//        item = menu.findItem(R.id.record_voice);
+//        item.setVisible(false);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.save_note:
+//                database.notesDao().insert(note);
+//                        item.setIcon(R.drawable.ic_check);
+//                NavHostFragment.findNavController(RecordingFragmentReady.this)
+//                                .navigate(R.id.nav_notes);
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations
@@ -105,7 +97,6 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         TextView nameNote = view.findViewById(R.id.name_note_tv);
         TextView record = view.findViewById(R.id.record_tv);
         TextView label = view.findViewById(R.id.label_tv);
-        toolbar.setTitle("Сохранить");
         assert getArguments() != null;
         name = RecordingFragmentReadyArgs.fromBundle(getArguments()).getNameNote();
         noteOrigin = "  " +  RecordingFragmentReadyArgs.fromBundle(getArguments()).getNote();
@@ -144,20 +135,4 @@ public class RecordingFragmentReady extends Fragment implements MoveAddSearchIte
         return view;
     }
 
-    @Override
-    public void moveAdd(@NotNull Toolbar toolbar, View view) {
-        try {
-            toolbar.addView(view);
-        }
-        catch (IllegalStateException | IllegalArgumentException ignore){}
-    }
-
-    @Override
-    public void delItemSearch(@NotNull Toolbar toolbar, View view) {
-        try {
-            toolbar.removeView(view);
-        }
-        catch (IllegalStateException | IllegalArgumentException ignore){}
-
-    }
 }

@@ -21,8 +21,12 @@
                 app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
-    <PreferenceCategory
-            app:title="@string/sync_header">
+    <PreferenceCategory>
+
+        <Preference
+                app:key="info"
+                android:title="Информация">
+        </Preference>
 
 <!--        <SwitchPreferenceCompat-->
 <!--                app:key="darktheme"-->

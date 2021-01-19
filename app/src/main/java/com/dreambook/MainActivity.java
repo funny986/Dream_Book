@@ -17,7 +17,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.dreambook.dataBase.App;
 import com.dreambook.dataBase.MeaningDatabase;
@@ -27,11 +26,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-
 import static com.dreambook.dataBase.Base.setDataBase;
 
-public class MainActivity extends AppCompatActivity implements PrefSets, MoveAddSearchItem{
+public class MainActivity extends AppCompatActivity implements PrefSets {
 
     public static MeaningDatabase database;
 
@@ -52,17 +49,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
     public Bundle args;
     public BottomNavigationView bottomNavigationView;
     public FloatingActionButton fab;
-    public   Toolbar toolbar;
-    @SuppressLint("StaticFieldLeak")
-    public static View itemSearch;
-
-    public View getItemSearch() {
-        return itemSearch;
-    }
-
-    public void setItemSearch(View itemSearch) {
-        MainActivity.itemSearch = itemSearch;
-    }
 
     @Override
     public boolean dispatchTouchEvent(@NonNull MotionEvent event) {
@@ -80,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        moveAdd(toolbar, getItemSearch());
     }
 
     @Override
@@ -88,12 +73,12 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
         super.onSaveInstanceState(outSt);
     }
 
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         if (preferences.contains(APP_PREFERENCE_COUNT)) {
             count = preferences.getBoolean(APP_PREFERENCE_COUNT, false);
         }
-        if (!count ) {
+        if (!count) {
             setDataBase(database);
             count = true;
         }
@@ -106,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
 
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(APP_PREFERENCE_COUNT, count);
@@ -142,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
         return darkTheme;
     }
 
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
 //        SharedPreferences.Editor editor = preferences.edit();
 //        editor.putBoolean(APP_PREFERENCE_COUNT, count);
@@ -150,13 +135,13 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
 //        editor.apply();
     }
 
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         database.close();
     }
 
 
-    protected void onRestart(){
+    protected void onRestart() {
         super.onRestart();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(APP_PREFERENCE_COUNT, count);
@@ -180,46 +165,44 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
             }
         }
     }
-    public void setUpNavigation(){
+
+    public void setUpNavigation() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         hostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         assert hostFragment != null;
         NavigationUI.setupWithNavController(bottomNavigationView, hostFragment.getNavController());
-        NavigationUI.setupWithNavController(toolbar, hostFragment.getNavController());
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.navigate(R.id.nav_notes);
     }
 
-    public BottomNavigationView.OnNavigationItemSelectedListener listener(){
+    public BottomNavigationView.OnNavigationItemSelectedListener listener() {
         return new BottomNavigationView.OnNavigationItemSelectedListener() {
 
             @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-             switch (item.getItemId()) {
-            case R.id.action_notes:
-                moveAdd(toolbar, getItemSearch());
-                navController.navigate(R.id.nav_notes);
-                fab.setVisibility(View.VISIBLE);
-                break;
-            case R.id.action_means:
-                moveAdd(toolbar, getItemSearch());
-                navController.navigate(R.id.nav_means, args);
-                break;
-            case R.id.action_setting:
-                if (item.isChecked()) return false;
-                delItemSearch(toolbar, getItemSearch());
-                navController.navigate(R.id.nav_setting);
-                break;
-            case R.id.action_exit:
-                ExitDialog dialog = new ExitDialog();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_notes:
+                        navController.navigate(R.id.nav_notes);
+                        fab.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.action_means:
+                        navController.navigate(R.id.nav_means, args);
+                        break;
+                    case R.id.action_setting:
+                        if (item.isChecked()) return false;
+                        navController.navigate(R.id.nav_setting);
+                        break;
+                    case R.id.action_exit:
+                        ExitDialog dialog = new ExitDialog();
                         dialog.show(getSupportFragmentManager(), "Exit");
-        }
-        return true;
-    }};
+                }
+                return true;
+            }
+        };
     }
 
-    public  static BottomNavigationView.OnNavigationItemSelectedListener getListnr() {
+    public static BottomNavigationView.OnNavigationItemSelectedListener getListnr() {
         return listnr;
     }
 
@@ -229,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
 
     public static BottomNavigationView.OnNavigationItemSelectedListener listnr;
 
-        @Override
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
 //        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
 //        darkTheme = preferences.getBoolean(THEME_DARK, false);
@@ -240,15 +223,11 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
         requestRecordAudioPermission();
         database = App.getInstance().getDatabase();
         preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        itemSearch = toolbar.findViewById(R.id.search_in);
-        setItemSearch(itemSearch);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
-             setListnr(listener());
-             listnr = listener();
-             bottomNavigationView.setOnNavigationItemSelectedListener(listnr);
+        setListnr(listener());
+        listnr = listener();
+        bottomNavigationView.setOnNavigationItemSelectedListener(listnr);
         fab = findViewById(R.id.fab);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -260,23 +239,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets, MoveAdd
         });
         args = new Bundle();
     }
-
-
-    @Override
-    public void moveAdd(@NotNull Toolbar toolbar, View view) {
-        try {
-            toolbar.addView(view);
-        }
-        catch (IllegalStateException | IllegalArgumentException ignore){}
-    }
-
-    @Override
-    public void delItemSearch(@NotNull Toolbar toolbar, View view) {
-        try {
-            toolbar.removeView(view);
-        }
-        catch (IllegalStateException | IllegalArgumentException ignore){}
-
-    }
 }
+
+
 

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.*;
@@ -15,7 +14,6 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +29,7 @@ import java.util.*;
 import static com.dreambook.MainActivity.database;
 
 public class MeansFragment extends Fragment implements View.OnClickListener
-                                             , SearchView.OnQueryTextListener, MoveAddSearchItem{
+                                             , SearchView.OnQueryTextListener{
     public MeansFragment() {}
 
     public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','т','у'
@@ -57,7 +55,6 @@ public class MeansFragment extends Fragment implements View.OnClickListener
 
     @SuppressLint("StaticFieldLeak")
     private RecycleViewAdptr adapter;
-    private Toolbar toolbar;
     private TextView[] simbol;
 
     @Override
@@ -77,14 +74,11 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         super.onResume();
         assert getArguments() != null;
         genderForNote = MeansFragmentArgs.fromBundle(getArguments()).getGender();
-        try {
-            moveAdd(toolbar, item);
-        }
-        catch (IllegalArgumentException | IllegalStateException ignored){}
         skipMark = false;
         setCheckVisibleChar('а', 'а');
         imm = (InputMethodManager) requireActivity()
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        searchList = new ArrayList<>();
         }
 
     @Override
@@ -101,16 +95,13 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         setHasOptionsMenu(true);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-        toolbar = requireActivity().findViewById(R.id.toolbar);
-        item = toolbar.findViewById(R.id.search_in);
-        toolbar.setNavigationIcon(null);
-        toolbar.setTitle(null);
-    }
+   }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view,
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
     }
 
     public int getScreenHeight() {
@@ -130,7 +121,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                         LinearLayout.LayoutParams.WRAP_CONTENT);
 
         BottomNavigationView bottomNavigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
-        int tool = toolbar.getHeight();////196
+        int tool = 0;
         hrl = bottomNavigationView.getHeight(); //196
         int heightFull = Resources.getSystem().getDisplayMetrics().heightPixels;
         min = heightFull - hrl - tool;//2516 // 2320 минус тулбар
@@ -239,24 +230,21 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         return true;
     }
 
+    public void hideSoftInput() {
+        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+    }
+
     @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
-        searchList = new ArrayList<>();
-        MenuItem menuItem = menu.findItem(R.id.save_note);
-        menuItem.setVisible(false);
-        menuItem = menu.findItem(R.id.sorting);
-        menuItem.setVisible(false);
-        menuItem = menu.findItem(R.id.record_voice);
-        menuItem.setVisible(false);
-        searchView = Objects.requireNonNull(getActivity()).findViewById(R.id.search_in);
-        drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
-        moveAdd(toolbar, item);
-        searchView.setBackground(drawable);
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(this);
-        final int searchViewId2 = searchView.getContext().getResources()
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mainView = inflater.inflate(R.layout.fragment_means, container, false);
+        alphabetPanel(mainView);
+            searchView = mainView.findViewById(R.id.search_in);
+            drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
+            searchView.setBackground(drawable);
+            searchView.setQueryHint(getActivity().getResources().getString(R.string.search_hint));
+            searchView.setOnQueryTextListener(this);
+                final int searchViewId2 = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_close_btn", null, null);
         ImageView searchIconClear = searchView.findViewById(searchViewId2);
         searchIconClear.setOnClickListener(new View.OnClickListener() {
@@ -283,22 +271,12 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                 return false;
             }
         });
-    }
 
-    public void hideSoftInput() {
-        imm.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
-    }
-
-    @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_means, container, false);
-        alphabetPanel(mainView);
         wordList = database.wordsDao().listForFragment();
         recyclerView = mainView.findViewById(R.id.means_recyclerview);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(50));
+        recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(1));
             adapter = new RecycleViewAdptr(getContext(), wordList);
             adapter.setmData(wordList, getParentFragment());
         min = getScreenHeight() - hrl;
@@ -319,19 +297,5 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             }
         });
         return mainView;
-    }
-
-    @Override
-    public void moveAdd(@NotNull Toolbar toolbar, View view) {
-        try {
-            toolbar.addView(view);
-            toolbar.setNavigationIcon(null);
-            toolbar.setTitle(null);
-        }
-        catch (IllegalStateException | IllegalArgumentException ignore){}
-    }
-
-    @Override
-    public void delItemSearch(Toolbar toolbar, View view) {
     }
 }

@@ -35,8 +35,6 @@ public class RecordingFragment extends Fragment {
     private View view;
     private EditText nameNote, record, labels;
     private String dateStr;
-    private Toolbar toolbar;
-    private View itemSearch;
     private Activity activity;
 
     public RecordingFragment() {}
@@ -45,7 +43,6 @@ public class RecordingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_recording);
-        toolbar.setTitleMarginStart(margin);
         nameNote.requestFocus();
         setSoftInput();
     }
@@ -70,50 +67,49 @@ public class RecordingFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        requireActivity().getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.sorting);
-        item.setVisible(false);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        requireActivity().getMenuInflater().inflate(R.menu.main, menu);
+//        MenuItem item = menu.findItem(R.id.sorting);
+//        item.setVisible(false);
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.save_note:
-                        RecordingFragmentDirections.ActionRecordToReady action =
-                RecordingFragmentDirections.actionRecordToReady(
-                        nameNote.getText().toString(),
-                        record.getText().toString(),
-                        dateStr,
-                        labels.getText().toString());
-                NavHostFragment.findNavController(RecordingFragment.this)
-                                .navigate(action);
-                break;
-            case android.R.id.home:
-                 toolbar.addView(itemSearch);
-                break;
-            case R.id.record_voice:
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-//                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
-                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                        Objects.requireNonNull(getContext()).getPackageName());
-                intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 25000);
-                intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
-                intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-
-                SpeechRecognizer sr = SpeechRecognizer.createSpeechRecognizer(getContext());
-                CustomRecognitionListener listener = new CustomRecognitionListener();
-               sr.setRecognitionListener(listener);
-                sr.startListening(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.save_note:
+//                        RecordingFragmentDirections.ActionRecordToReady action =
+//                RecordingFragmentDirections.actionRecordToReady(
+//                        nameNote.getText().toString(),
+//                        record.getText().toString(),
+//                        dateStr,
+//                        labels.getText().toString());
+//                NavHostFragment.findNavController(RecordingFragment.this)
+//                                .navigate(action);
+//                break;
+//            case android.R.id.home:
+//                break;
+//            case R.id.record_voice:
+//                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+//                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+////                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
+//                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+//                        Objects.requireNonNull(getContext()).getPackageName());
+//                intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 25000);
+//                intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
+//                intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+//
+//                SpeechRecognizer sr = SpeechRecognizer.createSpeechRecognizer(getContext());
+//                CustomRecognitionListener listener = new CustomRecognitionListener();
+//               sr.setRecognitionListener(listener);
+//                sr.startListening(intent);
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -137,11 +133,6 @@ public class RecordingFragment extends Fragment {
         dateStr = df.format(date);
         TextView tvDate = view.findViewById(R.id.date_tv);
         tvDate.setText(dateStr);
-        toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
-        toolbar.setTitleMarginStart(380);
-        itemSearch = toolbar.findViewById(R.id.search_in);
-        toolbar.removeView(itemSearch);
-        toolbar.setTitle("Записать сон");
         setHasOptionsMenu(true);
         return view;
     }

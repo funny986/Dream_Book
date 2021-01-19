@@ -121,5 +121,17 @@
             android:name="com.dreambook.SettingsFragment"
             android:label="Настройки"
             tools:layout="@layout/fragment_setting">
+
+        <action android:id="@+id/action_Setting_to_Info"
+                app:destination="@id/nav_info"/>
+
     </fragment>
+
+    <fragment
+            android:id="@+id/nav_info"
+            android:name="com.dreambook.InfoFragment"
+            android:label="Информация"
+            tools:layout="@layout/fragment_info">
+    </fragment>
+
 </navigation>

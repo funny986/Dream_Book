@@ -10,8 +10,8 @@
 
     <TextView
             style="@style/MeanStyle"
-            android:id="@+id/mean_tv"
-            android:layout_width="wrap_content"
+            android:id="@+id/info"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:text="@string/information"/>
 </androidx.core.widget.NestedScrollView>

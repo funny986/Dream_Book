@@ -5,13 +5,12 @@
     <string name="setting">Настройки</string>
     <string name="exit_to_app">Закрыть приложение</string>
 
+    <integer name="rec_pad">1</integer>
 
     <!-- Фрагмент записи -->
     <string name="name_dream">Название:</string>
     <string name="cont_dream">Содержание сна</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Пункты меню-->
     <string name="menu_sort">Сортировка</string>
@@ -31,8 +30,8 @@
     <string name="search">Search</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="large_text">
-        "Material is the metaphor.\n\n"
+    <string name="information">
+        "Сергулёк.\n\n  да Димулька"
     </string>
 
     <!-- Preference Titles -->

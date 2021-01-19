@@ -17,8 +17,7 @@ public class WordMeanFragment extends Fragment {
     public WordMeanFragment() {
     }
 
-    public View view, itemSearch;
-    public Toolbar toolbar;
+    public View view;
 
     @Override
     public void onResume() {
@@ -47,12 +46,6 @@ public class WordMeanFragment extends Fragment {
         word = word.toLowerCase();
         String mean = database.wordsDao().getMean(word);
         interpretation.setText(mean);
-        toolbar = requireActivity().findViewById(R.id.toolbar);
-        itemSearch = toolbar.findViewById(R.id.search_in);
-        toolbar.removeView(itemSearch);
-        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_wordmean);
-        toolbar.setTitleMarginStart(margin);
-        toolbar.setTitle(word);
     return view;
     }
 
