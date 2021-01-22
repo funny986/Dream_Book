@@ -15,78 +15,64 @@
             android:layout_height="match_parent">
 
         <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="@dimen/height_view"
+                      android:layout_height="wrap_content"
                       android:orientation="horizontal"
-                      android:layout_weight="1"
+                      android:layout_weight="0.5"
                       app:layout_constraintTop_toTopOf="parent"
                       app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintEnd_toEndOf="parent">
 
 
             <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
+                          android:layout_height="match_parent"
+                          android:gravity="start"
                           android:layout_weight="0.75"
                           >
-
-
-                <ImageView android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           style="@style/IcoRecordStyle"
-                           android:src="@drawable/ic_aa"/>
-
                 <TextView
-                        android:text="Название"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/padd_text"
                         android:id="@+id/card_note_name"
+                        android:layout_gravity="center_vertical"
                         android:lines="1"
-                        style="@style/MyTextStyle"
+                        android:textSize="20sp"
                 />
             </LinearLayout>
 
                 <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
+                              android:layout_height="match_parent"
+                              android:gravity="end"
                               android:layout_weight="1"
                               >
 
-
-                    <ImageView android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               style="@style/IcoRecordStyle"
-                               android:src="@drawable/ic_calendar"/>
 
                     <TextView
                             android:text="Дата записи"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/card_note_date"
-                            android:paddingLeft="@dimen/padd_text"
-                            style="@style/MyTextStyle"
+                            android:paddingEnd="@dimen/padd_text"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="18sp"
 />
 
             </LinearLayout>
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:layout_weight="1"
+                      android:layout_weight="0.5"
                       app:layout_constraintBottom_toBottomOf="parent"
                       app:layout_constraintStart_toStartOf="parent"
                       app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       style="@style/IcoRecordStyle"
-                       android:src="@drawable/ic_label"/>
-
             <TextView
-                    android:text="Меток нет"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:lines="1"
+                    android:layout_gravity="center_vertical"
                     android:id="@+id/card_note_label"
                     android:paddingLeft="@dimen/padd_text"
-                    style="@style/MyTextStyle"
+                    android:textSize="18sp"
             />
         </LinearLayout>
 

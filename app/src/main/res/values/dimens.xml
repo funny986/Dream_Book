@@ -22,6 +22,7 @@
     <dimen name="padd_text_top">9dp</dimen>
     <dimen name="padd_text_start">20dp</dimen>
 
+
     <dimen name="padd_img">5dp</dimen>
     <dimen name="padd_img_top">0dp</dimen>
     <dimen name="padd_img_start">5dp</dimen>
@@ -55,8 +56,10 @@
     <!-- Параметры текста толкования и записей. Ресайклер-->
     <dimen name="text_margin">15dp</dimen>
     <dimen name="txt_size">20sp</dimen>
+    <dimen name="recycler_margtop">15dp</dimen>
+
     <dimen name="height_item_word">27dp</dimen>
-    <dimen name="height_item_note">80dp</dimen>
+    <dimen name="height_item_note">60dp</dimen>
 
     <!-- Доп. Параметры textView -->
 

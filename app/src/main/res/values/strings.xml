@@ -60,4 +60,6 @@
 
     <string name="save">Сохранить</string>
     <string name="name_note">Введите название</string>
+    <string name="date_note">Введите дату</string>
+
 </resources>

@@ -33,27 +33,27 @@
         <action android:id="@+id/action_Record_to_Notes"
                 app:destination="@id/nav_notes"/>
 
-        <action android:id="@+id/action_Record_to_Ready"
-                app:destination="@id/nav_ready"/>
 
     </fragment>
 
     <fragment
-            android:id="@+id/nav_ready"
-            android:name="com.dreambook.RecordingFragmentReady"
+            android:id="@+id/nav_edit"
+            android:name="com.dreambook.FragmentEdit"
             android:label="Запись"
-            tools:layout="@layout/fragment_recording_ready">
+            tools:layout="@layout/fragment_edit">
 
-        <action android:id="@+id/action_Ready_to_Record"
+        <action android:id="@+id/action_Edit_to_Record"
            app:destination="@id/nav_record"/>
 
-        <action android:id="@+id/action_Ready_to_Notes"
+        <action android:id="@+id/action_Edit_to_Notes"
                 app:destination="@id/nav_notes"/>
 
-        <action android:id="@+id/action_Ready_to_Wordmean"
-                app:destination="@id/nav_word"/>
+        <action android:id="@+id/action_Edit_to_Interpretation"
+                app:destination="@id/nav_interpretation"/>
 
-
+        <argument
+                android:name="noteId"
+                app:argType="integer"/>
 
         <argument
                 android:name="nameNote"
@@ -85,6 +85,10 @@
 
         <action android:id="@+id/action_Interpretation_to_Wordmean"
                 app:destination="@id/nav_word"/>
+
+        <action android:id="@+id/action_Interpretation_to_Edit"
+                app:destination="@id/nav_edit"/>
+
 
     </fragment>
 

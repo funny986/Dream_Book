@@ -3,10 +3,11 @@
     <font
             android:fontStyle="normal"
             android:fontWeight="400"
-            android:font="@font/flowext" />
+            android:font="@font/lato_black" />
 
     <font
             android:fontStyle="italic"
             android:fontWeight="400"
-            android:font="@font/flowext_bold" />
+            android:font="@font/lato_blackitalic" />
+
 </font-family>

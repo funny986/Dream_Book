@@ -37,7 +37,6 @@ public class MeansFragment extends Fragment implements View.OnClickListener
 
     private int hrl;
     private int min;
-    private int widthsreen;
     private int firstVisiblePosition;
     private int lastCompleteVisiblePosition;
     private int genderForNote;
@@ -125,7 +124,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         hrl = bottomNavigationView.getHeight(); //196
         int heightFull = Resources.getSystem().getDisplayMetrics().heightPixels;
         min = heightFull - hrl - tool;//2516 // 2320 минус тулбар
-        widthsreen = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int widthsreen = Resources.getSystem().getDisplayMetrics().widthPixels;
         float summ2 = (float) min / ALPHABET.length;//80
         heightSimbol = convertPixelsToDp(summ2, Objects.requireNonNull(getContext()));
         params.setMarginStart(20);
@@ -192,7 +191,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         for (int j = 0; j < simbol.length; j++) {
             if (!skipMark) {
                 if (j >= strt && j <= end)
-                    simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.CheckAlph));
+                    simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.colorPrimary));
                 else
                     simbol[j].setTextColor(Objects.requireNonNull(getActivity()).getColor(R.color.navUnChecked));
             }

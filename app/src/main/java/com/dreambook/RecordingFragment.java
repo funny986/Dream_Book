@@ -1,8 +1,9 @@
 package com.dreambook;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -11,38 +12,46 @@ import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.navigation.fragment.NavHostFragment;
+import com.dreambook.dataBase.Notes;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
+import ru.tinkoff.decoro.MaskImpl;
+import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
+import ru.tinkoff.decoro.slots.Slot;
+import ru.tinkoff.decoro.watchers.FormatWatcher;
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
-public class RecordingFragment extends Fragment {
+import static com.dreambook.MainActivity.database;
 
-    private static final int RESULT_OK = 1;
-    private View view;
-    private EditText nameNote, record, labels;
-    private String dateStr;
-    private Activity activity;
+public class RecordingFragment extends Fragment implements View.OnClickListener, RecognitionListener {
+
+    private EditText nameNote, dateNote, record, labels;
+    private FloatingActionButton fab;
+    private Resources resources;
+    private SpeechRecognizer sr;
+    public TextView recording;
+    public Button btnExit, btnSave;
+    private boolean recordVoice = false;
 
     public RecordingFragment() {}
 
     @Override
     public void onResume() {
         super.onResume();
-        int margin = getResources().getDimensionPixelOffset(R.dimen.margin_start_recording);
+        fab.setVisibility(View.VISIBLE);
         nameNote.requestFocus();
         setSoftInput();
     }
@@ -55,85 +64,113 @@ public class RecordingFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Activity) {
-            activity = (Activity) context;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        resources = getResources();
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    @Override
+    public void onClick(@NotNull View v) {
+        switch (v.getId()){
+            case R.id.button_exit:
+                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
+                        Objects.requireNonNull(getContext()).getTheme()));
+                NavHostFragment.findNavController(RecordingFragment.this)
+                        .navigate(R.id.nav_notes);
+                break;
+            case R.id.button_save:
+                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
+                        Objects.requireNonNull(getContext()).getTheme()));
+                List<Notes> list = database.notesDao().getIdList();
+                int id;
+                if (list.size() == 0) id = 1;
+                else {
+                    int n = list.size() - 1;
+                    id = list.get(n).getId() + 1;
+                }
+                String name = nameNote.getText().toString();
+                if (name.equals("")) name = "Без названия";
+                String noteOrigin = record.getText().toString();
+                String dateStr = dateNote.getText().toString();
+                    if (dateStr.equals("")){
+                        Date date = new Date();
+                        DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+                        dateStr = df.format(date);
+                    }
+                String labelStr = labels.getText().toString();
+                    if (labelStr.equals("")) labelStr = " ";
+                Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
+                database.notesDao().insert(note);
+                NavHostFragment.findNavController(RecordingFragment.this)
+                        .navigate(R.id.nav_notes);
+                break;
+            case R.id.fab:
+                if (recordVoice){
+                    onEndOfSpeech();
+                }
+                else {
+                    recordVoice = true;
+                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+//                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
+                    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                            Objects.requireNonNull(getContext()).getPackageName());
+                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 25000);
+                    intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
+                    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+                    sr = SpeechRecognizer.createSpeechRecognizer(getContext());
+                    sr.setRecognitionListener(this);
+                    sr.startListening(intent);
+                }
+                break;
         }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-//    @Override
-//    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        requireActivity().getMenuInflater().inflate(R.menu.main, menu);
-//        MenuItem item = menu.findItem(R.id.sorting);
-//        item.setVisible(false);
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.save_note:
-//                        RecordingFragmentDirections.ActionRecordToReady action =
-//                RecordingFragmentDirections.actionRecordToReady(
-//                        nameNote.getText().toString(),
-//                        record.getText().toString(),
-//                        dateStr,
-//                        labels.getText().toString());
-//                NavHostFragment.findNavController(RecordingFragment.this)
-//                                .navigate(action);
-//                break;
-//            case android.R.id.home:
-//                break;
-//            case R.id.record_voice:
-//                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-//                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-////                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
-//                intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-//                        Objects.requireNonNull(getContext()).getPackageName());
-//                intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 25000);
-//                intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
-//                intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-//
-//                SpeechRecognizer sr = SpeechRecognizer.createSpeechRecognizer(getContext());
-//                CustomRecognitionListener listener = new CustomRecognitionListener();
-//               sr.setRecognitionListener(listener);
-//                sr.startListening(intent);
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_recording, container, false);
-        nameNote = view.findViewById(R.id.name_note);
-        record = view.findViewById(R.id.record_et);
-        labels = view.findViewById(R.id.label_et);
+            View view = inflater.inflate(R.layout.fragment_recording, container, false);
+            nameNote = view.findViewById(R.id.name_note);
+            record = view.findViewById(R.id.record_et);
+            labels = view.findViewById(R.id.label_et);
+            dateNote = view.findViewById(R.id.date_note);
+            recording = view.findViewById(R.id.recording);
+            recording.setVisibility(View.INVISIBLE);
+        Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots("__.__.__");
+        FormatWatcher formatWatcher = new MaskFormatWatcher( MaskImpl.createTerminated(slots));
+        formatWatcher.installOn(dateNote);
         nameNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
                            @Override
                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                                   record.requestFocus();
+                                   dateNote.requestFocus();
                                    return true;
                                }
                                return false;
                            }
                        });
-        Date date = new Date();
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        dateStr = df.format(date);
-        TextView tvDate = view.findViewById(R.id.date_tv);
-        tvDate.setText(dateStr);
-        setHasOptionsMenu(true);
+        dateNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    record.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+        btnExit = view.findViewById(R.id.button_exit);
+        btnExit.setText("Выход");
+        btnExit.setOnClickListener(this);
+         btnSave = view.findViewById(R.id.button_save);
+        btnSave.setText("Сохранить");
+        btnSave.setOnClickListener(this);
+        fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
+        fab.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_on, Objects.requireNonNull(getContext()).getTheme()));
+        fab.setOnClickListener(this);
         return view;
     }
 
@@ -155,47 +192,70 @@ public class RecordingFragment extends Fragment {
                imm.toggleSoftInput( InputMethodManager.SHOW_FORCED, 0 );
     }
 
-    class CustomRecognitionListener implements RecognitionListener {
-        private static final String TAG = "RecognitionListener";
+    public void changeFabIcon(){
+        recordVoice = false;
+        Toast.makeText(getContext(), "Речевая запись закончена", Toast.LENGTH_SHORT).show();
+        btnExit.setVisibility(View.VISIBLE);
+        btnSave.setVisibility(View.VISIBLE);
+        recording.setVisibility(View.INVISIBLE);
+        fab.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_on, Objects.requireNonNull(getContext()).getTheme()));
 
-        public void onReadyForSpeech(Bundle params) {
-            Log.d(TAG, "onReadyForSpeech");
-            Toast.makeText(getContext(), "Говорите", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onBeginningOfSpeech() {
-            Log.d(TAG, "onBeginningOfSpeech");
-        }
-
-        public void onRmsChanged(float rmsdB) {
-            Log.d(TAG, "onRmsChanged " + rmsdB);
-        }
-
-        public void onBufferReceived(byte[] buffer) {
-            Log.d(TAG, "onBufferReceived " + buffer);
-        }
-
-        public void onEndOfSpeech() {
-            Log.d(TAG, "onEndofSpeech");
-            Toast.makeText(getContext(), "Речевая запись закончена", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onError(int error) {
-            Log.e(TAG, "error " + error);
-        }
-
-        public void onResults(@NotNull Bundle results) {
-        }
-
-        public void onPartialResults(@NotNull Bundle partialResults) {
-            ArrayList<String> result = partialResults
-                    .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            String  str = result.get(0);
-            record.setText(str);
-        }
-
-        public void onEvent(int eventType, Bundle params) {
-            Log.d(TAG, "onEvent " + eventType);
-        }
     }
+    @Override
+    public void onReadyForSpeech(Bundle params) {
+        Log.d(TAG, "onReadyForSpeech");
+        Toast.makeText(getContext(), "Говорите", Toast.LENGTH_SHORT).show();
+        btnExit.setVisibility(View.INVISIBLE);
+        btnSave.setVisibility(View.INVISIBLE);
+        recording.setVisibility(View.VISIBLE);
+        fab.setImageDrawable(resources.getDrawable(R.drawable.ic_stop,
+                Objects.requireNonNull(getContext()).getTheme()));
+    }
+
+    @Override
+    public void onBeginningOfSpeech() {
+        Log.d(TAG, "onBeginningOfSpeech");
+    }
+
+    @Override
+    public void onRmsChanged(float rmsdB) {
+        Log.d(TAG, "onRmsChanged " + rmsdB);
+    }
+
+    @Override
+    public void onBufferReceived(byte[] buffer) {
+        Log.d(TAG, "onBufferReceived " + buffer);
+    }
+
+    @Override
+    public void onEndOfSpeech() {
+        sr.stopListening();
+        sr.cancel();
+        changeFabIcon();
+    }
+
+    @Override
+    public void onError(int error) {
+        Log.e(TAG, "error " + error);
+        changeFabIcon();
+    }
+
+    @Override
+    public void onResults(Bundle results) {
+
+    }
+
+    @Override
+    public void onPartialResults(Bundle partialResults) {
+        ArrayList<String> result = partialResults
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        String  str = result.get(0);
+        record.setText(str);
+    }
+
+    @Override
+    public void onEvent(int eventType, Bundle params) {
+        Log.d(TAG, "onEvent " + eventType);
+    }
+    private static final String TAG = "RecognitionListener";
 }

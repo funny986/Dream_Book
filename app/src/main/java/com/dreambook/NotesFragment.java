@@ -40,7 +40,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
     private List<Notes> noteList, searchList;
     public BottomNavigationView bottomNavigation;
     int checkBoxUse;
-
+    private FloatingActionButton fab;
     public SearchView searchView;
     public Drawable drawable;
     Activity activity;
@@ -50,6 +50,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
     public NotesFragment() {
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onResume() {
         super.onResume();
@@ -58,6 +59,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
                 .getInt(AUTOR_GENDER, 0);
         bottomNavigation.setVisibility(View.VISIBLE);
         searchList = new ArrayList<>();
+        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_dark,
+                Objects.requireNonNull(getContext()).getTheme()));
+
     }
 
     @Override
@@ -281,13 +285,13 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(MainActivity.getListnr());
-        final FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bottomNavigation.setVisibility(View.INVISIBLE);
-                fab.setVisibility(View.INVISIBLE);
+//                fab.setVisibility(View.INVISIBLE);
                 searchView.setVisibility(View.INVISIBLE);
                 NavHostFragment.findNavController(NotesFragment.this).navigate(R.id.nav_record);
             }

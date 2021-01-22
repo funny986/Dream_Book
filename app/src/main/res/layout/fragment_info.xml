@@ -9,7 +9,6 @@
         tools:context=".WordMeanFragment">
 
     <TextView
-            style="@style/MeanStyle"
             android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -9,6 +9,16 @@
         android:orientation="vertical"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/toolbar_down"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/linearLayout2"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/search_in"
+    >
+
     <SearchView
             style="@style/MySearchStyle"
             android:layout_width="wrap_content"
@@ -24,18 +34,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/linearLayout2"
-            app:layout_constraintTop_toBottomOf="@+id/search_in"
-            android:layout_marginTop="72dp">
 
         <androidx.recyclerview.widget.RecyclerView
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/recycler_margtop"
                 android:outlineSpotShadowColor="@color/primaryColor"
                 android:id="@+id/means_recyclerview"
         >

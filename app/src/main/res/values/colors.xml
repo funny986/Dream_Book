@@ -9,6 +9,8 @@
     <color name="primaryDarkColor">#b2b2b2</color>
     <color name="accentColor">#ffffff</color>
 
+    <color name="buttonText">#2960EE</color>
+
     <color name="colorTextRecord">@color/primaryDarkColor</color>
     <color name="colorEditMean">#493434</color>
 <!--    <color name="primaryColor">#E6D8D8</color>-->
