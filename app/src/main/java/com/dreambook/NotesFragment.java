@@ -30,7 +30,7 @@ import java.util.Objects;
 
 import static com.dreambook.MainActivity.*;
 
-public class NotesFragment extends Fragment implements View.OnClickListener {
+public class NotesFragment extends Fragment implements View.OnClickListener{
 
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
@@ -43,8 +43,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
     public SearchView searchView;
     public Drawable drawable;
     Activity activity;
-    SharedPreferences preferences;
+    public SharedPreferences preferences;
     public int genderForNote;
+    public PopupMenu popup;
 
     public NotesFragment() {
     }
@@ -60,7 +61,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         searchList = new ArrayList<>();
         fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_dark,
                 Objects.requireNonNull(getContext()).getTheme()));
-
     }
 
     @Override
@@ -85,38 +85,34 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.main, menu);
-//        item = menu.findItem(R.id.save_note);
-//        item.setVisible(false);
-//        recVoice = menu.findItem(R.id.record_voice);
-//        recVoice.setVisible(false);
-//        sort = menu.findItem(R.id.sorting);
-//        checkBoxUse = preferences.getInt(BOX_STATE, 0);
-//        switch (checkBoxUse) {
-//            case 0:
-//                MenuItem menuItem = menu.findItem(R.id.id_sort_datenew);
-//                menuItem.setChecked(true);
-//                checkBoxUse = menuItem.getItemId();
-//                break;
-//            case R.id.id_sort_name:
-//                menu.findItem(checkBoxUse).setChecked(true);
-//                noteList = database.notesDao().getNotesListByName();
-//                adapter.setmData(noteList, getParentFragment());
-//                break;
-//            case R.id.id_sort_datenew:
-//                menu.findItem(checkBoxUse).setChecked(true);
-//                noteList = database.notesDao().getNotesListByDate();
-//                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
-//                break;
-//            case R.id.id_sort_dateold:
-//                menu.findItem(checkBoxUse).setChecked(true);
-//                noteList = database.notesDao().getNotesListByDate();
-//                adapter.setmData(noteList, getParentFragment());
-//                break;
-//        }
+    public void onCreatePopupMenu(View view) {
+       popup = new PopupMenu(getContext(), view);
+        popup.inflate(R.menu.menu_sort);
+        Menu menu = popup.getMenu();
+        checkBoxUse = preferences.getInt(BOX_STATE, 0);
+        switch (checkBoxUse) {
+            case 0:
+                MenuItem menuItem = menu.findItem(R.id.id_sort_datenew);
+                menuItem.setChecked(true);
+                checkBoxUse = menuItem.getItemId();
+                break;
+            case R.id.id_sort_name:
+                menu.findItem(checkBoxUse).setChecked(true);
+                noteList = database.notesDao().getNotesListByName();
+                adapter.setmData(noteList, getParentFragment());
+                break;
+            case R.id.id_sort_datenew:
+                menu.findItem(checkBoxUse).setChecked(true);
+                noteList = database.notesDao().getNotesListByDate();
+                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
+                break;
+            case R.id.id_sort_dateold:
+                menu.findItem(checkBoxUse).setChecked(true);
+                noteList = database.notesDao().getNotesListByDate();
+                adapter.setmData(noteList, getParentFragment());
+                break;
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -135,32 +131,40 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         return tempList;
     }
 
-//        switch (item.getItemId()) {
-//            case R.id.id_sort_name:
-//                item.setChecked(!item.isChecked());
-//                noteList = database.notesDao().getNotesListByName();
-//                adapter.setmData(noteList, getParentFragment());
-//                checkBoxUse = item.getItemId();
-//                break;
-//            case R.id.id_sort_datenew:
-//                item.setChecked(!item.isChecked());
-//                noteList = database.notesDao().getNotesListByDate();
-//                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
-//                checkBoxUse = item.getItemId();
-//                break;
-//            case R.id.id_sort_dateold:
-//                item.setChecked(!item.isChecked());
-//                noteList = database.notesDao().getNotesListByDate();
-//                adapter.setmData(noteList, getParentFragment());
-//                checkBoxUse = item.getItemId();
-//                break;
-//        }
-//        preferences.edit()
-//                .putInt(BOX_STATE, checkBoxUse)
-//                .apply();
-//        return super.onOptionsItemSelected(item);
-//    }
+    public void showMenu(View v) {
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.id_sort_name:
+                        item.setChecked(!item.isChecked());
+                        noteList = database.notesDao().getNotesListByName();
+                        adapter.setmData(noteList, getParentFragment());
+                        checkBoxUse = item.getItemId();
+                        break;
+                    case R.id.id_sort_datenew:
+                        item.setChecked(!item.isChecked());
+                        noteList = database.notesDao().getNotesListByDate();
+                        adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
+                        checkBoxUse = item.getItemId();
+                        break;
+                    case R.id.id_sort_dateold:
+                        item.setChecked(!item.isChecked());
+                        noteList = database.notesDao().getNotesListByDate();
+                        adapter.setmData(noteList, getParentFragment());
+                        checkBoxUse = item.getItemId();
+                        break;
+            }
+                 preferences.edit()
+                .putInt(BOX_STATE, checkBoxUse)
+                .apply();
+                return true;
 
+            }
+        });
+//        popup.inflate(R.menu.menu_sort);
+        popup.show();
+    }
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -251,6 +255,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
                 return true;
             }
         });
+
          final int searchViewId2 = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_close_btn", null, null);
         ImageView searchIconClose = searchView.findViewById(searchViewId2);
@@ -267,6 +272,15 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        ImageButton btnsort = view.findViewById(R.id.button_sort);
+        onCreatePopupMenu(btnsort);
+        btnsort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMenu(v);
             }
         });
         return view;

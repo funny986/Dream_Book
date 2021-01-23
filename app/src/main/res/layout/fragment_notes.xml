@@ -9,21 +9,41 @@
         android:orientation="vertical"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
+<LinearLayout android:layout_width="320dp"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:layout_gravity="center_horizontal"
+              android:layout_marginTop="@dimen/toolbar_down"
+              android:background="@drawable/toolbar_background"
+             >
     <SearchView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/toolbar_down"
             android:imeOptions="actionSearch"
-            android:background="@drawable/search_background"
             android:id="@+id/search_in"
             android:iconifiedByDefault="false"
+            android:gravity="center_horizontal"
             android:searchIcon="@drawable/ic_search_24"
             android:closeIcon="@drawable/ic_clear_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent">
 
+
+    </SearchView>
+
+    <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_sort"
+            android:background="@color/transparent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_sort"
+    />
+
+</LinearLayout>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
