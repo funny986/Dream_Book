@@ -18,6 +18,10 @@
         <action android:id="@+id/action_Notes_to_Interpretation"
                 app:destination="@id/nav_interpretation"/>
 
+        <action android:id="@+id/action_Notes_to_Edit"
+                app:destination="@id/nav_edit"/>
+
+
         <argument
                 android:name="gender"
                 app:argType="integer"/>
@@ -55,20 +59,20 @@
                 android:name="noteId"
                 app:argType="integer"/>
 
-        <argument
-                android:name="nameNote"
-                app:argType="string"/>
-        <argument
-                android:name="note"
-                app:argType="string"/>
+<!--        <argument-->
+<!--                android:name="nameNote"-->
+<!--                app:argType="string"/>-->
+<!--        <argument-->
+<!--                android:name="note"-->
+<!--                app:argType="string"/>-->
 
-        <argument
-                android:name="dateNote"
-                app:argType="string"/>
+<!--        <argument-->
+<!--                android:name="dateNote"-->
+<!--                app:argType="string"/>-->
 
-        <argument
-                android:name="labelNote"
-                app:argType="string"/>
+<!--        <argument-->
+<!--                android:name="labelNote"-->
+<!--                app:argType="string"/>-->
 
 
     </fragment>

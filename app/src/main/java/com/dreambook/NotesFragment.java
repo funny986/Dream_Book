@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -202,29 +201,24 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
                 NavHostFragment.findNavController(NotesFragment.this)
                         .navigate(action);
             }
+            @Override
+            public void onItemDeleted(Notes note) {
+                String toast = note.getNameNote();
+                Toast.makeText(getContext(), "Удаление записи: " + toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
+                database.notesDao().delete(note);
+            }
+            @Override
+            public void onItemEdit(Notes note) {
+                int id = note.getId();
+                NotesFragmentDirections.ActionNotesToEdit action =
+                        NotesFragmentDirections.actionNotesToEdit(id);
+                NavHostFragment.findNavController(NotesFragment.this)
+                        .navigate(action);
+            }
         });
         setHasOptionsMenu(true);
-
-        ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
-            @Override
-            public int getMovementFlags(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder) {
-                final int dragFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-                final int swipeFlags = ItemTouchHelper.START ;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            }
-
-            @Override
-            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
-                adapter.onItemDismiss(viewHolder.getAdapterPosition());
-            }
-        };
-       mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(recyclerView);
 
         searchView =view.findViewById(R.id.search_in);
         drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
@@ -278,8 +272,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    ItemTouchHelper mItemTouchHelper;
-
     public void onViewCreated(@NonNull @NotNull View view,
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -291,7 +283,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 bottomNavigation.setVisibility(View.INVISIBLE);
-//                fab.setVisibility(View.INVISIBLE);
                 searchView.setVisibility(View.INVISIBLE);
                 NavHostFragment.findNavController(NotesFragment.this).navigate(R.id.nav_record);
             }

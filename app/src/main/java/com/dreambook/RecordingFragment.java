@@ -76,8 +76,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             case R.id.button_exit:
                 fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
                         Objects.requireNonNull(getContext()).getTheme()));
-                NavHostFragment.findNavController(RecordingFragment.this)
-                        .navigate(R.id.nav_notes);
+                Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
             case R.id.button_save:
                 fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,

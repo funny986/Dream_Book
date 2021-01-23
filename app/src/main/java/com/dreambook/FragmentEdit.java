@@ -115,14 +115,20 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         label = view.findViewById(R.id.label_edit_et);
         date = view.findViewById(R.id.date_note_et);
         assert getArguments() != null;
-        name = FragmentEditArgs.fromBundle(getArguments()).getNameNote();
-        noteOrigin = "  " +  FragmentEditArgs.fromBundle(getArguments()).getNote();
-        label.setText(FragmentEditArgs
-                    .fromBundle(getArguments())
-                    .getLabelNote());
+       int id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
+       Notes notes = database.notesDao().getNoteById(id);
+//        name = FragmentEditArgs.fromBundle(getArguments()).getNameNote();
+        name = notes.getNameNote();
+        noteOrigin = "  " + notes.getNote();
+//                "  " +  FragmentEditArgs.fromBundle(getArguments()).getNote();
+        label.setText(notes.getLabelNote());
+//        label.setText(FragmentEditArgs
+//                    .fromBundle(getArguments())
+//                    .getLabelNote());
         recNote = noteOrigin;
             if (name.equals("")) name = "Без названия";
-        dateStr = FragmentEditArgs.fromBundle(getArguments()).getDateNote();
+//        dateStr = FragmentEditArgs.fromBundle(getArguments()).getDateNote();
+        dateStr = notes.getDate();
         Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots("__.__.__");
         FormatWatcher formatWatcher = new MaskFormatWatcher( MaskImpl.createTerminated(slots));
         formatWatcher.installOn(date);

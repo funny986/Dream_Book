@@ -136,11 +136,12 @@ public class InterpretationFragment extends Fragment {
             public void onClick(View v) {
                 InterpretationFragmentDirections.ActionInterpretationToEdit action =
                         InterpretationFragmentDirections.actionInterpretationToEdit(
-                                id,
-                                nameStr,
-                                noteOrigin,
-                                dateStr,
-                                labelStr);
+                                id);
+//                                ,
+//                                nameStr,
+//                                noteOrigin,
+//                                dateStr,
+//                                labelStr);
                 NavHostFragment.findNavController(InterpretationFragment.this)
                         .navigate(action);
 
