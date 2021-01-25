@@ -1,18 +1,13 @@
 package com.dreambook;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.widget.TextView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.transition.Fade;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class InfoFragment extends Fragment {
 
@@ -40,6 +35,10 @@ public class InfoFragment extends Fragment {
         setHasOptionsMenu(true);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
+        this.setSharedElementEnterTransition(new DetailsTransition());
+        this.setEnterTransition(new Fade());
+        setExitTransition(new Fade());
+        this.setSharedElementReturnTransition(new DetailsTransition());
     }
 
     @Override

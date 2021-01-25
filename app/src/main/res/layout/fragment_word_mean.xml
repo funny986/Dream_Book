@@ -5,12 +5,29 @@
         android:layout_marginTop="@dimen/toolbar_down"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/margindown_out_nav"
         tools:context=".WordMeanFragment">
 
+<LinearLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/meanword_tv"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/buttonText"
+            android:textSize="@dimen/textSize"
+         />
+
     <TextView
             android:id="@+id/mean_tv"
+            android:paddingTop="@dimen/padd_text_top"
+            android:layout_gravity="start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
+</LinearLayout>
 </androidx.core.widget.NestedScrollView>

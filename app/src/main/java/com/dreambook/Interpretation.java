@@ -12,8 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.dreambook.MainActivity.database;
-import static com.dreambook.dataBase.Base.EXEPT_WORD;
-import static com.dreambook.dataBase.Base.FULL_WORD;
+import static com.dreambook.dataBase.Base.*;
 
 public class Interpretation implements ExecutorService{
 
@@ -170,7 +169,9 @@ public class Interpretation implements ExecutorService{
             String originNote = note;
             note = note.toLowerCase(Locale.ROOT);
             exeptList = database.wordsDao().getWordsByType(EXEPT_WORD, gender);
+            exeptList.addAll(database.wordsDao().getWordsByType(DECLENCION_EXEPT_WORD, gender));
             fullWordList = database.wordsDao().getWordsByType(FULL_WORD, gender);
+            fullWordList.addAll(database.wordsDao().getWordsByType(DECLENCION_WORD, gender));
             listFromNote = new ArrayList<>();
             executor = Executors.newFixedThreadPool(2);
             Pattern pattern = Pattern.compile("[а-я]+\\b");

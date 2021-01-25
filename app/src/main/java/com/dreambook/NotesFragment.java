@@ -12,43 +12,46 @@ import android.view.inputmethod.InputMethodManager;
 import android.content.SharedPreferences;
 import android.widget.*;
 
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentTransaction;
+import org.jetbrains.annotations.NotNull;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.dreambook.dataBase.Notes;
-import org.jetbrains.annotations.NotNull;
+import static com.dreambook.MainActivity.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.dreambook.MainActivity.*;
-
-public class NotesFragment extends Fragment implements View.OnClickListener{
+public class NotesFragment extends Fragment implements View.OnClickListener, RecyclerView.OnItemTouchListener {
 
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
     public RecycleViewAdapter adapter;
-
     private List<Notes> noteList, searchList;
     public BottomNavigationView bottomNavigation;
+
     int checkBoxUse;
+    int genderForNote;
+
     private FloatingActionButton fab;
     public SearchView searchView;
     public Drawable drawable;
-    Activity activity;
+    private Activity activity;
     public SharedPreferences preferences;
-    public int genderForNote;
     public PopupMenu popup;
 
-    public NotesFragment() {
-    }
+    public NotesFragment() {}
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -99,17 +102,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener{
             case R.id.id_sort_name:
                 menu.findItem(checkBoxUse).setChecked(true);
                 noteList = database.notesDao().getNotesListByName();
-                adapter.setmData(noteList, getParentFragment());
+                adapter.setmData(noteList);
                 break;
             case R.id.id_sort_datenew:
                 menu.findItem(checkBoxUse).setChecked(true);
                 noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
+                adapter.setmData(sortNewDateFirst(noteList));
                 break;
             case R.id.id_sort_dateold:
                 menu.findItem(checkBoxUse).setChecked(true);
                 noteList = database.notesDao().getNotesListByDate();
-                adapter.setmData(noteList, getParentFragment());
+                adapter.setmData(noteList);
                 break;
         }
     }
@@ -139,19 +142,19 @@ public class NotesFragment extends Fragment implements View.OnClickListener{
                     case R.id.id_sort_name:
                         item.setChecked(!item.isChecked());
                         noteList = database.notesDao().getNotesListByName();
-                        adapter.setmData(noteList, getParentFragment());
+                        adapter.setmData(noteList);
                         checkBoxUse = item.getItemId();
                         break;
                     case R.id.id_sort_datenew:
                         item.setChecked(!item.isChecked());
                         noteList = database.notesDao().getNotesListByDate();
-                        adapter.setmData(sortNewDateFirst(noteList), getParentFragment());
+                        adapter.setmData(sortNewDateFirst(noteList));
                         checkBoxUse = item.getItemId();
                         break;
                     case R.id.id_sort_dateold:
                         item.setChecked(!item.isChecked());
                         noteList = database.notesDao().getNotesListByDate();
-                        adapter.setmData(noteList, getParentFragment());
+                        adapter.setmData(noteList);
                         checkBoxUse = item.getItemId();
                         break;
             }
@@ -159,11 +162,24 @@ public class NotesFragment extends Fragment implements View.OnClickListener{
                 .putInt(BOX_STATE, checkBoxUse)
                 .apply();
                 return true;
-
             }
         });
-//        popup.inflate(R.menu.menu_sort);
         popup.show();
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
     }
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -183,15 +199,18 @@ public class NotesFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notes, container, false);
+        final View view = inflater.inflate(R.layout.fragment_notes, container, false);
         noteList = database.notesDao().getNotesListByDate();
         recyclerView = view.findViewById(R.id.note_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SpacesItemDecoration(1));
         adapter = new RecycleViewAdapter(getContext(), noteList);
         noteList = sortNewDateFirst(noteList);
-        adapter.setmData(noteList, getParentFragment());
+        adapter.setmData(noteList);
         recyclerView.setAdapter(adapter);
+        ///
+//        recyclerView.addOnItemTouchListener(this);
+        ///
         adapter.setClickInterface(new RecycleViewAdapter.ClickInterface() {
             @Override
             public void clickEventOne(Notes obj) {
@@ -222,8 +241,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener{
                         .navigate(action);
             }
         });
-        setHasOptionsMenu(true);
-
+//        setHasOptionsMenu(true);
         searchView =view.findViewById(R.id.search_in);
         drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
@@ -243,15 +261,19 @@ public class NotesFragment extends Fragment implements View.OnClickListener{
             public boolean onQueryTextChange(String searchText) {
                 List<Notes> tempString = new ArrayList<>();
                 searchList.clear();
-                for (Notes tempCont : noteList) {
+                for (int i = 0; i < noteList.size(); i++) {
+                    Notes tempCont = noteList.get(i);
                     String temp = tempCont.getNameNote();
                     temp += tempCont.getLabelNote();
                     if (temp.toLowerCase().contains(searchText.toLowerCase())) {
                         tempString.add(tempCont);
                     }
+                    else {
+                        adapter.notifyItemRemoved(i);
+                    }
                 }
                 searchList = tempString;
-                adapter.setmData(searchList, getParentFragment());
+                adapter.setmData(searchList);
                 return true;
             }
         });

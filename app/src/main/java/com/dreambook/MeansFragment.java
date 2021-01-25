@@ -16,8 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Fade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -27,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import static com.dreambook.MainActivity.database;
+import static com.dreambook.dataBase.Base.GENDER_GENERAL;
 
 public class MeansFragment extends Fragment implements View.OnClickListener
                                              , SearchView.OnQueryTextListener{
@@ -100,7 +104,6 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public void onViewCreated(@NonNull @NotNull View view,
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     public int getScreenHeight() {
@@ -129,7 +132,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         heightSimbol = convertPixelsToDp(summ2, Objects.requireNonNull(getContext()));
         params.setMarginStart(20);
         if (heightFull <= 1920)
-            heightSimbol -= 5.5f;
+            heightSimbol -= 7.1f;
         if (heightFull > 1920 && heightFull <= 2280) {
             heightSimbol -= 6.6f;
             params.setMarginStart(150);
@@ -218,14 +221,19 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         searchList.clear();
         skipMark = true;
         setCheckVisibleChar('а', 'а');
-        for (Words tempCont : wordList) {
+        for (int i = 0; i < wordList.size(); i++) {
+            Words tempCont = wordList.get(i);
             String temp = tempCont.getWord();
             if (temp.toLowerCase().contains(newText.toLowerCase())) {
                 tempString.add(tempCont);
-            }
+                            }
+//            adapter.notifyItemRemoved(i);
+            adapter.notifyItemChanged(i);
         }
         searchList = tempString;
-        adapter.setmData(searchList, getParentFragment());
+        adapter.setmData(searchList);
+//        adapter.notifyDataSetChanged();
+
         return true;
     }
 
@@ -271,13 +279,13 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        wordList = database.wordsDao().listForFragment();
+        wordList = database.wordsDao().listForFragment(genderForNote);
         recyclerView = mainView.findViewById(R.id.means_recyclerview);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(1));
             adapter = new RecycleViewAdptr(getContext(), wordList);
-            adapter.setmData(wordList, getParentFragment());
+            adapter.setmData(wordList);
         min = getScreenHeight() - hrl;
         recyclerView.getLayoutParams().height = min;
         recyclerView.setHasFixedSize(true);
@@ -293,6 +301,19 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                     char firstWord = adapter.mData.get(firstVisiblePosition).getTableName();
                     setCheckVisibleChar(firstWord, lastWord);
                 }
+            }
+        });
+        adapter.setClickInterfaceWord(new RecycleViewAdptr.ClickInterfaceWord() {
+            @Override
+            public void clickEventOne(Words word) {
+                String arg = word.getWord();
+                Toast.makeText(getContext(), "Толкование  " + arg,
+                        Toast.LENGTH_SHORT)
+                        .show();
+                MeansFragmentDirections.ActionWordToMean action =
+                        MeansFragmentDirections.actionWordToMean(arg);
+                NavHostFragment.findNavController(MeansFragment.this)
+                        .navigate(action);
             }
         });
         return mainView;

@@ -29,8 +29,8 @@ public interface WordsDao {
     @Query("SELECT mean FROM words WHERE word = :word")
     String getMean(String word);
 
-    @Query("SELECT * FROM words WHERE gender = 0 AND (type = 1 OR type = 2)")
-    List<Words> listForFragment();
+    @Query("SELECT * FROM words WHERE gender = :gender AND (type = 0 OR type = 1)")
+    List<Words> listForFragment(int gender);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Words words);

@@ -9,15 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.*;
+import androidx.transition.Fade;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 import static com.dreambook.MainActivity.*;
 
@@ -27,6 +25,11 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.setSharedElementEnterTransition(new DetailsTransition());
+        this.setEnterTransition(new Fade());
+        setExitTransition(new Fade());
+        this.setSharedElementReturnTransition(new DetailsTransition());
+
         return inflater.inflate(R.layout.fragment_setting, container, false);
     }
 

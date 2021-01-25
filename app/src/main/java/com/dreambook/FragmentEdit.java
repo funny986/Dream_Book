@@ -7,16 +7,15 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import com.gainwise.linker.Linker;
-import com.gainwise.linker.LinkerListener;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.dreambook.dataBase.Notes;
+import static com.dreambook.MainActivity.*;
 import org.jetbrains.annotations.NotNull;
 import ru.tinkoff.decoro.MaskImpl;
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
@@ -27,11 +26,8 @@ import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import static com.dreambook.MainActivity.*;
 
 public class FragmentEdit extends Fragment implements View.OnClickListener {
 
@@ -117,22 +113,15 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         assert getArguments() != null;
        int id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
        Notes notes = database.notesDao().getNoteById(id);
-//        name = FragmentEditArgs.fromBundle(getArguments()).getNameNote();
         name = notes.getNameNote();
         noteOrigin = "  " + notes.getNote();
-//                "  " +  FragmentEditArgs.fromBundle(getArguments()).getNote();
         label.setText(notes.getLabelNote());
-//        label.setText(FragmentEditArgs
-//                    .fromBundle(getArguments())
-//                    .getLabelNote());
         recNote = noteOrigin;
-            if (name.equals("")) name = "Без названия";
-//        dateStr = FragmentEditArgs.fromBundle(getArguments()).getDateNote();
         dateStr = notes.getDate();
         Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots("__.__.__");
         FormatWatcher formatWatcher = new MaskFormatWatcher( MaskImpl.createTerminated(slots));
         formatWatcher.installOn(date);
-            nameNote.setText(name);
+       if (!name.equals("Без названия")) nameNote.setText(name);
             record.setText(recNote);
             date.setText(dateStr);
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);

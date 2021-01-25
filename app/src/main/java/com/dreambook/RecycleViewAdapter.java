@@ -25,9 +25,8 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void setmData(List<Notes> Data, Fragment fragment) {
+    public void setmData(List<Notes> Data) {
         this.mData = Data;
-        this.fragment = fragment;
         notifyDataSetChanged();
     }
 
@@ -80,7 +79,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     public void onItemDismiss(int position) {
         mData.remove(position);
-        notifyItemRemoved(position);
+//        notifyItemRemoved(position);
     }
 
     @Override
@@ -123,11 +122,11 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         private final ImageButton delete;
         private final ImageButton action;
         private final CardView cardView;
-        public BothSideCoordinatorLayout coordinatorLayout;
+        public TwoStepRightCoordinatorLayout coordinatorLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            coordinatorLayout =(BothSideCoordinatorLayout) itemView;
+            coordinatorLayout =(TwoStepRightCoordinatorLayout) itemView;
             delete = itemView.findViewById(R.id.delete);
             action = itemView.findViewById(R.id.action);
             noteName = itemView.findViewById(R.id.card_note_name);
