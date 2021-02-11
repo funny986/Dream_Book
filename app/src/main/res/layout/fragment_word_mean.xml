@@ -31,3 +31,5 @@ android:orientation="vertical">
             />
 </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+<!--        android:lineSpacingMultiplier="0.8" интервал между строками в текст вью-->

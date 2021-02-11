@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     public int autorgender, checkState;
 
-    private final int VERSION = 1;
-
     public Bundle args;
     public BottomNavigationView bottomNavigationView;
     public FloatingActionButton fab;
@@ -78,10 +76,12 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
         if (preferences.contains(APP_PREFERENCE_COUNT)) {
             count = preferences.getBoolean(APP_PREFERENCE_COUNT, false);
         }
-        if (!count) {
-            setDataBase(database);
-            count = true;
-        }
+        setDataBase(database);
+//
+//        if (!count) {
+//            setDataBase(database);
+//            count = true;
+//        }
         if (preferences.contains(AUTOR_GENDER)) {
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
