@@ -76,6 +76,14 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
         if (preferences.contains(APP_PREFERENCE_COUNT)) {
             count = preferences.getBoolean(APP_PREFERENCE_COUNT, false);
         }
+        Thread data = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                setDataBase(database);
+            }
+        });
+        data.start();
+
 //        setDataBase(database);
 //
 //        if (!count) {
@@ -238,13 +246,13 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
             }
         });
         args = new Bundle();
-        Thread data = new Thread(new Runnable() {
-            @Override
-            public void run() {
-           setDataBase(database);
-            }
-        });
-        data.start();
+//        Thread data = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//           setDataBase(database);
+//            }
+//        });
+//        data.start();
     }
 }
 
