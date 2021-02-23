@@ -5,9 +5,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2' as Object
-        classpath 'android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0' as Object
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0' as Object
+        classpath 'com.android.tools.build:gradle:4.0.2' as java.lang.Object
+        classpath 'android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0' as java.lang.Object
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0' as java.lang.Object
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
