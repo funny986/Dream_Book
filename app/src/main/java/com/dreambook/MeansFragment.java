@@ -36,15 +36,15 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                                              , SearchView.OnQueryTextListener{
     public MeansFragment() {}
 
-    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','т','у'
-                            ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //27
+    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','c','т','у'
+                            ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //28
 
     private int hrl;
     private int min;
     private int firstVisiblePosition;
     private int lastCompleteVisiblePosition;
     private int genderForNote;
-    private final ArrayList<Character> letter = new ArrayList<>(27);
+    private final ArrayList<Character> letter = new ArrayList<>(28);
     boolean skipMark = false;
 
     private InputMethodManager imm;
@@ -122,14 +122,14 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        BottomNavigationView bottomNavigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
         int tool = 0;
         hrl = bottomNavigationView.getHeight(); //196
         int heightFull = Resources.getSystem().getDisplayMetrics().heightPixels;
         min = heightFull - hrl - tool;//2516 // 2320 минус тулбар
         int widthsreen = Resources.getSystem().getDisplayMetrics().widthPixels;
         float summ2 = (float) min / ALPHABET.length;//80
-        heightSimbol = convertPixelsToDp(summ2, Objects.requireNonNull(getContext()));
+        heightSimbol = convertPixelsToDp(summ2, requireContext());
         params.setMarginStart(20);
         if (heightFull <= 1920)
             heightSimbol -= 7.1f;

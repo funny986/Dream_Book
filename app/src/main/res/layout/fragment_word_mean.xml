@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/margindown_out_nav"
+
         tools:context=".WordMeanFragment">
 
 <LinearLayout android:layout_width="match_parent"
@@ -24,6 +25,7 @@ android:orientation="vertical">
 
     <TextView
             android:id="@+id/mean_tv"
+            android:paddingLeft="10sp"
             android:paddingTop="@dimen/padd_text_top"
             android:layout_gravity="start"
             android:layout_width="wrap_content"
@@ -31,3 +33,5 @@ android:orientation="vertical">
             />
 </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+<!--        android:lineSpacingMultiplier="0.8" интервал между строками в текст вью-->

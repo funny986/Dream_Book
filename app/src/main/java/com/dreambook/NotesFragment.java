@@ -203,7 +203,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         noteList = database.notesDao().getNotesListByDate();
         recyclerView = view.findViewById(R.id.note_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new SpacesItemDecoration(1));
+        recyclerView.addItemDecoration(new SpacesItemDecoration(3));
         adapter = new RecycleViewAdapter(getContext(), noteList);
         noteList = sortNewDateFirst(noteList);
         adapter.setmData(noteList);

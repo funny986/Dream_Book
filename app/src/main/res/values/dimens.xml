@@ -59,7 +59,7 @@
     <dimen name="recycler_margtop">15dp</dimen>
 
     <dimen name="height_item_word">27dp</dimen>
-    <dimen name="height_item_note">60dp</dimen>
+    <dimen name="height_item_note">45dp</dimen>
 
     <!-- Доп. Параметры textView -->
 

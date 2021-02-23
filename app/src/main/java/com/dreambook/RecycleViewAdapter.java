@@ -106,7 +106,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mClickInterface.onItemEdit(mData.get(position));
             }
         });
-
     }
 
     @Override

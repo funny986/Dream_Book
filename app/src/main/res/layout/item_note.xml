@@ -15,7 +15,7 @@
                 android:id="@+id/delete"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
+                android:background="#FF0000"
                 android:src="@drawable/ic_delete"
                 android:layout_toStartOf="@+id/action"
                 />
@@ -28,7 +28,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
-                android:background="@color/colorAccent"
+                android:background="#FF8000"
                 android:src="@drawable/ic_record_dark" />
     </RelativeLayout>
 

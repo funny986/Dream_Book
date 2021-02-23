@@ -73,16 +73,19 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                               .Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+    public int id;
 
     @Override
     public void onClick(@NotNull View v) {
         switch (v.getId()){
             case R.id.button_exit:
+                FragmentEditDirections.ActionEditToInterpretation action =
+                        FragmentEditDirections.actionEditToInterpretation(id);
                 NavHostFragment.findNavController(FragmentEdit.this)
-                        .navigate(R.id.nav_notes);
+                        .navigate(action);
                 break;
             case R.id.button_save:
-                int id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
+                 id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
                 name = nameNote.getText().toString();
                 if (name.equals("")) name = "Без названия";
                 noteOrigin = "  " + record.getText().toString();
@@ -96,8 +99,10 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                 labelStr = label.getText().toString();
                 note = new Notes(id, name, noteOrigin, dateStr, labelStr);
                 database.notesDao().update(note);
+                FragmentEditDirections.ActionEditToInterpretation action2 =
+                        FragmentEditDirections.actionEditToInterpretation(id);
                 NavHostFragment.findNavController(FragmentEdit.this)
-                        .navigate(R.id.nav_notes);
+                        .navigate(action2);
                 break;
         }
     }
@@ -111,7 +116,7 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         label = view.findViewById(R.id.label_edit_et);
         date = view.findViewById(R.id.date_note_et);
         assert getArguments() != null;
-       int id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
+       id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
        Notes notes = database.notesDao().getNoteById(id);
         name = notes.getNameNote();
         noteOrigin = "  " + notes.getNote();
