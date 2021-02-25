@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dreambook.dataBase.Notes;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
@@ -21,7 +23,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public Fragment fragment;
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NotNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
@@ -53,11 +55,11 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         private int mPosition;
         private boolean mClickable;
 
-        void setPosition(int position) {
+        private void setPosition(int position) {
             mPosition = position;
         }
 
-        void setClickable(boolean clickable) {
+        private void setClickable(boolean clickable) {
             mClickable = clickable;
         }
 

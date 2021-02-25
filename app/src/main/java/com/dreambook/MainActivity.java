@@ -246,13 +246,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
             }
         });
         args = new Bundle();
-//        Thread data = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//           setDataBase(database);
-//            }
-//        });
-//        data.start();
     }
 }
 
