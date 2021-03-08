@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dreambook.dataBase.App;
 import com.dreambook.dataBase.MeaningDatabase;
-import com.dreambook.dialogs.ExitDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -137,10 +136,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onPause() {
         super.onPause();
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putBoolean(APP_PREFERENCE_COUNT, count);
-//        editor.putInt(AUTOR_GENDER, autorgender);
-//        editor.apply();
     }
 
     protected void onDestroy() {
@@ -201,9 +196,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
                         if (item.isChecked()) return false;
                         navController.navigate(R.id.nav_setting);
                         break;
-                    case R.id.action_exit:
-                        ExitDialog dialog = new ExitDialog();
-                        dialog.show(getSupportFragmentManager(), "Exit");
                 }
                 return true;
             }

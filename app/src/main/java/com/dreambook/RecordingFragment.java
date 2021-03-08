@@ -2,20 +2,19 @@ package com.dreambook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,11 +23,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.dreambook.dataBase.Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
-import ru.tinkoff.decoro.MaskImpl;
-import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
-import ru.tinkoff.decoro.slots.Slot;
-import ru.tinkoff.decoro.watchers.FormatWatcher;
-import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,13 +32,16 @@ import static com.dreambook.MainActivity.database;
 
 public class RecordingFragment extends Fragment implements View.OnClickListener, RecognitionListener {
 
-    private EditText nameNote, dateNote, record, labels;
+    private EditText nameNote, record, labels;
     private FloatingActionButton fab;
     private Resources resources;
     private SpeechRecognizer sr;
-    public TextView recording;
+    private DatePicker datePicker;
+    public TextView recording, dateNote;
     public Button btnExit, btnSave;
+    private String dateStr;
     private boolean recordVoice = false;
+    public Calendar calendar;
 
     public RecordingFragment() {}
 
@@ -92,11 +89,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                 if (name.equals("")) name = "Без названия";
                 String noteOrigin = record.getText().toString();
                 String dateStr = dateNote.getText().toString();
-                    if (dateStr.equals("")){
-                        Date date = new Date();
-                        DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-                        dateStr = df.format(date);
-                    }
                 String labelStr = labels.getText().toString();
                     if (labelStr.equals("")) labelStr = " ";
                 Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
@@ -117,7 +109,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
 //                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
                     intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                             Objects.requireNonNull(getContext()).getPackageName());
-                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 25000);
+                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 20000);
                     intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
                     intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
                     sr = SpeechRecognizer.createSpeechRecognizer(getContext());
@@ -128,6 +120,16 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    public void setDateNote(){
+                dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
+                        DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+                     Date date = new Date();
+                     date = calendar.getTime();
+             final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+             dateStr = df.format(date);
+             dateNote.setText(dateStr);
+            }
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -136,29 +138,38 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             record = view.findViewById(R.id.record_et);
             labels = view.findViewById(R.id.label_et);
             dateNote = view.findViewById(R.id.date_note);
+           datePicker = view.findViewById(R.id.datePicker);
             recording = view.findViewById(R.id.recording);
             recording.setVisibility(View.INVISIBLE);
-        Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots("__.__.__");
-        FormatWatcher formatWatcher = new MaskFormatWatcher( MaskImpl.createTerminated(slots));
-        formatWatcher.installOn(dateNote);
+            calendar = Calendar.getInstance(Locale.getDefault());
+        setDateNote();
         nameNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
                            @Override
                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                                   dateNote.requestFocus();
+                                   record.requestFocus();
                                    return true;
                                }
                                return false;
                            }
                        });
-        dateNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        dateNote.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    record.requestFocus();
-                    return true;
-                }
-                return false;
+            public void onClick(View v) {
+                DatePickerDialog.OnDateSetListener dateChange = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(@NotNull DatePicker view, int year, int month, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        setDateNote();
+                    }
+                };
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), dateChange,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.show();
             }
         });
         btnExit = view.findViewById(R.id.button_exit);
@@ -245,7 +256,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onPartialResults(Bundle partialResults) {
+    public void onPartialResults(@NotNull Bundle partialResults) {
         ArrayList<String> result = partialResults
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         String  str = result.get(0);
