@@ -15,10 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 import com.dreambook.dataBase.Notes;
+import com.dreambook.dataBase.Words;
 import com.gainwise.linker.Linker;
 import com.gainwise.linker.LinkerListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.dreambook.MainActivity.*;
@@ -39,9 +42,6 @@ public class InterpretationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        gender = activity
-                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
-                .getInt(AUTOR_GENDER, 0);
     }
 
     @Override
@@ -73,16 +73,16 @@ public class InterpretationFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
+        gender = activity
+                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
+                .getInt(AUTOR_GENDER, 0);
     }
-
-    private String noteOrigin;
 
     @Nullable
     @Override
@@ -96,13 +96,15 @@ public class InterpretationFragment extends Fragment {
             id = getArguments().getInt("noteID");
             note = database.notesDao() //запись от пользователя
                     .getNoteById(id);
-           noteOrigin = " " + note.getNote();
+            String noteOrigin = " " + note.getNote();
            Linker linker = new Interpretation(interpritate, noteOrigin, gender).getLinker();
            linker.setListener(new LinkerListener() {
                @Override
                public void onLinkClick(String charSequenceClicked) {
+                   String mean = database.wordsDao().getMean(charSequenceClicked, gender);
+                   String fullWord = database.wordsDao().getFullWord(mean);
                    InterpretationFragmentDirections.ActionInterpretationToWordmean action =
-                           InterpretationFragmentDirections.actionInterpretationToWordmean(charSequenceClicked);
+                           InterpretationFragmentDirections.actionInterpretationToWordmean(fullWord, gender);
                    NavHostFragment.findNavController(InterpretationFragment.this)
                            .navigate(action);
                    Toast.makeText(getContext(), charSequenceClicked, Toast.LENGTH_SHORT).show();
@@ -135,16 +137,9 @@ public class InterpretationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 InterpretationFragmentDirections.ActionInterpretationToEdit action =
-                        InterpretationFragmentDirections.actionInterpretationToEdit(
-                                id);
-//                                ,
-//                                nameStr,
-//                                noteOrigin,
-//                                dateStr,
-//                                labelStr);
+                        InterpretationFragmentDirections.actionInterpretationToEdit(id);
                 NavHostFragment.findNavController(InterpretationFragment.this)
                         .navigate(action);
-
             }
         });
         return view;

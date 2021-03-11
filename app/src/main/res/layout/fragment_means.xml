@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/recycler_margtop"
                 android:outlineSpotShadowColor="@color/primaryColor"
+                android:layout_marginRight="10dp"
                 android:id="@+id/means_recyclerview"
         >
         </androidx.recyclerview.widget.RecyclerView>

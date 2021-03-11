@@ -124,6 +124,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         private final ImageButton action;
         private final CardView cardView;
         public TwoStepRightCoordinatorLayout coordinatorLayout;
+//        public RightCoordinatorLayout coordinatorLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

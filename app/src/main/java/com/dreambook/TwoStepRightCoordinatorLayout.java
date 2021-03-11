@@ -8,24 +8,12 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.widget.RelativeLayout;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import com.xenione.libs.swipemaker.AbsCoordinatorLayout;
 import com.xenione.libs.swipemaker.SwipeLayout;
 
-
-
-/**
- * Created on 06/04/16.
- */
 public class TwoStepRightCoordinatorLayout extends AbsCoordinatorLayout {
-
-    private ImageView mBg;
-    private View mDelete;
-    private View mAction;
-    private SwipeLayout mForegroundView;
 
     public enum Color {
         PINK(R.color.colorAccent),
@@ -66,19 +54,11 @@ public class TwoStepRightCoordinatorLayout extends AbsCoordinatorLayout {
 
     @Override
     public void doInitialViewsLocation() {
-        mForegroundView = findViewById(R.id.foregroundView);
+        SwipeLayout mForegroundView = findViewById(R.id.foregroundView);
         RelativeLayout mBackgroundView =  findViewById(R.id.backgroundView);
-//        mBg = (ImageView) findViewById(R.id.bg_disc);
-        mDelete = findViewById(R.id.delete);
-        mAction = findViewById(R.id.action);
-
-//        mForegroundView.anchor(-mBackgroundView.getLeft(), -mBackgroundView.getRight());
-//        mForegroundView.anchor(this.getRight(), this.getLeft());
-//        mForegroundView.anchor(-this.getRight(), 0, this.getWidth());
-//        mForegroundView.setPivotX(this.getWidth() / 2);
-//        mForegroundView.setPivotY(0);
-//        mForegroundView.anchor(this.getLeft(), this.getRight());
-        mForegroundView.anchor(-mAction.getLeft(), -mDelete.getLeft(), 0);
+        View mDelete = findViewById(R.id.delete);
+        View mAction = findViewById(R.id.action);
+        mForegroundView.anchor(-mAction.getLeft(), 0, mDelete.getLeft());
     }
 
     @Override
@@ -93,15 +73,5 @@ public class TwoStepRightCoordinatorLayout extends AbsCoordinatorLayout {
 //            applyColorFilter(Color.BLUE);
         }
     }
-
-    private void removeColorFilter(){
-        mBg.clearColorFilter();
-    }
-
-    private void applyColorFilter(Color color) {
-//        if (DrawableCompat.getColorFilter(mBg.getDrawable()) == color.getColor(getContext())) {
-//            return;
-//        }
-//        mBg.setColorFilter(color.getColor(getContext()));
-    }
 }
+

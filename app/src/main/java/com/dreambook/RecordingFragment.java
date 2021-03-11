@@ -109,7 +109,8 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
 //                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
                     intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                             Objects.requireNonNull(getContext()).getPackageName());
-                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 20000);
+                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000);
+                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000000);
                     intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
                     intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
                     sr = SpeechRecognizer.createSpeechRecognizer(getContext());

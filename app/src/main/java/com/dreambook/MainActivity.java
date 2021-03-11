@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     public int autorgender, checkState;
 
-    public Bundle args;
     public BottomNavigationView bottomNavigationView;
     public FloatingActionButton fab;
 
@@ -82,31 +81,24 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
             }
         });
         data.start();
-
-//        setDataBase(database);
-//
-//        if (!count) {
-//            setDataBase(database);
-//            count = true;
-//        }
         if (preferences.contains(AUTOR_GENDER)) {
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
 //        if (preferences.contains(THEME_DARK)) {
 //            darkTheme = preferences.getBoolean(THEME_DARK, false);
 //        }
-
     }
 
-    protected void onResume() {
-        super.onResume();
+    public void setPreferences(){
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(APP_PREFERENCE_COUNT, count);
         editor.putInt(AUTOR_GENDER, autorgender);
         editor.putInt(BOX_STATE, checkState);
-        args.putInt(AUTOR_GENDER, autorgender);
         editor.putBoolean(THEME_DARK, darkTheme);
         editor.apply();
+}
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -114,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
         getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE).edit()
                 .putInt(AUTOR_GENDER, gender)
                 .apply();
-
+        autorgender = gender;
     }
 
     @Override
@@ -146,13 +138,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onRestart() {
         super.onRestart();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(APP_PREFERENCE_COUNT, count);
-        editor.putInt(AUTOR_GENDER, autorgender);
-        editor.putInt(BOX_STATE, checkState);
-        args.putInt(AUTOR_GENDER, autorgender);
-        editor.putBoolean(THEME_DARK, darkTheme);
-        editor.apply();
+        setPreferences();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -190,10 +176,9 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
                         fab.setVisibility(View.VISIBLE);
                         break;
                     case R.id.action_means:
-                        navController.navigate(R.id.nav_means, args);
+                        navController.navigate(R.id.nav_means);
                         break;
                     case R.id.action_setting:
-                        if (item.isChecked()) return false;
                         navController.navigate(R.id.nav_setting);
                         break;
                 }
@@ -237,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
                 navController.navigate(R.id.nav_record);
             }
         });
-        args = new Bundle();
     }
 }
 

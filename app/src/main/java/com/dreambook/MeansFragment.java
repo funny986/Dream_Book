@@ -17,10 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Fade;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -29,14 +27,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static com.dreambook.MainActivity.database;
-import static com.dreambook.dataBase.Base.GENDER_GENERAL;
+import static android.content.Context.MODE_PRIVATE;
+import static com.dreambook.MainActivity.*;
 
 public class MeansFragment extends Fragment implements View.OnClickListener
                                              , SearchView.OnQueryTextListener{
     public MeansFragment() {}
 
-    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','c','т','у'
+    public final char[] ALPHABET = {'а','б','в','г', 'д', 'е', 'ж','з','и','к','л','м','н', 'о', 'п','р','с','т','у'
                             ,'ф','х','ц', 'ч','ш','щ','э','ю','я'}; //28
 
     private int hrl;
@@ -76,7 +74,9 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         assert getArguments() != null;
-        genderForNote = MeansFragmentArgs.fromBundle(getArguments()).getGender();
+//        genderForNote = activity
+//                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
+//                .getInt(AUTOR_GENDER, 0);
         skipMark = false;
         setCheckVisibleChar('а', 'а');
         imm = (InputMethodManager) requireActivity()
@@ -85,7 +85,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         }
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(@NotNull Context context){
         super.onAttach(context);
         if (context instanceof Activity){
             activity = (Activity) context;
@@ -98,7 +98,10 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         setHasOptionsMenu(true);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-   }
+        genderForNote = activity
+                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
+                .getInt(AUTOR_GENDER, 0);
+    }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view,
@@ -138,7 +141,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             params.setMarginStart(150);
         }
         if (heightFull > 2280 && heightFull <= 2880)
-            heightSimbol -= 7.1f;
+            heightSimbol -= 8.5f;
 
         simbol = new TextView[ALPHABET.length];
         for (int i = 0; i < ALPHABET.length; i++) {
@@ -287,7 +290,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             adapter = new RecycleViewAdptr(getContext(), wordList);
             adapter.setmData(wordList);
         min = getScreenHeight() - hrl;
-        recyclerView.getLayoutParams().height = min;
+//        recyclerView.getLayoutParams().height = min - 230;
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -311,7 +314,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                         Toast.LENGTH_SHORT)
                         .show();
                 MeansFragmentDirections.ActionWordToMean action =
-                        MeansFragmentDirections.actionWordToMean(arg);
+                        MeansFragmentDirections.actionWordToMean(arg, genderForNote);
                 NavHostFragment.findNavController(MeansFragment.this)
                         .navigate(action);
             }

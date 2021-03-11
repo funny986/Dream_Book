@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_marginTop="@dimen/toolbar_down"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/margindown_out_nav"
-
+android:layout_marginBottom="60dp"
         tools:context=".WordMeanFragment">
 
 <LinearLayout android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+              android:paddingStart="16dp"
+              android:paddingEnd="16dp"
 android:orientation="vertical">
 
     <TextView
@@ -32,6 +33,6 @@ android:orientation="vertical">
             android:layout_height="wrap_content"
             />
 </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>
 
 <!--        android:lineSpacingMultiplier="0.8" интервал между строками в текст вью-->

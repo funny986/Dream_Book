@@ -208,7 +208,7 @@ public class Interpretation implements ExecutorService{
                     return exeptFindFromText;
                 }
             });
-            /* Поиск совпадений слов по полному совпадению */
+        /* Поиск совпадений слов по полному совпадению */
             findFull = executor.submit(new Callable<ArrayMap<Integer, String>>() {
                 @Override
                 public ArrayMap<Integer, String> call() throws Exception {
@@ -247,6 +247,6 @@ public class Interpretation implements ExecutorService{
             executor.shutdown();
             /*  Конец  блока поиска сравнений слов */
             createTextClick(interpritate);
-        }
+    }
 
 }

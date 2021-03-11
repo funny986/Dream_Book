@@ -44,10 +44,11 @@ public class WordMeanFragment extends Fragment {
         TextView interpretation = view.findViewById(R.id.mean_tv);
         assert getArguments() != null;
         String word = getArguments().getString("word_mean");
+        int gender = getArguments().getInt("gender");
         TextView title = view.findViewById(R.id.meanword_tv);
         title.setText(word);
         word = word.toLowerCase();
-        String mean = database.wordsDao().getMean(word);
+        String mean = database.wordsDao().getMean(word, gender);
         interpretation.setText(mean);
     return view;
     }
