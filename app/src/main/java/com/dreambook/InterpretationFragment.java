@@ -9,24 +9,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 import com.dreambook.dataBase.Notes;
-import com.dreambook.dataBase.Words;
 import com.gainwise.linker.Linker;
 import com.gainwise.linker.LinkerListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.dreambook.MainActivity.*;
 
-@SuppressWarnings("rawtypes")
 public class InterpretationFragment extends Fragment {
 
 
@@ -42,6 +40,10 @@ public class InterpretationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        BottomNavigationView bottomNavigation = requireActivity().findViewById(R.id.bottom_navigation);
+        bottomNavigation.setVisibility(View.INVISIBLE);
+        FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class InterpretationFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         if (context instanceof Activity) {
             activity = (Activity) context;
@@ -77,8 +79,6 @@ public class InterpretationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
-        fab.setVisibility(View.INVISIBLE);
         gender = activity
                 .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
                 .getInt(AUTOR_GENDER, 0);

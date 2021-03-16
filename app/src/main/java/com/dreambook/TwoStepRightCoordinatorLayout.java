@@ -6,6 +6,7 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import androidx.core.content.res.ResourcesCompat;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import com.xenione.libs.swipemaker.AbsCoordinatorLayout;
 import com.xenione.libs.swipemaker.SwipeLayout;
 
 public class TwoStepRightCoordinatorLayout extends AbsCoordinatorLayout {
+
 
     public enum Color {
         PINK(R.color.colorAccent),
@@ -52,26 +54,37 @@ public class TwoStepRightCoordinatorLayout extends AbsCoordinatorLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    public SwipeLayout mForegroundView;
+    public View mDelete, mAction;
+    public  RelativeLayout mBackgroundView;
+    public CloseSwipe clsSwipe;
+
     @Override
     public void doInitialViewsLocation() {
-        SwipeLayout mForegroundView = findViewById(R.id.foregroundView);
-        RelativeLayout mBackgroundView =  findViewById(R.id.backgroundView);
-        View mDelete = findViewById(R.id.delete);
-        View mAction = findViewById(R.id.action);
-        mForegroundView.anchor(-mAction.getLeft(), 0, mDelete.getLeft());
+        mForegroundView = findViewById(R.id.foregroundView);
+        mBackgroundView =  findViewById(R.id.backgroundView);
+       mDelete = findViewById(R.id.delete);
+         mAction = findViewById(R.id.action);
+        mForegroundView.anchor( -mDelete.getLeft(), 0, 0);
+//        clsSwipe = new CloseSwipe() {
+//            @Override
+//            public void closeSwipe(SwipeLayout layout) {
+//
+//            }
+//        };
+//        clsSwipe.closeSwipe(mForegroundView);
+    }
+
+    public interface CloseSwipe{
+        void closeSwipe(SwipeLayout layout);
     }
 
     @Override
     public void onTranslateChange(float global, int index, float relative) {
-        if (index == 0) {
-            if (relative == 0) {
-//                removeColorFilter();
-            } else {
-//                applyColorFilter(Color.PINK);
+        Log.i("translate", "global x: " + global + " section:" + " index:" + index + " relative:" + relative);
+        // global = 0 - шторка открыта 1 - закрыта
+        if (global < 1){
             }
-        } else if (index == 1 && relative > 0) {
-//            applyColorFilter(Color.BLUE);
         }
-    }
 }
 

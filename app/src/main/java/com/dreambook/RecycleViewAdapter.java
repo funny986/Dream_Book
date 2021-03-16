@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.collection.SparseArrayCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,7 +51,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         mClickInterface = clickInterface;
     }
 
-    private class MyClickListener implements View.OnClickListener {
+    private class MyClickListener implements View.OnClickListener{
 
         private int mPosition;
         private boolean mClickable;
@@ -71,6 +72,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -81,7 +83,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     public void onItemDismiss(int position) {
         mData.remove(position);
-//        notifyItemRemoved(position);
     }
 
     @Override
@@ -108,23 +109,21 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
                 mClickInterface.onItemEdit(mData.get(position));
             }
         });
-    }
+      }
 
     @Override
     public int getItemCount() {
         return mData.size();
     }
 
-
     protected class MyViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView noteName, noteDate, noteLabels;
         MyClickListener myClickListener;
-        private final ImageButton delete;
+        public final ImageButton delete;
         private final ImageButton action;
         private final CardView cardView;
         public TwoStepRightCoordinatorLayout coordinatorLayout;
-//        public RightCoordinatorLayout coordinatorLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -136,7 +135,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             noteLabels = itemView.findViewById(R.id.card_note_label);
             myClickListener = new MyClickListener();
             cardView = itemView.findViewById(R.id.card_view);
-            int halfscreen = Resources.getSystem().getDisplayMetrics().widthPixels / 3;
+            int halfscreen = Resources.getSystem().getDisplayMetrics().widthPixels / 4;
             cardView.setOnClickListener(myClickListener);
             delete.getLayoutParams().width = halfscreen;
             action.getLayoutParams().width = halfscreen;

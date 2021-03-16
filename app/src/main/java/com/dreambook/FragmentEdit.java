@@ -1,12 +1,10 @@
 package com.dreambook;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.*;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,15 +14,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.dreambook.dataBase.Notes;
 import static com.dreambook.MainActivity.*;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
-import ru.tinkoff.decoro.MaskImpl;
-import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
-import ru.tinkoff.decoro.slots.Slot;
-import ru.tinkoff.decoro.watchers.FormatWatcher;
-import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -33,13 +29,12 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
 
     public FragmentEdit() {}
 
-    private Notes note;
     public BottomNavigationView bottomNavigation;
     public String name, recNote, noteOrigin, dateStr;
-    private Activity activity;
-    private int gender;
-    private Resources resources;
-    private EditText nameNote, record, date, label;
+    private EditText nameNote, record, label;
+    private TextView dateNote;
+    public Calendar calendar;
+    public int id;
 
     @Override
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
@@ -49,23 +44,14 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        resources = getResources();
-    }
-
-    @Override
-    public void onAttach(@NotNull Context context) {
-        super.onAttach(context);
-        if (context instanceof Activity) {
-            activity = (Activity) context;
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        gender = activity
-                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
-                .getInt(AUTOR_GENDER, 0);
+        bottomNavigation.setVisibility(View.INVISIBLE);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -73,7 +59,6 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                               .Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-    public int id;
 
     @Override
     public void onClick(@NotNull View v) {
@@ -85,19 +70,15 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                         .navigate(action);
                 break;
             case R.id.button_save:
-                 id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
+                assert getArguments() != null;
+                id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
                 name = nameNote.getText().toString();
                 if (name.equals("")) name = "Без названия";
                 noteOrigin = "  " + record.getText().toString();
-                String dateStr = date.getText().toString();
-                if (dateStr.equals("")){
-                    Date date = new Date();
-                    DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-                    dateStr = df.format(date);
-                }
+                final String dateStr = dateNote.getText().toString();
                 String labelStr = "";
                 labelStr = label.getText().toString();
-                note = new Notes(id, name, noteOrigin, dateStr, labelStr);
+                Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
                 database.notesDao().update(note);
                 FragmentEditDirections.ActionEditToInterpretation action2 =
                         FragmentEditDirections.actionEditToInterpretation(id);
@@ -114,7 +95,8 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
          nameNote = view.findViewById(R.id.name_note_et);
         record = view.findViewById(R.id.record_edit_et);
         label = view.findViewById(R.id.label_edit_et);
-        date = view.findViewById(R.id.date_note_et);
+        dateNote = view.findViewById(R.id.date_note_edit);
+        calendar = Calendar.getInstance(Locale.getDefault());
         assert getArguments() != null;
        id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
        Notes notes = database.notesDao().getNoteById(id);
@@ -123,12 +105,41 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         label.setText(notes.getLabelNote());
         recNote = noteOrigin;
         dateStr = notes.getDate();
-        Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots("__.__.__");
-        FormatWatcher formatWatcher = new MaskFormatWatcher( MaskImpl.createTerminated(slots));
-        formatWatcher.installOn(date);
+        dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+        Date date = new Date();
+        date = calendar.getTime();
+        final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+        dateStr = df.format(date);
+        dateNote.setText(dateStr);
        if (!name.equals("Без названия")) nameNote.setText(name);
             record.setText(recNote);
-            date.setText(dateStr);
+        dateNote.setText(dateStr);
+        dateNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog.OnDateSetListener dateChange = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(@NotNull DatePicker view, int year, int month, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
+                                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+                        Date date = new Date();
+                        date = calendar.getTime();
+                        final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+                        dateStr = df.format(date);
+                        dateNote.setText(dateStr);
+                    }
+                };
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), dateChange,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.show();
+            }
+        });
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);
         bottomNavigation.setVisibility(View.INVISIBLE);
         Button btnExit = view.findViewById(R.id.button_exit);

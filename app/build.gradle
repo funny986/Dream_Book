@@ -62,7 +62,6 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 
     implementation 'com.squareup.okhttp:okhttp:2.3.0'
-    implementation "ru.tinkoff.decoro:decoro:1.1.1"
 
     implementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
     implementation 'com.squareup.picasso:picasso:2.5.2'

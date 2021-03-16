@@ -17,6 +17,8 @@
     <dimen name="marg_l_r">50dip</dimen>
     <dimen name="textSize">20sp</dimen>
     <dimen name="textSize_date">18sp</dimen>
+    <dimen name="textSize_dateEdit">16sp</dimen>
+
     <dimen name="height_view">40dp</dimen>
     <dimen name="padd_text">10dp</dimen>
     <dimen name="padd_text_top">9dp</dimen>

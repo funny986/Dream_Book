@@ -4,7 +4,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -13,7 +12,7 @@
 
         <ImageButton
                 android:id="@+id/delete"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="#FF0000"
                 android:src="@drawable/ic_delete"
@@ -22,8 +21,7 @@
 
         <ImageButton
                 android:id="@+id/action"
-
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"

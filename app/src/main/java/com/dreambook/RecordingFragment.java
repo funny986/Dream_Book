@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import androidx.navigation.fragment.NavHostFragment;
 import com.dreambook.dataBase.Notes;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,10 +37,8 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     private FloatingActionButton fab;
     private Resources resources;
     private SpeechRecognizer sr;
-    private DatePicker datePicker;
     public TextView recording, dateNote;
     public Button btnExit, btnSave;
-    private String dateStr;
     private boolean recordVoice = false;
     public Calendar calendar;
 
@@ -51,6 +50,8 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         fab.setVisibility(View.VISIBLE);
         nameNote.requestFocus();
         setSoftInput();
+        BottomNavigationView bottomNavigation = getActivity().findViewById(R.id.bottom_navigation);
+                        bottomNavigation.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -73,7 +74,8 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             case R.id.button_exit:
                 fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
                         Objects.requireNonNull(getContext()).getTheme()));
-                Objects.requireNonNull(getActivity()).onBackPressed();
+                NavHostFragment.findNavController(RecordingFragment.this)
+                        .navigate(R.id.nav_notes);
                 break;
             case R.id.button_save:
                 fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
@@ -93,8 +95,11 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                     if (labelStr.equals("")) labelStr = " ";
                 Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
                 database.notesDao().insert(note);
+                RecordingFragmentDirections.ActionRecordToInterpretation action =
+                        RecordingFragmentDirections.actionRecordToInterpretation(id);
                 NavHostFragment.findNavController(RecordingFragment.this)
-                        .navigate(R.id.nav_notes);
+                        .navigate(action);
+
                 break;
             case R.id.fab:
                 if (recordVoice){
@@ -106,7 +111,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-//                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 100);
                     intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                             Objects.requireNonNull(getContext()).getPackageName());
                     intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000);
@@ -122,8 +126,8 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     }
 
     public void setDateNote(){
-                dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
-                        DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+        String dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
                      Date date = new Date();
                      date = calendar.getTime();
              final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
@@ -139,7 +143,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             record = view.findViewById(R.id.record_et);
             labels = view.findViewById(R.id.label_et);
             dateNote = view.findViewById(R.id.date_note);
-           datePicker = view.findViewById(R.id.datePicker);
+        DatePicker datePicker = view.findViewById(R.id.datePicker);
             recording = view.findViewById(R.id.recording);
             recording.setVisibility(View.INVISIBLE);
             calendar = Calendar.getInstance(Locale.getDefault());
@@ -197,10 +201,11 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
     }
 
+
     public void setSoftInput(){
         InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
-               imm.toggleSoftInput( InputMethodManager.SHOW_FORCED, 0 );
+        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
     }
 
     public void changeFabIcon(){

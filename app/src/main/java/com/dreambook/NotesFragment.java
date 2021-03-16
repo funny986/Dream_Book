@@ -12,9 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.content.SharedPreferences;
 import android.widget.*;
 
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
-import androidx.fragment.app.FragmentTransaction;
+import com.xenione.libs.swipemaker.SwipeLayout;
 import org.jetbrains.annotations.NotNull;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,23 +31,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class NotesFragment extends Fragment implements View.OnClickListener, RecyclerView.OnItemTouchListener {
+public class NotesFragment extends Fragment implements View.OnClickListener, RecyclerView.OnItemTouchListener,
+                                   TwoStepRightCoordinatorLayout.CloseSwipe {
 
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
     public RecycleViewAdapter adapter;
     private List<Notes> noteList, searchList;
-    public BottomNavigationView bottomNavigation;
-
+    private BottomNavigationView bottomNavigation;
+    private SwipeLayout swl;
     int checkBoxUse;
     int genderForNote;
 
     private FloatingActionButton fab;
     public SearchView searchView;
-    public Drawable drawable;
+    private Drawable drawable;
     private Activity activity;
     public SharedPreferences preferences;
-    public PopupMenu popup;
+    private PopupMenu popup;
 
     public NotesFragment() {}
 
@@ -64,6 +63,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         searchList = new ArrayList<>();
         fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_dark,
                 Objects.requireNonNull(getContext()).getTheme()));
+        Menu menu = bottomNavigation.getMenu();
+        MenuItem item = menu.getItem(0);
+        item.setChecked(true);
     }
 
     @Override
@@ -134,7 +136,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         return tempList;
     }
 
-    public void showMenu(View v) {
+    private void showMenu(View v) {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -168,13 +170,44 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
     }
 
     @Override
+    public void closeSwipe(@NotNull SwipeLayout layout) {
+        layout.translateTo(1);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
+        View childView = rv.findChildViewUnder(e.getX(), e.getY());
+        assert childView != null;
+        int position = rv.getChildLayoutPosition(childView);
+        int itemCount = rv.getChildCount();
+        View notFocusView;
+        ImageButton del = null;
+        try {
+            del = childView.findViewById(R.id.delete);
+        }
+        catch (NullPointerException ignored){
+        }
+//        || Objects.requireNonNull(del).isPressed()
+        for (int i = 0; i < itemCount; i++){
+            if (i != position){
+                notFocusView = rv.getChildAt(i);
+                swl = notFocusView.findViewById(R.id.foregroundView);
+                closeSwipe(swl);
+            }
+            else {
+                if (del.isPressed()){
+                    itemCount--;
+                    notFocusView = rv.getChildAt(i--);
+                    swl = notFocusView.findViewById(R.id.foregroundView);
+                    closeSwipe(swl);
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public void onTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
-
     }
 
     @Override
@@ -196,6 +229,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         }
     }
 
+    private TwoStepRightCoordinatorLayout tsl;
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -208,9 +243,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         noteList = sortNewDateFirst(noteList);
         adapter.setmData(noteList);
         recyclerView.setAdapter(adapter);
-        ///
-//        recyclerView.addOnItemTouchListener(this);
-        ///
+        recyclerView.addOnItemTouchListener(this);
+        tsl = new TwoStepRightCoordinatorLayout(getContext());
         adapter.setClickInterface(new RecycleViewAdapter.ClickInterface() {
             @Override
             public void clickEventOne(Notes obj) {
@@ -231,17 +265,20 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                         Toast.LENGTH_SHORT)
                         .show();
                 database.notesDao().delete(note);
+                adapter.notifyDataSetChanged();
             }
             @Override
             public void onItemEdit(Notes note) {
                 int id = note.getId();
+                fab = requireActivity().findViewById(R.id.fab);
+                fab.setVisibility(View.INVISIBLE);
                 NotesFragmentDirections.ActionNotesToEdit action =
                         NotesFragmentDirections.actionNotesToEdit(id);
                 NavHostFragment.findNavController(NotesFragment.this)
                         .navigate(action);
             }
         });
-//        setHasOptionsMenu(true);
+        //        setHasOptionsMenu(true);
         searchView =view.findViewById(R.id.search_in);
         drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
@@ -323,7 +360,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 NavHostFragment.findNavController(NotesFragment.this).navigate(R.id.nav_record);
             }
         });
-    }
+     }
 
     public void hideSoftInput() {
         InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())

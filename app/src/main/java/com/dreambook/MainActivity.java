@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        database.close();
+        finish();
     }
 
     @Override
@@ -167,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     public BottomNavigationView.OnNavigationItemSelectedListener listener() {
         return new BottomNavigationView.OnNavigationItemSelectedListener() {
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {

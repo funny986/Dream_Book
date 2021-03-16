@@ -65,15 +65,14 @@
                            style="@style/IcoRecordStyle"
                            android:src="@drawable/ic_aa"/>
                 <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:id="@+id/name_note"
+                        style="@style/TextEditStyle"
                         android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:hint="@string/name_note"
-                        android:layout_marginStart="5dp"
                         android:backgroundTint="@android:color/transparent"
-                        android:textSize="@dimen/textSize_date"
                         tools:ignore="SpUsage"/>
             </LinearLayout>
 
@@ -89,15 +88,16 @@
 
                 <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="match_parent"
                         android:id="@+id/date_note"
                         android:layout_marginStart="5dp"
-                        android:gravity="center_vertical"
+                        android:paddingTop="10dp"
                         android:clickable="true"
                         android:backgroundTint="@android:color/transparent"
-                        android:textSize="@dimen/textSize_date"
+                        android:textSize="@dimen/textSize_dateEdit"
                         tools:ignore="SpUsage,TextFields"
                         android:focusable="true"/>
+
 
             </LinearLayout>
         </LinearLayout>
@@ -113,34 +113,36 @@
                        style="@style/IcoRecordStyle"
                        android:src="@drawable/ic_label"/>
             <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/label_et"
                     android:inputType="text"
                     android:maxLines="1"
                     android:hint="Метки"
-                    android:layout_marginStart="5dp"
+                    style="@style/TextEditStyle"
                     android:backgroundTint="@android:color/transparent"
-                    android:textSize="@dimen/textSize_date"
                     tools:ignore="SpUsage"/>
-
-
         </LinearLayout>
 
     </LinearLayout>
-    <EditText android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:id="@+id/record_et"
-              android:gravity="start"
-              android:background="@null"
-              android:layout_gravity="center_horizontal"
-              android:hint="Содержание"
-              android:textSize="@dimen/textSize"
-              android:inputType="textCapSentences|textMultiLine"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-              android:layout_marginTop="44dp"
-              app:layout_constraintEnd_toEndOf="parent"
-              android:layout_marginStart="16dp"
-              android:layout_marginEnd="16dp"/>
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:layout_marginTop="152dp">
+
+
+            <EditText android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/record_et"
+                      android:gravity="start"
+                      android:background="@null"
+                      android:layout_gravity="center_horizontal"
+                      android:hint="Содержание"
+                      android:textSize="@dimen/textSize"
+                      android:inputType="textCapSentences|textMultiLine"
+            />
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

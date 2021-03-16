@@ -53,6 +53,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     private List<Words> searchList, wordList;
     private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
+    private BottomNavigationView bottomNavigationView;
 
     @SuppressLint("StaticFieldLeak")
     private RecycleViewAdptr adapter;
@@ -74,15 +75,16 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         assert getArguments() != null;
-//        genderForNote = activity
-//                .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)
-//                .getInt(AUTOR_GENDER, 0);
         skipMark = false;
         setCheckVisibleChar('а', 'а');
         imm = (InputMethodManager) requireActivity()
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
         searchList = new ArrayList<>();
-        }
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem item = menu.getItem(1);
+        item.setChecked(true);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+    }
 
     @Override
     public void onAttach(@NotNull Context context){
@@ -125,7 +127,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        BottomNavigationView bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation);
         int tool = 0;
         hrl = bottomNavigationView.getHeight(); //196
         int heightFull = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -135,7 +137,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         heightSimbol = convertPixelsToDp(summ2, requireContext());
         params.setMarginStart(20);
         if (heightFull <= 1920)
-            heightSimbol -= 7.1f;
+            heightSimbol -= 7.62f;
         if (heightFull > 1920 && heightFull <= 2280) {
             heightSimbol -= 6.6f;
             params.setMarginStart(150);
@@ -230,13 +232,10 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             if (temp.toLowerCase().contains(newText.toLowerCase())) {
                 tempString.add(tempCont);
                             }
-//            adapter.notifyItemRemoved(i);
             adapter.notifyItemChanged(i);
         }
         searchList = tempString;
         adapter.setmData(searchList);
-//        adapter.notifyDataSetChanged();
-
         return true;
     }
 
@@ -313,6 +312,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
                 Toast.makeText(getContext(), "Толкование  " + arg,
                         Toast.LENGTH_SHORT)
                         .show();
+                bottomNavigationView.setVisibility(View.INVISIBLE);
                 MeansFragmentDirections.ActionWordToMean action =
                         MeansFragmentDirections.actionWordToMean(arg, genderForNote);
                 NavHostFragment.findNavController(MeansFragment.this)

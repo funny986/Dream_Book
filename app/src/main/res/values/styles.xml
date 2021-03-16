@@ -36,13 +36,26 @@
     <style name="MyButtonStyle" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/buttonText</item>
         <item name="android:textSize">10sp</item>
-        <item name="background">@color/colorPrimary</item>
+        <item name="background">@color/transparent</item>
     </style>
 
     <style name="IcoRecordStyle" parent="">
         <item name="android:layout_marginStart">@dimen/padd_img_start</item>
         <item name="android:layout_marginTop">@dimen/padd_img_top</item>
         <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="TextRecordEditStyle" parent="">
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:textSize">@dimen/textSize_dateEdit</item>
+        <item name="android:textColor">@color/primaryDarkColor</item>
+    </style>
+    <style name="TextEditStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">16dp</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:textColor">@color/primaryDarkColor</item>
+
     </style>
 
 

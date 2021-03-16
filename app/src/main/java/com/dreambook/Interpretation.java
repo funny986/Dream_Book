@@ -1,5 +1,6 @@
 package com.dreambook;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.widget.TextView;
 import androidx.collection.ArrayMap;
@@ -160,7 +161,7 @@ public class Interpretation implements ExecutorService{
                 listOfLinks.add(wordslink.get(i));
         }
         linker.addStrings(listOfLinks);
-        linker.setAllLinkColors(Color.BLUE);
+        linker.setAllLinkColors(R.color.linkText);
         linker.setAllLinkUnderline(false);
         setLinker(linker);
     }

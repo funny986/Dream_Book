@@ -2,13 +2,16 @@ package com.dreambook;
 
 import android.os.Bundle;
 import android.view.*;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.transition.Fade;
 
-import static com.dreambook.MainActivity.database;
+import java.util.Objects;
+
+import static com.dreambook.MainActivity.*;
 
 public class WordMeanFragment extends Fragment {
 
@@ -21,6 +24,7 @@ public class WordMeanFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -50,6 +54,13 @@ public class WordMeanFragment extends Fragment {
         word = word.toLowerCase();
         String mean = database.wordsDao().getMean(word, gender);
         interpretation.setText(mean);
+        Button btnBack = view.findViewById(R.id.button_exit);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
+            }
+        });
     return view;
     }
 

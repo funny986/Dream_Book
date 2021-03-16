@@ -10,6 +10,7 @@
     <color name="accentColor">#ffffff</color>
 
     <color name="buttonText">#2960EE</color>
+    <color name="linkText">#2C65F6</color>
 
     <color name="colorTextRecord">@color/primaryDarkColor</color>
     <color name="colorEditMean">#493434</color>
