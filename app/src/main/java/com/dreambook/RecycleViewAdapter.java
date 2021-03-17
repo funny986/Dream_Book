@@ -43,7 +43,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     public interface ClickInterface {
         void clickEventOne(Notes note);
-        void onItemDeleted(Notes note);
+        void onItemDeleted(Notes note, int position);
         void onItemEdit(Notes note);
     }
 
@@ -99,8 +99,8 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            mClickInterface.onItemDeleted(mData.get(position));
-            onItemDismiss(position);
+            mClickInterface.onItemDeleted(mData.get(position), position);
+//            onItemDismiss(position);
             }
         });
         holder.action.setOnClickListener(new View.OnClickListener() {

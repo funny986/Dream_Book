@@ -2,10 +2,13 @@ package com.dreambook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -39,9 +42,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
     public RecycleViewAdapter adapter;
     private List<Notes> noteList, searchList;
     private BottomNavigationView bottomNavigation;
-    private SwipeLayout swl;
     int checkBoxUse;
     int genderForNote;
+    private int position;
 
     private FloatingActionButton fab;
     public SearchView searchView;
@@ -178,7 +181,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
     public boolean onInterceptTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
         View childView = rv.findChildViewUnder(e.getX(), e.getY());
         assert childView != null;
-        int position = rv.getChildLayoutPosition(childView);
+        position = rv.getChildLayoutPosition(childView);
         int itemCount = rv.getChildCount();
         View notFocusView;
         ImageButton del = null;
@@ -187,17 +190,17 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         }
         catch (NullPointerException ignored){
         }
-//        || Objects.requireNonNull(del).isPressed()
         for (int i = 0; i < itemCount; i++){
+            SwipeLayout swl;
             if (i != position){
                 notFocusView = rv.getChildAt(i);
                 swl = notFocusView.findViewById(R.id.foregroundView);
                 closeSwipe(swl);
             }
             else {
+                assert del != null;
                 if (del.isPressed()){
-                    itemCount--;
-                    notFocusView = rv.getChildAt(i--);
+                    notFocusView = rv.getChildAt(position);
                     swl = notFocusView.findViewById(R.id.foregroundView);
                     closeSwipe(swl);
                 }
@@ -212,7 +215,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
     }
 
     public static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
@@ -229,8 +231,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         }
     }
 
-    private TwoStepRightCoordinatorLayout tsl;
-
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -244,7 +244,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         adapter.setmData(noteList);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(this);
-        tsl = new TwoStepRightCoordinatorLayout(getContext());
         adapter.setClickInterface(new RecycleViewAdapter.ClickInterface() {
             @Override
             public void clickEventOne(Notes obj) {
@@ -259,13 +258,33 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                         .navigate(action);
             }
             @Override
-            public void onItemDeleted(Notes note) {
-                String toast = note.getNameNote();
-                Toast.makeText(getContext(), "Удаление записи: " + toast,
-                        Toast.LENGTH_SHORT)
-                        .show();
-                database.notesDao().delete(note);
-                adapter.notifyDataSetChanged();
+            public void onItemDeleted(final Notes note, final int pos) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Удалить?")
+                        .setIcon(R.drawable.ic_cancel_keys)
+                        .setCancelable(true)
+                        .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String toast = note.getNameNote();
+                                Toast.makeText(getContext(), "Удаление записи: " + toast,
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                                database.notesDao().delete(note);
+                                NotesFragment.this.position = pos;
+                                adapter.onItemDismiss(pos);
+                                adapter.notifyDataSetChanged();
+                                Log.i("Closeswipe", "Delpress OK: "  + " itemCount:" + adapter.getItemCount());
+                            }
+                        })
+                        .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.i("Closeswipe", "Delpress Cancel: "  + " itemCount:" + adapter.getItemCount());
+                            }
+                        });
+                builder.create();
+                builder.show();
             }
             @Override
             public void onItemEdit(Notes note) {
@@ -278,7 +297,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                         .navigate(action);
             }
         });
-        //        setHasOptionsMenu(true);
         searchView =view.findViewById(R.id.search_in);
         drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
