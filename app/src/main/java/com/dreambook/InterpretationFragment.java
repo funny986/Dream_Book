@@ -91,7 +91,6 @@ public class InterpretationFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_interpretation, container, false);
         TextView interpritate = view.findViewById(R.id.interpretation_tv);
-
         if (getArguments() != null) {
             id = getArguments().getInt("noteID");
             note = database.notesDao() //запись от пользователя

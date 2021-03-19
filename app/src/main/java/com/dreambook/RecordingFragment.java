@@ -48,8 +48,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     public void onResume() {
         super.onResume();
         fab.setVisibility(View.VISIBLE);
-        nameNote.requestFocus();
-        setSoftInput();
         BottomNavigationView bottomNavigation = getActivity().findViewById(R.id.bottom_navigation);
                         bottomNavigation.setVisibility(View.INVISIBLE);
     }
@@ -57,8 +55,8 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onPause() {
         super.onPause();
-        nameNote.clearFocus();
-        hideSoftInput();
+//        nameNote.clearFocus();
+//        hideSoftInput();
     }
 
     @Override
@@ -143,8 +141,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             record = view.findViewById(R.id.record_et);
             labels = view.findViewById(R.id.label_et);
             dateNote = view.findViewById(R.id.date_note);
-        DatePicker datePicker = view.findViewById(R.id.datePicker);
-            recording = view.findViewById(R.id.recording);
+        recording = view.findViewById(R.id.recording);
             recording.setVisibility(View.INVISIBLE);
             calendar = Calendar.getInstance(Locale.getDefault());
         setDateNote();
@@ -153,6 +150,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                                if (actionId == EditorInfo.IME_ACTION_NEXT) {
                                    record.requestFocus();
+                                   setSoftInput();
                                    return true;
                                }
                                return false;
@@ -178,14 +176,16 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             }
         });
         btnExit = view.findViewById(R.id.button_exit);
-        btnExit.setText("Выход");
-        btnExit.setOnClickListener(this);
          btnSave = view.findViewById(R.id.button_save);
         btnSave.setText("Сохранить");
+        btnExit.setText("Выход");
+        btnExit.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
         fab.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_on, Objects.requireNonNull(getContext()).getTheme()));
         fab.setOnClickListener(this);
+//        nameNote.requestFocus();
+//        setSoftInput();
         return view;
     }
 
@@ -193,7 +193,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     public void onViewCreated(@NonNull @NotNull View view,
                               @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        }
+    }
 
     public void hideSoftInput() {
         InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
@@ -203,9 +203,9 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
 
 
     public void setSoftInput(){
-        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     public void changeFabIcon(){

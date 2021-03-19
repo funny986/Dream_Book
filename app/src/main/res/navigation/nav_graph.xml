@@ -40,7 +40,6 @@
         <action android:id="@+id/action_Record_to_Interpretation"
                 app:destination="@id/nav_interpretation"/>
 
-
     </fragment>
 
     <fragment
@@ -61,7 +60,6 @@
         <argument
                 android:name="noteId"
                 app:argType="integer"/>
-
 
     </fragment>
 

@@ -64,10 +64,8 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
     public void onClick(@NotNull View v) {
         switch (v.getId()){
             case R.id.button_exit:
-                FragmentEditDirections.ActionEditToInterpretation action =
-                        FragmentEditDirections.actionEditToInterpretation(id);
                 NavHostFragment.findNavController(FragmentEdit.this)
-                        .navigate(action);
+                        .navigate(R.id.nav_notes);
                 break;
             case R.id.button_save:
                 assert getArguments() != null;

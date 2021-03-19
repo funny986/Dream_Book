@@ -48,7 +48,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
 
     private FloatingActionButton fab;
     public SearchView searchView;
-    private Drawable drawable;
     private Activity activity;
     public SharedPreferences preferences;
     private PopupMenu popup;
@@ -206,6 +205,11 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 }
             }
         }
+        if (e.getAction() == MotionEvent.ACTION_DOWN){
+            searchView.clearFocus();
+            hideSoftInput();
+        }
+
         return false;
     }
 
@@ -298,7 +302,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
             }
         });
         searchView =view.findViewById(R.id.search_in);
-        drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
+        Drawable drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -351,7 +355,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 return false;
             }
         });
-
         ImageButton btnsort = view.findViewById(R.id.button_sort);
         onCreatePopupMenu(btnsort);
         btnsort.setOnClickListener(new View.OnClickListener() {

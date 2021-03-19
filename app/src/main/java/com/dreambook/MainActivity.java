@@ -22,6 +22,7 @@ import com.dreambook.dataBase.App;
 import com.dreambook.dataBase.MeaningDatabase;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outSt) {
+    public void onSaveInstanceState(@NotNull Bundle outSt) {
         super.onSaveInstanceState(outSt);
     }
 
