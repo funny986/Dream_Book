@@ -132,7 +132,6 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         hrl = bottomNavigationView.getHeight(); //196
         int heightFull = Resources.getSystem().getDisplayMetrics().heightPixels;
         min = heightFull - hrl - tool;//2516 // 2320 минус тулбар
-        int widthsreen = Resources.getSystem().getDisplayMetrics().widthPixels;
         float summ2 = (float) min / ALPHABET.length;//80
         heightSimbol = convertPixelsToDp(summ2, requireContext());
         params.setMarginStart(20);
@@ -289,7 +288,6 @@ public class MeansFragment extends Fragment implements View.OnClickListener
             adapter = new RecycleViewAdptr(getContext(), wordList);
             adapter.setmData(wordList);
         min = getScreenHeight() - hrl;
-//        recyclerView.getLayoutParams().height = min - 230;
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

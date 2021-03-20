@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -37,6 +36,7 @@ import java.util.Objects;
 public class NotesFragment extends Fragment implements View.OnClickListener, RecyclerView.OnItemTouchListener,
                                    TwoStepRightCoordinatorLayout.CloseSwipe {
 
+    private FrameLayout frameLayout;
     public RecyclerView recyclerView;
     @SuppressLint("StaticFieldLeak")
     public RecycleViewAdapter adapter;
@@ -68,6 +68,9 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         Menu menu = bottomNavigation.getMenu();
         MenuItem item = menu.getItem(0);
         item.setChecked(true);
+        if (!noteList.isEmpty()){
+            frameLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -85,7 +88,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         if (context instanceof Activity) {
             activity = (Activity) context;
@@ -123,8 +126,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
 
     @Override
     public void onClick(View v) {
-        searchView.clearFocus();
         searchView.setQuery("", true);
+        searchView.clearFocus();
         hideSoftInput();
     }
 
@@ -138,7 +141,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         return tempList;
     }
 
-    private void showMenu(View v) {
+    private void showMenu() {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -205,10 +208,10 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 }
             }
         }
-        if (e.getAction() == MotionEvent.ACTION_DOWN){
-            searchView.clearFocus();
-            hideSoftInput();
-        }
+//        if (e.getAction() == MotionEvent.ACTION_DOWN){
+//            searchView.clearFocus();
+//            hideSoftInput();
+//        }
 
         return false;
     }
@@ -230,7 +233,8 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
         }
 
         @Override
-        public void getItemOffsets(@NotNull Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        public void getItemOffsets(@NotNull Rect outRect, @NotNull View view,
+                                   @NotNull RecyclerView parent, @NotNull RecyclerView.State state) {
             outRect.bottom = space;
         }
     }
@@ -238,9 +242,10 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_notes, container, false);
+        View mainView = inflater.inflate(R.layout.fragment_notes, container, false);
         noteList = database.notesDao().getNotesListByDate();
-        recyclerView = view.findViewById(R.id.note_recyclerview);
+        frameLayout = mainView.findViewById(R.id.frame_image);
+        recyclerView = mainView.findViewById(R.id.note_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SpacesItemDecoration(3));
         adapter = new RecycleViewAdapter(getContext(), noteList);
@@ -278,13 +283,14 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                                 NotesFragment.this.position = pos;
                                 adapter.onItemDismiss(pos);
                                 adapter.notifyDataSetChanged();
-                                Log.i("Closeswipe", "Delpress OK: "  + " itemCount:" + adapter.getItemCount());
+                                if (adapter.getItemCount() == 0){
+                                    frameLayout.setVisibility(View.VISIBLE);
+                                }
                             }
                         })
                         .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.i("Closeswipe", "Delpress Cancel: "  + " itemCount:" + adapter.getItemCount());
                             }
                         });
                 builder.create();
@@ -301,7 +307,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                         .navigate(action);
             }
         });
-        searchView =view.findViewById(R.id.search_in);
+        searchView = mainView.findViewById(R.id.search_in);
         Drawable drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
         searchView.setBackground(drawable);
         searchView.setQueryHint(getActivity().getResources().getString(R.string.search_hint));
@@ -355,15 +361,15 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 return false;
             }
         });
-        ImageButton btnsort = view.findViewById(R.id.button_sort);
+        ImageButton btnsort = mainView.findViewById(R.id.button_sort);
         onCreatePopupMenu(btnsort);
         btnsort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMenu(v);
+                showMenu();
             }
         });
-        return view;
+        return mainView;
     }
 
     public void onViewCreated(@NonNull @NotNull View view,

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     public static final String THEME_DARK = "darkthemeswitch";
 
     public SharedPreferences preferences;
-    private boolean count;
+    private boolean firstStart = true;
     public boolean darkTheme;
 
     public int autorgender, checkState;
@@ -74,35 +74,39 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onStart() {
         super.onStart();
+    }
+
+    public void setPreferences(){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(APP_PREFERENCE_COUNT, firstStart);
+        editor.putInt(AUTOR_GENDER, autorgender);
+        editor.putInt(BOX_STATE, checkState);
+        editor.putBoolean(THEME_DARK, darkTheme);
+        editor.apply();
+    }
+
+    protected void onResume() {
+        super.onResume();
         if (preferences.contains(APP_PREFERENCE_COUNT)) {
-            count = preferences.getBoolean(APP_PREFERENCE_COUNT, false);
-        }
+            firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
         Thread data = new Thread(new Runnable() {
             @Override
             public void run() {
-                setDataBase(database);
+                if (firstStart) {
+                    firstStart = !firstStart;
+                }
+               setDataBase(database);
             }
         });
-        data.start();
+                data.start();
+        }
         if (preferences.contains(AUTOR_GENDER)) {
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
 //        if (preferences.contains(THEME_DARK)) {
 //            darkTheme = preferences.getBoolean(THEME_DARK, false);
 //        }
-    }
-
-    public void setPreferences(){
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(APP_PREFERENCE_COUNT, count);
-        editor.putInt(AUTOR_GENDER, autorgender);
-        editor.putInt(BOX_STATE, checkState);
-        editor.putBoolean(THEME_DARK, darkTheme);
-        editor.apply();
 }
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void genderSet(int gender) {
@@ -131,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onPause() {
         super.onPause();
+        setPreferences();
     }
 
     protected void onDestroy() {
@@ -201,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-//        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
+        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
 //        darkTheme = preferences.getBoolean(THEME_DARK, false);
 //        if (darkTheme) setTheme(R.style.Theme_CustomThemeDark);
 //                else   setTheme(R.style.Theme_CustomTheme);
@@ -209,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
         setContentView(R.layout.activity_main);
         requestRecordAudioPermission();
         database = App.getInstance().getDatabase();
-        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
+//        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
         setListnr(listener());

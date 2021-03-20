@@ -44,21 +44,35 @@
     />
 
 </LinearLayout>
+
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="@dimen/recycler_margtop"
     >
 
         <androidx.recyclerview.widget.RecyclerView
                 android:gravity="center_vertical"
 android:background="@color/primaryColor"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+
                 android:outlineSpotShadowColor="@color/primaryColor"
                 android:id="@+id/note_recyclerview">
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
+
+    <FrameLayout android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/frame_image"
+                 android:background="@drawable/ic_moon"
+                 android:layout_gravity="center"
+                 android:layout_marginTop="150dp"
+    >
+    </FrameLayout>
 
     </LinearLayout>
 
