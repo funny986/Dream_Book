@@ -3,6 +3,7 @@ package com.dreambook;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.view.*;
@@ -74,7 +75,26 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onStart() {
         super.onStart();
-    }
+            firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
+        if (firstStart) {
+            firstStart = false;
+            setPreferences();
+            Intent intent = new Intent(MainActivity.this, Splash.class);
+            MainActivity.this.startActivity(intent);
+            requestRecordAudioPermission();
+        }
+        else {
+
+            Thread data = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    setDataBase(database);
+                }
+            });
+            data.start();
+        }
+        }
+
 
     public void setPreferences(){
         SharedPreferences.Editor editor = preferences.edit();
@@ -87,19 +107,22 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onResume() {
         super.onResume();
-        if (preferences.contains(APP_PREFERENCE_COUNT)) {
-            firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
-        Thread data = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (firstStart) {
-                    firstStart = !firstStart;
-                }
-               setDataBase(database);
-            }
-        });
-                data.start();
-        }
+//        if (preferences.contains(APP_PREFERENCE_COUNT)) {
+//            firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
+//        Thread data = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (firstStart) {
+//                    firstStart = false;
+//                    Intent intent = new Intent(MainActivity.this, Splash.class);
+//                    MainActivity.this.startActivity(intent);
+//                    requestRecordAudioPermission();
+//                }
+//            else setDataBase(database);
+//            }
+//        });
+//                data.start();
+//        }
         if (preferences.contains(AUTOR_GENDER)) {
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
@@ -207,12 +230,13 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
+//        setPreferences();
 //        darkTheme = preferences.getBoolean(THEME_DARK, false);
 //        if (darkTheme) setTheme(R.style.Theme_CustomThemeDark);
 //                else   setTheme(R.style.Theme_CustomTheme);
+//        this.onStart();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        requestRecordAudioPermission();
         database = App.getInstance().getDatabase();
 //        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         bottomNavigationView = findViewById(R.id.bottom_navigation);

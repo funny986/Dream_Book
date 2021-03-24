@@ -1,4 +1,4 @@
-<resources >
+<resources>
     <string name="app_name">Дневник снов</string>
     <string name="my_dreams">Мои сны</string>
     <string name="dream_means">Толкование</string>
@@ -21,27 +21,23 @@
     <!-- Фрагмент записи -->
 
     <integer name="number_item">3</integer>
-
-    <!-- Опция поиска  -->
-<!--    <string name="add">Add</string>-->
-<!--    <string name="text">Enter text</string>-->
-<!--    <string name="no_records">There are no records in the table</string>-->
     <string name="search_hint">Поиск</string>
     <string name="search">Search</string>
-<!--    <string name="dummy_button">Dummy Button</string>-->
-<!--    <string name="dummy_content">DUMMY\nCONTENT</string>-->
     <string name="information">
-        "   В нашем приложении для толкования сна за основу взят сонник Миллера.\n"
-        "   Сонник Миллера — один из самых полных и точных сонников в мире."
-        " Его автор — американский предприниматель и психолог <b>Густав Миллер</b>, "
-        "живший в конце 19 — начале 20 веков. Составляя свой толкователь, "
-        "Миллер основывался на анализе собственных снов, а также старинных трудов по эзотерике и психологии."
-        "   Сонник не только даст Вам толкование каждого конкретного сна, но и"
-        "позволит проникнуть в саму суть сновидений. С его помощью Вы найдете ответы на все"
-        "волнующие Вас вопросы. Научитесь принимать правильные решения в самых сложных"
-        "ситуациях и лучше разбираться в людях, распознавая их истинные намерения. Ведь человек,"
-        "понимающий и не боящийся своих снов, чувствует себя гораздо увереннее и в реальной"
-        "жизни."
+        " Дневник сновидений поможет сделать ваши сны осознанными. По мере развития практики запоминания снов,"
+        "вы будете помнить все больше и больше деталей. Ваши воспоминания из обрывочных и коротких превратятся в длинные истории.\n"
+        " Дневник сновидений используют лишь для записи снов и выявления признаков сновидения. Но дневник действительно помогает осознавать сны.\n
+          В Дневнике снов добавлено и немного эзотерики. Вполне вероятно что некоторые детали вашего сна имеют
+        толкования, подсказывающие о вашем настоящем или ближайшем будущем. Но это лишь предупреждения, а не неотвратимость!"
+        " Как говорится: "Кто предупрежден, тот вооружен!\n"
+        " В разделе толкования снов взят всемирно известный словарь Г.Миллера.\n"
+        " Сонник Миллера — один из самых полных и точных сонников в мире."
+        " Его автор — американский предприниматель и психолог <b>Густав Миллер</b>, живший в конце 19 — начале 20 веков."
+        " Составляя свой толкователь, Миллер основывался на анализе собственных снов, а также старинных трудов по эзотерике и психологии.\n"
+        " Сонник не только даст Вам толкование каждого конкретного сна, но и позволит проникнуть в саму суть сновидений.
+        С его помощью Вы найдете ответы на все волнующие Вас вопросы. Научитесь принимать правильные решения в самых сложных
+        ситуациях и лучше разбираться в людях, распознавая их истинные намерения. Ведь человек, понимающий и не боящийся
+        своих снов, чувствует себя гораздо увереннее и в реальной жизни."
     </string>
 
     <string name="ourdata">
@@ -53,10 +49,6 @@
     <string name="messages_header">Персональные данные</string>
     <string name="sync_header">Настройки приложения</string>
 
-    <!--        <string name="notset">Не задан</string>-->
-    <!--        <string name="male">Мужской</string>-->
-    <!--        <string name="female">Женский</string>-->
-
     <string-array name="genders">
         <item>Не задан</item>
         <item>Мужской</item>
@@ -65,21 +57,29 @@
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
-    <string name="reply_title">Указать пол автора (не обязательно)</string>
+    <string name="reply_title">Ваш пол (не обязательно)</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Темная тема</string>
-<!--    <string name="attachment_title">Download incoming attachments</string>-->
-<!--    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>-->
-<!--    <string name="attachment_summary_off">Only download attachments when manually requested</string>-->
 
     <string name="save">Сохранить</string>
     <string name="name_note">Введите название</string>
     <string name="date_note">Введите дату</string>
 
-
     <!-- Переходы  -->
     <string name="transition_name_name">transition:NAME</string>
     <string name="transition_name_circle">transition:CIRCLE</string>
     <string name="transition_name_phone">transition:PHONE</string>
+    <string name="title_activity_splash">Splash</string>
+
+    <!-- Текст подсказок экрана загрузки  -->
+    <string name="prompt_1">
+        " Проведите пальцем влево по записи для того, чтобы \n"
+        "удалить или отредактировать её…"
+    </string>
+    <string name="prompt_2">
+        " Рекомендуем перепроверить слово по его корню на наличие толкования \n"
+        "                   из нашего справочника.                              "
+    </string>
+
 </resources>

@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#36B1A5</color>
 
     <!-- My custom pallete theme -->
     <color name="primaryColor">#EAEAEA</color>
@@ -10,12 +10,10 @@
     <color name="accentColor">#ffffff</color>
 
     <color name="buttonText">#2960EE</color>
-    <color name="linkText">#2C65F6</color>
+    <color name="linkText">#124DE4</color>
 
     <color name="colorTextRecord">@color/primaryDarkColor</color>
     <color name="colorEditMean">#493434</color>
-<!--    <color name="primaryColor">#E6D8D8</color>-->
-
 
     <!-- палитра custom list-lay -->
     <color name="borderLow">#999</color>

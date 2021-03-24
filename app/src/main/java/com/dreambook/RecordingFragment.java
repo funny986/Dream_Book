@@ -184,8 +184,6 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
         fab.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_on, Objects.requireNonNull(getContext()).getTheme()));
         fab.setOnClickListener(this);
-//        nameNote.requestFocus();
-//        setSoftInput();
         return view;
     }
 
@@ -195,17 +193,16 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void hideSoftInput() {
-        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
-    }
+//    public void hideSoftInput() {
+//        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+//                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
+//    }
 
 
     public void setSoftInput(){
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
     }
 
     public void changeFabIcon(){
