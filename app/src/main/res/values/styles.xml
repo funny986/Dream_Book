@@ -1,12 +1,12 @@
 <resources>
-    <style name="AppTheme" parent="AppTheme.Base"></style>
+    <style name="AppTheme" parent="AppTheme.Base"/>
 
     <style name="AppTheme.Base" parent="Theme.MaterialComponents.Light.NoActionBar">
 
 <!--        Theme.MaterialComponents.Light.Bridge-->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/primaryDarkColor</item>
+        <item name="colorAccent">#2A837A</item>
         <item name="android:windowFullscreen">true</item>
         <item name="colorControlNormal">@color/primaryDarkColor</item>
         <item name="android:editTextColor">@color/primaryDarkColor</item>

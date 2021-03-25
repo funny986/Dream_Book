@@ -75,25 +75,25 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onStart() {
         super.onStart();
-            firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
+        firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
         if (firstStart) {
             firstStart = false;
             setPreferences();
             Intent intent = new Intent(MainActivity.this, Splash.class);
             MainActivity.this.startActivity(intent);
             requestRecordAudioPermission();
-        }
-        else {
+        } else {
 
             Thread data = new Thread(new Runnable() {
                 @Override
                 public void run() {
+
                     setDataBase(database);
                 }
             });
             data.start();
         }
-        }
+    }
 
 
     public void setPreferences(){
@@ -107,22 +107,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onResume() {
         super.onResume();
-//        if (preferences.contains(APP_PREFERENCE_COUNT)) {
-//            firstStart = preferences.getBoolean(APP_PREFERENCE_COUNT, true);
-//        Thread data = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (firstStart) {
-//                    firstStart = false;
-//                    Intent intent = new Intent(MainActivity.this, Splash.class);
-//                    MainActivity.this.startActivity(intent);
-//                    requestRecordAudioPermission();
-//                }
-//            else setDataBase(database);
-//            }
-//        });
-//                data.start();
-//        }
         if (preferences.contains(AUTOR_GENDER)) {
             autorgender = preferences.getInt(AUTOR_GENDER, 0);
         }
