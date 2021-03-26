@@ -27,11 +27,3 @@
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-<!--<TextView-->
-<!--android:id="@+id/info_dev"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:gravity="center_horizontal"-->
-<!--android:layout_gravity="bottom"-->
-<!--android:text="@string/ourdata"-->
-<!--app:layout_constraintBottom_toBottomOf="parent"/>-->

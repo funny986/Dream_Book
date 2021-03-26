@@ -73,6 +73,7 @@
     <string name="title_activity_splash">Splash</string>
 
     <!-- Текст подсказок экрана загрузки  -->
+    <string name="head_start">Первый запуск приложения:</string>
     <string name="prompt_1">
         " Проведите пальцем влево по записи для того, чтобы \n"
         "удалить или отредактировать её…"
@@ -85,5 +86,15 @@
         " Если в описании вашего сна слово выделено, значит оно \n"
         " имеет толкование по соннику. Просто нажмите на него."
     </string>
+
+    <!-- Подписи для элементов -->
+    <string name="labels">Метки</string>
+    <string name="contents">Содержание</string>
+    <string name="date">Дата</string>
+    <string name="streamline">Упорядочить</string>
+    <string name="record">Запись..</string>
+    <string name="date_record">Дата записи</string>
+    <string name="word">Слово</string>
+    <string name="simbol_perc">%</string>
 
 </resources>

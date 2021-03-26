@@ -4,7 +4,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/toolbar_down"
         xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".SettingsFragment"
         android:id="@+id/fragment_setting"
         android:orientation="horizontal"
