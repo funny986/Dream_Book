@@ -21,11 +21,16 @@
                 app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
-    <PreferenceCategory>
+    <PreferenceCategory
+            app:title="Разное">
 
         <Preference
                 app:key="info"
                 android:title="Информация">
+        </Preference>
+        <Preference
+                app:key="exit"
+                android:title="Закрыть приложение">
         </Preference>
 
 <!--        <SwitchPreferenceCompat-->

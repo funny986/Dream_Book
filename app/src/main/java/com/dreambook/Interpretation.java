@@ -1,7 +1,5 @@
 package com.dreambook;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.widget.TextView;
 import androidx.collection.ArrayMap;
 import androidx.collection.SparseArrayCompat;
@@ -18,13 +16,11 @@ import static com.dreambook.dataBase.Base.*;
 public class Interpretation implements ExecutorService{
 
     final Queue<Runnable> tasks = new ArrayDeque<>();
-    ExecutorService executor;
-    Runnable active;
-    Future<ArrayMap<Integer, String>> findExept, findFull;
-
+    public ExecutorService executor;
+    public Runnable active, exept, full;
     public ArrayList<String> listFromNote;
 
-    public ArrayMap<Integer,String> exeptFindFromText; // string - пара слов
+    public ArrayMap<Integer,String> exeptFindFromText;
     public ArrayMap<Integer, String> fullFindFromText;
 
     public SparseArrayCompat<String> wordslink;
@@ -36,9 +32,6 @@ public class Interpretation implements ExecutorService{
     public Linker linker;
 
     private final int textsize;
-
-    private Set setExept;
-    private Set setFull;
 
     public Linker getLinker() {
         return linker;
@@ -89,7 +82,7 @@ public class Interpretation implements ExecutorService{
     }
 
     @Override
-    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+    public boolean awaitTermination(long timeout, TimeUnit unit) {
         return false;
     }
 
@@ -109,48 +102,36 @@ public class Interpretation implements ExecutorService{
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) {
         return null;
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) {
         return null;
     }
 
     @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws ExecutionException, InterruptedException {
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks) {
         return null;
     }
 
     @Override
-    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException
-    {
+    public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) {
         return null;
     }
 
-    public void createTextClick(TextView interpritate){
+    public void createTextClick(TextView interpritate) {
         wordslink = new SparseArrayCompat<>();
-        try {
-            setExept = findExept.get().keySet();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        try {
-            setFull = findFull.get().keySet();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
         for (int i = 0; i < textsize; i++){
-            if (setExept != null && setExept.contains(i)){
-                String combination = exeptFindFromText.get(i);
+                if (exeptFindFromText !=null && exeptFindFromText.containsKey(i)){
+                    String combination = exeptFindFromText.get(i);
                 wordslink.put(i, combination);
                 i++;
             }
             else {
-                if (setFull != null && setFull.contains(i)){
-                    wordslink.put(i, fullFindFromText.get(i));
+                    if (fullFindFromText !=null && fullFindFromText.containsKey(i)){
+                        wordslink.put(i, fullFindFromText.get(i));
                 }
             }
         }
@@ -164,9 +145,88 @@ public class Interpretation implements ExecutorService{
         linker.setAllLinkColors(R.color.linkText);
         linker.setAllLinkUnderline(false);
         setLinker(linker);
+        linker.update();
     }
 
-    public Interpretation(TextView interpritate, String note, int gender){
+    public void findWords(){
+        /*    главный блок поиска сравнений слов */
+        exeptFindFromText = new ArrayMap<>();
+        fullFindFromText = new ArrayMap<>();
+        exept = new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> tempListFromNote = new ArrayList<>(listFromNote);
+                while (tempListFromNote.size() != 0) {
+                    boolean match = true;
+                    String couple = tempListFromNote.get(0) + " " + tempListFromNote.get(1);
+                    for (String s : exeptList) {
+                        if (s.equals(couple)) {
+                            int pos = textsize - tempListFromNote.size();
+                            exeptFindFromText.put(pos, couple); //совпадения по сочетаниям (первая позиция в тексте и + 1, само сочетание)
+                            tempListFromNote.remove(1);
+                            tempListFromNote.remove(0);
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (tempListFromNote.size() > 0) {
+                        if (match) {
+                            tempListFromNote.remove(0);
+                        }
+                    }
+                }
+            }
+        };
+        /* Поиск совпадений слов по полному совпадению */
+        full = new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> tempListFromNote = new ArrayList<>(listFromNote);
+                if (exeptFindFromText.size() != 0) {
+                    ArrayMap<Integer, String> listExept = new ArrayMap<>(exeptFindFromText);
+                    Set<Integer> set = listExept.keySet();
+                    for (int i = 0; i < textsize; i++) {
+                        String value = tempListFromNote.get(i);
+                        int l = value.toCharArray().length;
+                        if (l > 2) {
+                            if (set.contains(i)) {
+                                i += 1;
+                            } else {
+                                if (fullWordList.contains(value)) {
+                                    fullFindFromText.put(i, value);
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (int i = 0; i < textsize; i++) {
+                        String value = tempListFromNote.get(i);
+                        int l = value.toCharArray().length;
+                        if (l > 2) {
+                            if (fullWordList.contains(value)) {
+                                fullFindFromText.put(i, value);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        try {
+            exeptFindFromText = executor.submit(exept, exeptFindFromText).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            fullFindFromText = executor.submit(full, fullFindFromText).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        executor.shutdown();
+        /*  Конец  блока поиска сравнений слов */
+    }
+
+    public Interpretation(TextView interpritate, String note, int gender) {
             String originNote = note;
             note = note.toLowerCase(Locale.ROOT);
             exeptList = database.wordsDao().getWordsByType(EXEPT_WORD, gender);
@@ -175,79 +235,13 @@ public class Interpretation implements ExecutorService{
             fullWordList.addAll(database.wordsDao().getWordsByType(DECLENCION_WORD, gender));
             listFromNote = new ArrayList<>();
             executor = Executors.newFixedThreadPool(2);
-            Pattern pattern = Pattern.compile("[а-я]+\\b");
+            Pattern pattern = Pattern.compile("[а-яё]+\\b");
             Matcher matcher = pattern.matcher(note);
             while (matcher.find()) listFromNote.add(note.substring(matcher.start(), matcher.end()));
             textsize = listFromNote.size();
             interpritate.setText(originNote);
-            /*    главный блок поиска сравнений слов */
-            exeptFindFromText = new ArrayMap<>();
-            fullFindFromText = new ArrayMap<>();
-            findExept = executor.submit(new Callable<ArrayMap<Integer, String>>() {
-                @Override
-                public ArrayMap<Integer, String> call() throws Exception {
-                    ArrayList<String> tempListFromNote = new ArrayList<>(listFromNote);
-                    while (tempListFromNote.size() != 0) {
-                        boolean match = true;
-                        String couple = tempListFromNote.get(0) + " " + tempListFromNote.get(1);
-                        for (String s : exeptList) {
-                            if (s.equals(couple)) {
-                                int pos = textsize - tempListFromNote.size();
-                                exeptFindFromText.put(pos, couple); //совпадения по сочетаниям (первая позиция в тексте и + 1, само сочетание)
-                                tempListFromNote.remove(1);
-                                tempListFromNote.remove(0);
-                                match = false;
-                                break;
-                            }
-                        }
-                        if (tempListFromNote.size() > 0) {
-                            if (match) {
-                                tempListFromNote.remove(0);
-                            }
-                        }
-                    }
-                    return exeptFindFromText;
-                }
-            });
-        /* Поиск совпадений слов по полному совпадению */
-            findFull = executor.submit(new Callable<ArrayMap<Integer, String>>() {
-                @Override
-                public ArrayMap<Integer, String> call() throws Exception {
-                    ArrayList<String> tempListFromNote = new ArrayList<>(listFromNote);
-                    if (exeptFindFromText.size() != 0) {
-                        ArrayMap<Integer, String> listExept = new ArrayMap<>(exeptFindFromText);
-                        Set set = listExept.keySet();
-                        for (int i = 0; i < textsize; i++) {
-                            String value = tempListFromNote.get(i);
-                            int l = value.toCharArray().length;
-                            if (l > 2) {
-                                if (set.contains(i)) {
-                                    i += 1;
-                                } else {
-                                    if (fullWordList.contains(value)) {
-                                        fullFindFromText.put(i, value);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        for (int i = 0; i < textsize; i++) {
-                            String value = tempListFromNote.get(i);
-                            int l = value.toCharArray().length;
-                            if (l > 2) {
-                                if (fullWordList.contains(value)) {
-                                    fullFindFromText.put(i, value);
-                                }
-                            }
-                        }
-                    }
-                    return fullFindFromText;
-                }
-            });
-            executor.shutdown();
-            /*  Конец  блока поиска сравнений слов */
-            createTextClick(interpritate);
+        findWords();
+        createTextClick(interpritate);
     }
 
 }

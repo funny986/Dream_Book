@@ -54,6 +54,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     private LinearLayoutManager layoutManager;
     private RecyclerView recyclerView;
     private BottomNavigationView bottomNavigationView;
+    private FloatingActionButton fab;
 
     @SuppressLint("StaticFieldLeak")
     private RecycleViewAdptr adapter;
@@ -84,6 +85,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
         MenuItem item = menu.getItem(1);
         item.setChecked(true);
         bottomNavigationView.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class MeansFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        fab = activity.findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
         genderForNote = activity
                 .getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE)

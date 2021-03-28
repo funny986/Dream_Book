@@ -8,10 +8,8 @@
             android:id="@+id/action_means"
             android:icon="@drawable/ic_book"
             android:title="@string/dream_means" />
-
     <item
             android:id="@+id/action_setting"
             android:icon="@drawable/ic_settings_24"
             android:title="@string/setting" />
-
 </menu>

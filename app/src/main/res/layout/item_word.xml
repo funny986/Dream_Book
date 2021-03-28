@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView
         android:id="@+id/card_view_mean"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_item_word"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:cardCornerRadius="0dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,5 +16,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                android:layout_gravity="center"
+                android:textSize="@dimen/textSize_dateEdit"
                 android:id="@+id/word_tv"/>
 </androidx.cardview.widget.CardView>

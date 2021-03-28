@@ -1,6 +1,7 @@
 package com.dreambook;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.*;
@@ -50,7 +51,7 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         bottomNavigation.setVisibility(View.INVISIBLE);
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
     }
 
@@ -72,7 +73,7 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                 id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
                 name = nameNote.getText().toString();
                 if (name.equals("")) name = "Без названия";
-                noteOrigin = "  " + record.getText().toString();
+                noteOrigin = record.getText().toString();
                 final String dateStr = dateNote.getText().toString();
                 String labelStr = "";
                 labelStr = label.getText().toString();
@@ -99,7 +100,7 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
        id = FragmentEditArgs.fromBundle(getArguments()).getNoteId();
        Notes notes = database.notesDao().getNoteById(id);
         name = notes.getNameNote();
-        noteOrigin = "  " + notes.getNote();
+        noteOrigin = notes.getNote();
         label.setText(notes.getLabelNote());
         recNote = noteOrigin;
         dateStr = notes.getDate();
@@ -135,7 +136,10 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                         calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH));
+                    dialog.getContext().setTheme(R.style.MyDatePicker);
                 dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                        .setText("Отмена");
             }
         });
         bottomNavigation = Objects.requireNonNull(getActivity()).findViewById(R.id.bottom_navigation);

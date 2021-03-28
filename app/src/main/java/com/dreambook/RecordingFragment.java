@@ -2,7 +2,9 @@ package com.dreambook;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.dreambook.MainActivity.database;
+import static com.dreambook.R.style.MyAlertDialogTheme;
 
 public class RecordingFragment extends Fragment implements View.OnClickListener, RecognitionListener {
 
@@ -37,9 +40,10 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     private FloatingActionButton fab;
     private Resources resources;
     private SpeechRecognizer sr;
-    public TextView recording, dateNote;
-    public Button btnExit, btnSave;
+    private TextView recording, dateNote;
+    private Button btnExit, btnSave;
     private boolean recordVoice = false;
+    private Intent intentSR;
     public Calendar calendar;
 
     public RecordingFragment() {}
@@ -48,21 +52,47 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     public void onResume() {
         super.onResume();
         fab.setVisibility(View.VISIBLE);
-        BottomNavigationView bottomNavigation = getActivity().findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigation = requireActivity().findViewById(R.id.bottom_navigation);
                         bottomNavigation.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        nameNote.clearFocus();
-//        hideSoftInput();
+        nameNote.clearFocus();
+        hideSoftInput();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         resources = getResources();
+    }
+
+    public void askContinuation(final Intent intent){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Продолжить запись?")
+                .setIcon(R.drawable.ic_cancel_keys)
+                .setCancelable(true)
+                .setPositiveButton("Продолжить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                            String oldStr = record.getText().toString();
+                            setOld(oldStr);
+                        sr.startListening(intent);
+                    }
+                })
+                .setNegativeButton("Заново", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setOld("");
+                        sr.startListening(intent);
+                    }
+                })
+                .getContext()
+                .setTheme(MyAlertDialogTheme);
+        builder.create();
+        builder.show();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -90,14 +120,13 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                 String noteOrigin = record.getText().toString();
                 String dateStr = dateNote.getText().toString();
                 String labelStr = labels.getText().toString();
-                    if (labelStr.equals("")) labelStr = " ";
+                    if (labelStr.equals("")) labelStr = "";
                 Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
                 database.notesDao().insert(note);
                 RecordingFragmentDirections.ActionRecordToInterpretation action =
                         RecordingFragmentDirections.actionRecordToInterpretation(id);
                 NavHostFragment.findNavController(RecordingFragment.this)
                         .navigate(action);
-
                 break;
             case R.id.fab:
                 if (recordVoice){
@@ -105,19 +134,13 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                 }
                 else {
                     recordVoice = true;
-                    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-                    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                            Objects.requireNonNull(getContext()).getPackageName());
-                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 5000000);
-                    intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 5000000);
-                    intent.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
-                    intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-                    sr = SpeechRecognizer.createSpeechRecognizer(getContext());
-                    sr.setRecognitionListener(this);
-                    sr.startListening(intent);
+                    nameNote.clearFocus();
+                    if (record.getText().length() > 0) {
+                        askContinuation(intentSR);
+                    }
+                    else {
+                        sr.startListening(intentSR);
+                    }
                 }
                 break;
         }
@@ -145,6 +168,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
             recording.setVisibility(View.INVISIBLE);
             calendar = Calendar.getInstance(Locale.getDefault());
         setDateNote();
+        setOld("");
         nameNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
                            @Override
                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -172,7 +196,10 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                         calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.getContext().setTheme(R.style.MyDatePicker);
                 dialog.show();
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                        .setText("Отмена");
             }
         });
         btnExit = view.findViewById(R.id.button_exit);
@@ -184,6 +211,20 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
         fab.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_on, Objects.requireNonNull(getContext()).getTheme()));
         fab.setOnClickListener(this);
+        intentSR = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intentSR.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intentSR.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intentSR.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                Objects.requireNonNull(getContext()).getPackageName());
+        intentSR.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 10000);
+        intentSR.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 10000);//
+        intentSR.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 0);
+        intentSR.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        intentSR.putExtra(RecognizerIntent.EXTRA_RESULTS_PENDINGINTENT, true);
+        intentSR.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+        sr = SpeechRecognizer.createSpeechRecognizer(getContext());
+        sr.setRecognitionListener(this);
         return view;
     }
 
@@ -193,17 +234,23 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         super.onViewCreated(view, savedInstanceState);
     }
 
-//    public void hideSoftInput() {
-//        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-//                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
-//    }
+    public void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
+    }
 
+    @Override
+    public void onDestroy() {
+        sr.destroy();
+        super.onDestroy();
+    }
 
     public void setSoftInput(){
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
     }
+
 
     public void changeFabIcon(){
         recordVoice = false;
@@ -212,10 +259,10 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         btnSave.setVisibility(View.VISIBLE);
         recording.setVisibility(View.INVISIBLE);
         fab.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_on, Objects.requireNonNull(getContext()).getTheme()));
-
     }
+
     @Override
-    public void onReadyForSpeech(Bundle params) {
+    public void onReadyForSpeech(@NotNull Bundle params) {
         Log.d(TAG, "onReadyForSpeech");
         Toast.makeText(getContext(), "Говорите", Toast.LENGTH_SHORT).show();
         btnExit.setVisibility(View.INVISIBLE);
@@ -228,6 +275,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onBeginningOfSpeech() {
         Log.d(TAG, "onBeginningOfSpeech");
+
     }
 
     @Override
@@ -237,14 +285,16 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onBufferReceived(byte[] buffer) {
-        Log.d(TAG, "onBufferReceived " + buffer);
+        Log.d(TAG, "onBufferReceived " + Arrays.toString(buffer));
     }
 
     @Override
     public void onEndOfSpeech() {
-        sr.stopListening();
-        sr.cancel();
-        changeFabIcon();
+        Log.d(TAG, "onEndOfSpeech ");
+            sr.stopListening();
+            sr.cancel();
+            changeFabIcon();
+            Log.d(TAG, "onEndOfSpeech " + " startIntent");
     }
 
     @Override
@@ -254,21 +304,35 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onResults(Bundle results) {
+    public void onResults(@NotNull Bundle results) {
+        Log.d(TAG, "onResult ");
+            Log.d(TAG, "onResult " + results.toString());
+    }
 
+    private String old;
+
+    private void setOld(String old){
+        this.old = old;
+    }
+
+    private String getOld(){
+        return old;
     }
 
     @Override
     public void onPartialResults(@NotNull Bundle partialResults) {
+        Log.d(TAG, "onPartialResults ");
         ArrayList<String> result = partialResults
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         String  str = result.get(0);
-        record.setText(str);
+        String temp = getOld() + " " + str;
+        record.setText(temp);
     }
 
     @Override
     public void onEvent(int eventType, Bundle params) {
         Log.d(TAG, "onEvent " + eventType);
     }
+
     private static final String TAG = "RecognitionListener";
 }

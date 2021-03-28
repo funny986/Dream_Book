@@ -20,8 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.dreambook.MainActivity.*;
 
@@ -31,18 +29,16 @@ public class InterpretationFragment extends Fragment {
     public InterpretationFragment() {}
 
     private int gender, id;
-
     private Activity activity;
     private Notes note;
-
     public String  nameStr, dateStr, labelStr;
 
     @Override
     public void onResume() {
         super.onResume();
-        BottomNavigationView bottomNavigation = requireActivity().findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigation = activity.findViewById(R.id.bottom_navigation);
         bottomNavigation.setVisibility(View.INVISIBLE);
-        FloatingActionButton fab = Objects.requireNonNull(getActivity()).findViewById(R.id.fab);
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
     }
 
@@ -95,8 +91,8 @@ public class InterpretationFragment extends Fragment {
             id = getArguments().getInt("noteID");
             note = database.notesDao() //запись от пользователя
                     .getNoteById(id);
-            String noteOrigin = " " + note.getNote();
-           Linker linker = new Interpretation(interpritate, noteOrigin, gender).getLinker();
+            String noteOrigin = note.getNote();
+            Linker linker = new Interpretation(interpritate, noteOrigin, gender).getLinker();
            linker.setListener(new LinkerListener() {
                @Override
                public void onLinkClick(String charSequenceClicked) {

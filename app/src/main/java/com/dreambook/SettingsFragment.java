@@ -1,11 +1,14 @@
 package com.dreambook;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.*;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -16,7 +19,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 import static com.dreambook.MainActivity.*;
+import static com.dreambook.R.style.MyAlertDialogTheme;
 
 public class SettingsFragment extends Fragment {
 
@@ -28,7 +34,6 @@ public class SettingsFragment extends Fragment {
         this.setEnterTransition(new Fade());
         setExitTransition(new Fade());
         this.setSharedElementReturnTransition(new DetailsTransition());
-
         return inflater.inflate(R.layout.fragment_setting, container, false);
     }
 
@@ -57,7 +62,8 @@ public class SettingsFragment extends Fragment {
             super.onResume();
             getPreferenceScreen().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
-            BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+            BottomNavigationView bottomNavigationView = Objects.requireNonNull(getActivity())
+                    .findViewById(R.id.bottom_navigation);
             Menu menu = bottomNavigationView.getMenu();
             MenuItem item = menu.getItem(2);
             item.setChecked(true);
@@ -74,7 +80,7 @@ public class SettingsFragment extends Fragment {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setHasOptionsMenu(true);
-            FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+            FloatingActionButton fab = activity.findViewById(R.id.fab);
             fab.setVisibility(View.INVISIBLE);
         }
 
@@ -94,6 +100,15 @@ public class SettingsFragment extends Fragment {
                 public boolean onPreferenceClick(Preference preference) {
                     assert getParentFragment() != null;
                     NavHostFragment.findNavController(getParentFragment()).navigate(R.id.nav_info);
+                    return false;
+                }
+            });
+            Preference exit = getPreferenceScreen().findPreference("exit");
+            assert exit != null;
+            exit.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                        leaveApp();
                     return false;
                 }
             });
@@ -136,5 +151,28 @@ public class SettingsFragment extends Fragment {
 //            }
         }
 
+        private void leaveApp(){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder
+                    .setTitle("Выйти из приложения")
+                    .setIcon(R.drawable.ic_exit_to_app)
+                    .setCancelable(true)
+                    .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            activity.finish();
+                        }
+                    })
+                    .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .getContext()
+                    .setTheme(MyAlertDialogTheme);
+            builder.create();
+            builder.show();
+
+        }
     }
 }

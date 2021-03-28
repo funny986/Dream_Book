@@ -64,13 +64,25 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        database.close();
-        finish();
     }
 
     @Override
     public void onSaveInstanceState(@NotNull Bundle outSt) {
         super.onSaveInstanceState(outSt);
+    }
+
+    public void startSetData(){
+        final Thread data = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    setDataBase(database);
+                }
+                catch (IllegalStateException ignored){}
+            }
+        });
+        data.start();
+
     }
 
     protected void onStart() {
@@ -83,18 +95,9 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
             MainActivity.this.startActivity(intent);
             requestRecordAudioPermission();
         } else {
-
-            Thread data = new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    setDataBase(database);
-                }
-            });
-            data.start();
+            startSetData();
         }
     }
-
 
     public void setPreferences(){
         SharedPreferences.Editor editor = preferences.edit();
@@ -147,7 +150,13 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onDestroy() {
         super.onDestroy();
-        database.close();
+        if(database !=null){
+            if(database.isOpen()) {
+                database.close();
+            }
+            database = null;
+        }
+//        database.close();
     }
 
 
@@ -171,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     }
 
     public void setUpNavigation() {
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+//        bottomNavigationView = findViewById(R.id.bottom_navigation);
         hostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         assert hostFragment != null;
@@ -222,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         database = App.getInstance().getDatabase();
-//        preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
         setListnr(listener());

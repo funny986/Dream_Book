@@ -28,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.dreambook.dataBase.Notes;
 import static com.dreambook.MainActivity.*;
+import static com.dreambook.R.style.MyAlertDialogTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,11 +209,6 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 }
             }
         }
-//        if (e.getAction() == MotionEvent.ACTION_DOWN){
-//            searchView.clearFocus();
-//            hideSoftInput();
-//        }
-
         return false;
     }
 
@@ -266,6 +262,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 NavHostFragment.findNavController(NotesFragment.this)
                         .navigate(action);
             }
+
             @Override
             public void onItemDeleted(final Notes note, final int pos) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -292,10 +289,13 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                             }
-                        });
+                        })
+                        .getContext()
+                        .setTheme(MyAlertDialogTheme);
                 builder.create();
                 builder.show();
             }
+
             @Override
             public void onItemEdit(Notes note) {
                 int id = note.getId();

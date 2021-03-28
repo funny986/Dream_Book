@@ -15,10 +15,6 @@
 
     <!-- Редактирование и сохранение записи Paddings-->
     <dimen name="marg_l_r">50dip</dimen>
-    <dimen name="textSize">20sp</dimen>
-    <dimen name="textSize_date">18sp</dimen>
-    <dimen name="textSize_dateEdit">16sp</dimen>
-
     <dimen name="height_view">40dp</dimen>
     <dimen name="padd_text">10dp</dimen>
     <dimen name="padd_text_top">9dp</dimen>
@@ -29,7 +25,11 @@
     <dimen name="padd_img_top">0dp</dimen>
     <dimen name="padd_img_start">5dp</dimen>
 
-    <!-- Редактирование и сохранение записи Size-->
+    <!-- Редактирование и сохранение записи Size. Шрифты-->
+    <dimen name="textSize">20sp</dimen>
+    <dimen name="textSize_date">18sp</dimen>
+    <dimen name="textSize_dateEdit">16sp</dimen>
+    <dimen name="textSize_15">15sp</dimen>
 
     <dimen name="textSizeRec">@dimen/textSize</dimen>
     <dimen name="margin_start_recording">0dp</dimen>
@@ -57,7 +57,7 @@
 
     <!-- Параметры текста толкования и записей. Ресайклер-->
     <dimen name="text_margin">15dp</dimen>
-    <dimen name="txt_size">20sp</dimen>
+    <dimen name="txt_size">@dimen/textSize</dimen>
     <dimen name="recycler_margtop">15dp</dimen>
 
     <dimen name="height_item_word">27dp</dimen>
