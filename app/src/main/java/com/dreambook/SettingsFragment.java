@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.*;
@@ -29,6 +30,11 @@ public class SettingsFragment extends Fragment {
     public SettingsFragment(){}
 
     @Override
+    public void onSaveInstanceState(@NotNull Bundle outSt) {
+        super.onSaveInstanceState(outSt);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.setSharedElementEnterTransition(new DetailsTransition());
         this.setEnterTransition(new Fade());
@@ -37,8 +43,11 @@ public class SettingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_setting, container, false);
     }
 
+
     public static class PreferenceFragment extends PreferenceFragmentCompat implements
             SharedPreferences.OnSharedPreferenceChangeListener, PrefSets{
+
+        private Activity activity;
 
         @Override
         public void genderSet(int gender) {
@@ -53,11 +62,6 @@ public class SettingsFragment extends Fragment {
         }
 
         @Override
-        public boolean getCustomTheme() {
-            return false;
-        }
-
-        @Override
         public void onResume() {
             super.onResume();
             getPreferenceScreen().getSharedPreferences()
@@ -67,6 +71,8 @@ public class SettingsFragment extends Fragment {
             Menu menu = bottomNavigationView.getMenu();
             MenuItem item = menu.getItem(2);
             item.setChecked(true);
+            FloatingActionButton fab = activity.findViewById(R.id.fab);
+            fab.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -80,8 +86,6 @@ public class SettingsFragment extends Fragment {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setHasOptionsMenu(true);
-            FloatingActionButton fab = activity.findViewById(R.id.fab);
-            fab.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -114,8 +118,6 @@ public class SettingsFragment extends Fragment {
             });
         }
 
-        Activity activity;
-
         @Override
         public void onAttach(@NotNull Context context) {
             super.onAttach(context);
@@ -140,15 +142,19 @@ public class SettingsFragment extends Fragment {
                 if (g.equals(strings[2]))
                     ((PrefSets) activity).genderSet(2);
             }
-//            if (key.equals("darktheme")){
-//                SwitchPreferenceCompat switchPreference = getPreferenceScreen().findPreference("darktheme");
-//                assert switchPreference != null;
-//                boolean switchDark = switchPreference.isChecked();
-//                    ((PrefSets) activity).themeSet(switchDark);
-//                    activity.finish();
-//                Intent intent = new Intent(getContext(), MainActivity.class);
-//                    activity.startActivity(intent);
-//            }
+            if (key.equals("darktheme")){
+                SwitchPreferenceCompat switchPreference = getPreferenceScreen().findPreference("darktheme");
+                assert switchPreference != null;
+                boolean switchDark = switchPreference.isChecked();
+                    ((PrefSets) activity).themeSet(switchDark);
+                if (switchPreference.isChecked()){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+                   else {
+                       AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                   }
+                activity.recreate();
+            }
         }
 
         private void leaveApp(){
@@ -160,7 +166,10 @@ public class SettingsFragment extends Fragment {
                     .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            activity.finish();
+                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                            intent.addCategory(Intent.CATEGORY_HOME);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivityForResult(intent, 1);
                         }
                     })
                     .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -172,7 +181,6 @@ public class SettingsFragment extends Fragment {
                     .setTheme(MyAlertDialogTheme);
             builder.create();
             builder.show();
-
         }
     }
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/darkColorPrimaryDark</color>
+    <color name="colorPrimaryDark">@color/black_overlay</color>
+    <color name="colorAccent">#2A837A</color>
+    <color name="colorBackground">@color/black_overlay</color>
+    <!-- My custom pallete theme -->
+    <color name="primaryColor">#EAEAEA</color>
+    <color name="primaryDarkColor">#b2b2b2</color>
+    <color name="accentColor">#ffffff</color>
+
+    <color name="buttonText">#2960EE</color>
+    <color name="linkText">#7997E4</color>
+
+    <color name="color_note_item">@color/colorPrimary</color>
+
+    <color name="colorTextRecord">@color/primaryDarkColor</color>
+    <color name="colorEditMean">#493434</color>
+
+    <!-- палитра custom list-lay -->
+    <color name="borderLow">#999</color>
+    <color name="colorPanel">#7A796E</color>
+    <color name="colorBorder">#434237</color>
+    <color name="gradientStart">#DDD</color>
+    <color name="gradientEnd">#BBB</color>
+
+    <color name="transparent">@null</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="colorItemText">@color/black_overlay</color>
+    <!-- Фрагмент записи -->
+
+    <!-- ToolBar  -->
+    <color name="toolbarbg">@color/primaryColor</color>
+    <color name="navChecked">#aeaeae</color>
+    <color name="navUnChecked">@color/colorPrimaryDark</color>
+    <color name="CheckAlph">@color/colorEditMean</color>
+
+    <color name="darkColorPrimary">#393939</color>
+    <color name="darkColorPrimaryDark">#2f2f2f</color>
+
+
+</resources>

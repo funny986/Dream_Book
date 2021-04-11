@@ -1,5 +1,6 @@
 package com.dreambook;
 
+import android.content.res.Resources;
 import android.widget.TextView;
 import androidx.collection.ArrayMap;
 import androidx.collection.SparseArrayCompat;
@@ -20,8 +21,8 @@ public class Interpretation implements ExecutorService{
     public Runnable active, exept, full;
     public ArrayList<String> listFromNote;
 
-    public ArrayMap<Integer,String> exeptFindFromText;
-    public ArrayMap<Integer, String> fullFindFromText;
+    public ArrayMap<Integer,String> exeptFindFromText = new ArrayMap<>();
+    public ArrayMap<Integer, String> fullFindFromText = new ArrayMap<>();
 
     public SparseArrayCompat<String> wordslink;
 
@@ -121,7 +122,7 @@ public class Interpretation implements ExecutorService{
         return null;
     }
 
-    public void createTextClick(TextView interpritate) {
+    public void createTextClick(TextView interpritate, Resources resources) {
         wordslink = new SparseArrayCompat<>();
         for (int i = 0; i < textsize; i++){
                 if (exeptFindFromText !=null && exeptFindFromText.containsKey(i)){
@@ -142,7 +143,7 @@ public class Interpretation implements ExecutorService{
                 listOfLinks.add(wordslink.get(i));
         }
         linker.addStrings(listOfLinks);
-        linker.setAllLinkColors(R.color.linkText);
+        linker.setAllLinkColors(resources.getColor(R.color.linkText, null));
         linker.setAllLinkUnderline(false);
         setLinker(linker);
         linker.update();
@@ -150,23 +151,23 @@ public class Interpretation implements ExecutorService{
 
     public void findWords(){
         /*    главный блок поиска сравнений слов */
-        exeptFindFromText = new ArrayMap<>();
-        fullFindFromText = new ArrayMap<>();
         exept = new Runnable() {
             @Override
             public void run() {
                 ArrayList<String> tempListFromNote = new ArrayList<>(listFromNote);
                 while (tempListFromNote.size() != 0) {
                     boolean match = true;
-                    String couple = tempListFromNote.get(0) + " " + tempListFromNote.get(1);
-                    for (String s : exeptList) {
-                        if (s.equals(couple)) {
-                            int pos = textsize - tempListFromNote.size();
-                            exeptFindFromText.put(pos, couple); //совпадения по сочетаниям (первая позиция в тексте и + 1, само сочетание)
-                            tempListFromNote.remove(1);
-                            tempListFromNote.remove(0);
-                            match = false;
-                            break;
+                    if (tempListFromNote.size() !=1) {
+                        String couple = tempListFromNote.get(0) + " " + tempListFromNote.get(1);
+                        for (String s : exeptList) {
+                            if (s.equals(couple)) {
+                                int pos = textsize - tempListFromNote.size();
+                                exeptFindFromText.put(pos, couple); //совпадения по сочетаниям (первая позиция в тексте и + 1, само сочетание)
+                                tempListFromNote.remove(1);
+                                tempListFromNote.remove(0);
+                                match = false;
+                                break;
+                            }
                         }
                     }
                     if (tempListFromNote.size() > 0) {
@@ -226,7 +227,8 @@ public class Interpretation implements ExecutorService{
         /*  Конец  блока поиска сравнений слов */
     }
 
-    public Interpretation(TextView interpritate, String note, int gender) {
+
+    public Interpretation(TextView interpritate, String note, int gender, Resources resources) {
             String originNote = note;
             note = note.toLowerCase(Locale.ROOT);
             exeptList = database.wordsDao().getWordsByType(EXEPT_WORD, gender);
@@ -240,8 +242,7 @@ public class Interpretation implements ExecutorService{
             while (matcher.find()) listFromNote.add(note.substring(matcher.start(), matcher.end()));
             textsize = listFromNote.size();
             interpritate.setText(originNote);
-        findWords();
-        createTextClick(interpritate);
+           findWords();
+            createTextClick(interpritate, resources);
     }
-
 }

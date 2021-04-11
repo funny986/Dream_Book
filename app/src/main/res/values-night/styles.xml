@@ -1,0 +1,91 @@
+<resources>
+<!--    <style name="AppTheme" parent="AppTheme.Base"/>-->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+                Theme.MaterialComponents.Light.Bridge
+        <item name="colorPrimary">@color/darkColorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/black_overlay</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="colorControlNormal">?android:colorPrimary</item>
+        <item name="android:editTextColor">@color/primaryDarkColor</item>
+        <item name="searchViewStyle">@style/MySearchStyle</item>
+        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowEnterTransition">@android:transition/slide_bottom</item>
+        <item name="android:windowExitTransition">@android:transition/slide_bottom</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+    </style>
+
+        <style name="MySearchStyle" parent="Widget.AppCompat.SearchView">
+            <item name="android:editTextColor">@color/primaryDarkColor</item>
+            <item name="android:background">@drawable/search_background</item>
+
+        </style>
+
+        <style name="MyFloat" parent="Widget.MaterialComponents.FloatingActionButton">
+            <item name="tint">@color/fab</item>
+        </style>
+
+        <style name="MyButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+            <item name="android:textColor">@color/buttonText</item>
+            <item name="android:textSize">10sp</item>
+            <item name="background">@color/transparent</item>
+        </style>
+        <style name="IcoRecordStyle" parent="">
+            <item name="android:layout_marginStart">@dimen/padd_img_start</item>
+            <item name="android:layout_marginTop">@dimen/padd_img_top</item>
+            <item name="android:layout_gravity">center_vertical</item>
+        </style>
+
+        <style name="TextRecordEditStyle" parent="">
+            <item name="android:layout_marginStart">20dp</item>
+            <item name="android:paddingTop">10dp</item>
+            <item name="android:textSize">@dimen/textSize_dateEdit</item>
+            <item name="android:textColor">@color/primaryDarkColor</item>
+        </style>
+        <style name="TextEditStyle" parent="Widget.AppCompat.EditText">
+            <item name="android:textSize">16sp</item>
+            <item name="android:layout_marginStart">5dp</item>
+            <item name="android:textColor">@color/primaryDarkColor</item>
+        </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"
+    />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"
+    />
+
+    <style name="MyAlertDialogTheme">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="buttonBarButtonStyle">@style/CustomAlert.ButtonStyle</item>
+    </style>
+    <style name="CustomAlert.ButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="MyDatePicker" parent="ThemeOverlay.MaterialComponents.TimePicker">
+        <item name="android:buttonBarPositiveButtonStyle">@style/MyDatePicker.ButtonPosit</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/MyDatePicker.ButtonNegative</item>
+    </style>
+
+    <style name="MyDatePicker.ButtonPosit" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/colorAccent</item>
+
+    </style>
+    <style name="MyDatePicker.ButtonNegative" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+</resources>
+
+

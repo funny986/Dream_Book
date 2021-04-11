@@ -100,13 +100,13 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     public void onClick(@NotNull View v) {
         switch (v.getId()){
             case R.id.button_exit:
-                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
+                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record,
                         Objects.requireNonNull(getContext()).getTheme()));
                 NavHostFragment.findNavController(RecordingFragment.this)
                         .navigate(R.id.nav_notes);
                 break;
             case R.id.button_save:
-                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record_dark,
+                fab.setImageDrawable(resources.getDrawable(R.drawable.ic_record,
                         Objects.requireNonNull(getContext()).getTheme()));
                 List<Notes> list = database.notesDao().getIdList();
                 int id;
@@ -118,7 +118,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                 String name = nameNote.getText().toString();
                 if (name.equals("")) name = "Без названия";
                 String noteOrigin = record.getText().toString();
-                String dateStr = dateNote.getText().toString();
+                String dateStr = year;
                 String labelStr = labels.getText().toString();
                     if (labelStr.equals("")) labelStr = "";
                 Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
@@ -143,21 +143,28 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                     }
                 }
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + v.getId());
         }
     }
 
-    public void setDateNote(){
+    private  String year;
+
+    private void setDateNote(){
         String dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+        year = dateStr;
                      Date date = new Date();
                      date = calendar.getTime();
              final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+        DateFormat dfYear = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
              dateStr = df.format(date);
+             year = dfYear.format(date);
              dateNote.setText(dateStr);
             }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_recording, container, false);
             nameNote = view.findViewById(R.id.name_note);
@@ -189,6 +196,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        view.setContentDescription(getResources().getString(R.string.disc_choise_date));
                         setDateNote();
                     }
                 };
@@ -242,7 +250,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onDestroy() {
-        sr.destroy();
+        if (sr !=null) sr.destroy();
         super.onDestroy();
     }
 

@@ -14,14 +14,18 @@
               android:orientation="horizontal"
               android:layout_gravity="center_horizontal"
               android:layout_marginTop="@dimen/toolbar_down"
-              android:background="@drawable/toolbar_background"
+              android:background="?android:colorBackground"
              >
+
     <SearchView
+            style="@style/MySearchStyle"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:imeOptions="actionSearch"
             android:id="@+id/search_in"
+            android:queryHint="@string/search_hint"
+            android:contentDescription="@string/disc_search_note"
             android:iconifiedByDefault="false"
             android:gravity="center_horizontal"
             android:searchIcon="@drawable/ic_search_24"
@@ -29,8 +33,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
-
-
     </SearchView>
 
     <ImageButton
@@ -46,21 +48,22 @@
 
 </LinearLayout>
 
-
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_marginTop="@dimen/recycler_margtop"
     >
 
         <androidx.recyclerview.widget.RecyclerView
                 android:gravity="center_vertical"
-                android:background="@color/primaryColor"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:outlineSpotShadowColor="@color/primaryColor"
+                android:background="?android:colorPrimaryDark"
                 android:id="@+id/note_recyclerview">
+
         </androidx.recyclerview.widget.RecyclerView>
+
     </LinearLayout>
 
     <FrameLayout android:layout_width="wrap_content"
@@ -68,9 +71,9 @@
                  android:id="@+id/frame_image"
                  android:background="@drawable/ic_moon"
                  android:layout_gravity="center"
-                 android:layout_marginTop="150dp"
     >
     </FrameLayout>
 
-    </LinearLayout>
+
+</LinearLayout>
 

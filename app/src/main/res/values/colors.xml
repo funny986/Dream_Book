@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#36B1A5</color>
+    <color name="colorPrimary">#EAEAEA</color>
+    <color name="colorPrimaryDark">#b2b2b2</color>
+    <color name="colorAccent">#2A837A</color>
+    <color name="colorBackground">#ffffff</color>
 
     <!-- My custom pallete theme -->
     <color name="primaryColor">#EAEAEA</color>
@@ -10,7 +11,9 @@
     <color name="accentColor">#ffffff</color>
 
     <color name="buttonText">#2960EE</color>
-    <color name="linkText">#124DE4</color>
+    <color name="linkText">#7594E4</color>
+
+    <color name="color_note_item">#57564B</color>
 
     <color name="colorTextRecord">@color/primaryDarkColor</color>
     <color name="colorEditMean">#493434</color>
@@ -37,13 +40,5 @@
 <!--  DarkTheme  -->
     <color name="darkColorPrimary">#393939</color>
     <color name="darkColorPrimaryDark">#2f2f2f</color>
-    <color name="darkColorAccent">@color/colorShemeLight</color>
-
-    <color name="colorsShemeDark">#000000</color>
-    <color name="colorShemeVirbant">#555555</color>
-    <color name="colorShemeGrey">#bbaa99</color>
-    <color name="colorShemeDarkOrange">#ee6622</color>
-    <color name="colorShemeLightOrange">#ffcc33</color>
-    <color name="colorShemeLight">#ffff00</color>
 
 </resources>

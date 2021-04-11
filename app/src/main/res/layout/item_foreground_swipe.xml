@@ -1,87 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.xenione.libs.swipemaker.SwipeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-                                         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:id="@id/foregroundView"
-                                         android:layout_width="match_parent"
-                                         android:layout_height="wrap_content"
-                                         android:orientation="vertical">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@id/foregroundView"
+        android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_item_note"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:cardCornerRadius="0dp"
-            >
+    >
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="horizontal"
-                          android:layout_weight="0.5"
-                          app:layout_constraintTop_toTopOf="parent"
-                          app:layout_constraintStart_toStartOf="parent"
-                          app:layout_constraintEnd_toEndOf="parent" android:baselineAligned="false">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padd_text"
+                    android:id="@+id/card_note_name"
+                    android:layout_gravity="center_vertical"
+                    android:lines="1"
+                    android:textColor="@color/primaryDarkColor"
+                    android:textSize="@dimen/textSize_date"
+                    tools:ignore="RtlSymmetry"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:paddingStart="@dimen/padd_text"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/card_note_text"
+                    android:textStyle="italic"
+                    android:textSize="@dimen/textSize_15"
+                    android:textColor="@color/color_note_item"
+                    tools:ignore="RtlSymmetry"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_note_name"
+            />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:id="@+id/card_note_label"
+                    android:paddingStart="@dimen/padd_text"
+                    android:textSize="14sp"
+                    android:textColor="@color/primaryDarkColor"
+                    tools:ignore="RtlSymmetry"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/card_note_text"
+            />
 
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:gravity="start"
-                              android:layout_weight="0.75"
-                >
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="@dimen/padd_text"
-                            android:id="@+id/card_note_name"
-                            android:layout_gravity="center_vertical"
-                            android:lines="1"
-                            android:textSize="20sp"
-                            tools:ignore="RtlSymmetry"/>
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:gravity="end"
-                              android:layout_weight="1"
-                >
-
-                    <TextView
-                            android:text="@string/date_record"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/card_note_date"
-                            android:paddingEnd="@dimen/padd_text"
-                            android:layout_gravity="center_vertical"
-                            android:textSize="18sp"
-                            tools:ignore="RtlSymmetry"/>
-
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:layout_weight="0.5"
-                          app:layout_constraintBottom_toBottomOf="parent"
-                          app:layout_constraintStart_toStartOf="parent"
-                          app:layout_constraintEnd_toEndOf="parent">
-
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginEnd="2dp">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lines="1"
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/card_note_label"
-                        android:paddingStart="@dimen/padd_text"
-                        android:textSize="15sp"
-                        android:textColor="#ACA9A9"
-                        tools:ignore="RtlSymmetry"/>
-            </LinearLayout>
-
+                        android:id="@+id/card_note_date"
+                        android:textSize="@dimen/sizeText"
+                        android:textColor="@color/primaryDarkColor"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.111"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+                <TextView
+                        android:layout_width="102dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:id="@+id/card_note_day"
+                        android:textSize="@dimen/sizeText"
+                        android:textColor="@color/primaryDarkColor"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/card_note_date"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 </com.xenione.libs.swipemaker.SwipeLayout>
+
+

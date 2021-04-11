@@ -74,6 +74,7 @@
                         android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:hint="@string/name_note"
+                        android:contentDescription="@string/disc_name_inter"
                         android:backgroundTint="@android:color/transparent"
                         tools:ignore="SpUsage"/>
             </LinearLayout>
@@ -92,11 +93,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/date_note"
-                        android:layout_marginStart="5dp"
-                        android:paddingTop="10dp"
+                        style="@style/TextRecordEditStyle"
                         android:clickable="true"
                         android:backgroundTint="@android:color/transparent"
-                        android:textSize="@dimen/textSize_dateEdit"
                         tools:ignore="SpUsage,TextFields"
                         android:focusable="true"/>
 
@@ -135,20 +134,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                android:layout_marginTop="152dp">
+                android:layout_marginTop="152dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="4dp">
 
 
-            <EditText android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/record_et"
-                      android:gravity="start"
-                      android:background="@null"
-                      android:autofillHints="no"
-                      tools:targetApi="o"
-                      android:layout_gravity="center_horizontal"
-                      android:hint="@string/contents"
-                      android:textSize="@dimen/textSize"
-                      android:inputType="textCapSentences|textMultiLine"
-            />
+        <EditText android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/record_et"
+                  android:gravity="start"
+                  android:background="@null"
+                  android:autofillHints="no"
+                  tools:targetApi="o"
+                  android:layout_gravity="center_horizontal"
+                  android:hint="@string/contents"
+                  android:textSize="@dimen/sizeText"
+                  android:inputType="textCapSentences|textMultiLine"
+        />
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

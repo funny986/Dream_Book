@@ -38,6 +38,12 @@
         С его помощью Вы найдете ответы на все волнующие Вас вопросы. Научитесь принимать правильные решения в самых сложных
         ситуациях и лучше разбираться в людях, распознавая их истинные намерения. Ведь человек, понимающий и не боящийся
         своих снов, чувствует себя гораздо увереннее и в реальной жизни."
+        ""
+        ""
+        ""
+        ""
+        "Developed by Domnin Dm.Ser."
+        "Design by Korovin Ser.Ser."
     </string>
 
     <string name="ourdata">
@@ -75,30 +81,37 @@
     <!-- Текст подсказок экрана загрузки  -->
     <string name="head_start">Первый запуск приложения:</string>
     <string name="prompt_1">
-        " Проведите пальцем влево по записи для того, чтобы \n"
-        "        удалить или отредактировать её…"
+        " Проведите пальцем влево по записи для того, чтобы  удалить или отредактировать её…
     </string>
     <string name="prompt_2">
-        " Рекомендуем перепроверить слово по его корню на наличие толкования \n"
-        "                   из нашего справочника.                              "
+        " Рекомендуем перепроверить слово по его корню на наличие толкования из нашего справочника."
     </string>
     <string name="prompt_3">
-        " Если в описании вашего сна слово выделено, значит оно \n"
-        "  имеет толкование по соннику. Просто нажмите на него."
+        " Если в описании вашего сна слово выделено, значит оно имеет толкование по соннику. Просто нажмите на него."
     </string>
     <string name="prompt_4">
-        " Для выхода из приложения нажмите кнопку \"Настройки\" и  \n"
-        "            выберите соответствующий пункт."
+        " Для выхода из приложения нажмите кнопку \"Настройки\" и выберите соответствующий пункт."
     </string>
 
     <!-- Подписи для элементов -->
     <string name="labels">Метки</string>
-    <string name="contents">Содержание</string>
+    <string name="contents">Содержание сна</string>
     <string name="date">Дата</string>
     <string name="streamline">Упорядочить</string>
     <string name="record">Запись..</string>
     <string name="date_record">Дата записи</string>
     <string name="word">Слово</string>
     <string name="simbol_perc">%</string>
+    <string name="disc_back">Назад</string>
+    <string name="disc_choise_date">Выбор даты</string>
+    <string name="disc_del_note">Удаление записи</string>
+    <string name="disc_edit_note">Править запись</string>
+    <string name="disc_new_record">Записать новый сон</string>
+    <string name="disc_search_note">Поиск по записям</string>
+    <string name="disc_search_means">Поиск по справочнику</string>
+    <string name="disc_dream_note">Что вам приснилось</string>
+    <string name="disc_edit_dream">Редакирование содержания сна</string>
+    <string name="disc_name_inter">Введите название записи</string>
+    <string name="disc_edit_name_dream">Изменить название сна</string>
 
 </resources>

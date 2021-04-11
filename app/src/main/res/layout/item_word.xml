@@ -3,19 +3,18 @@
         android:id="@+id/card_view_mean"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         app:cardCornerRadius="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
         <TextView
                 android:text="@string/word"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-               android:layout_gravity="center"
+                android:gravity="center"
                 android:textSize="@dimen/textSize_dateEdit"
+                android:background="?android:colorBackground"
                 android:id="@+id/word_tv"/>
 </androidx.cardview.widget.CardView>

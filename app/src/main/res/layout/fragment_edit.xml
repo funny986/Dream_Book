@@ -58,6 +58,7 @@
                         android:maxLines="1"
                         android:autofillHints="@string/name_note"
                         android:hint="@string/name_note"
+                        android:contentDescription="@string/disc_edit_name_dream"
                         style="@style/TextEditStyle"
                         android:backgroundTint="@android:color/transparent"
                         tools:ignore="SpUsage"/>
@@ -70,7 +71,7 @@
 
                 <ImageView android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
-                                                      style="@style/IcoRecordStyle"
+                           style="@style/IcoRecordStyle"
                            android:src="@drawable/ic_calendar"/>
 
                 <TextView
@@ -117,7 +118,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                android:layout_marginTop="152dp">
+                android:layout_marginTop="152dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="4dp">
 
         <EditText android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -127,7 +131,8 @@
                   android:layout_gravity="center_horizontal"
                   android:autofillHints="@string/contents"
                   android:hint="@string/contents"
-                  android:textSize="@dimen/textSize"
+                  android:contentDescription="@string/disc_edit_dream"
+                  android:textSize="@dimen/sizeText"
                   android:inputType="textCapSentences|textMultiLine"
         />
     </ScrollView>

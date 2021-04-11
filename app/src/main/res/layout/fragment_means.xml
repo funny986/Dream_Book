@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:tools="http://schemas.android.com/tools"
-        android:focusableInTouchMode="true"
         tools:context=".MeansFragment"
         android:id="@+id/fragment_means"
         android:orientation="vertical"
@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:imeOptions="actionSearch"
-            android:background="@drawable/search_background"
+            android:queryHint="@string/search_hint"
+            android:contentDescription="@string/disc_search_means"
             android:id="@+id/search_in"
             android:iconifiedByDefault="false"
             android:searchIcon="@drawable/ic_search_24"
@@ -38,24 +39,12 @@
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?android:colorPrimaryDark"
                 android:layout_marginTop="@dimen/recycler_margtop"
-                android:background="@color/primaryColor"
-                android:outlineSpotShadowColor="@color/primaryColor"
                 android:layout_marginEnd="10dp"
                 android:id="@+id/means_recyclerview"
         >
         </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="70dp"
-            android:id="@+id/alphabet"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-

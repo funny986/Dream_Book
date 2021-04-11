@@ -20,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,6 +62,21 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    private  String year;
+
+    private void setDateNote(){
+        String dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+        year = dateStr;
+        Date date = new Date();
+        date = calendar.getTime();
+        final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+        DateFormat dfYear = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
+        dateStr = df.format(date);
+        year = dfYear.format(date);
+        dateNote.setText(dateStr);
+    }
+
     @Override
     public void onClick(@NotNull View v) {
         switch (v.getId()){
@@ -74,10 +90,21 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                 name = nameNote.getText().toString();
                 if (name.equals("")) name = "Без названия";
                 noteOrigin = record.getText().toString();
-                final String dateStr = dateNote.getText().toString();
                 String labelStr = "";
                 labelStr = label.getText().toString();
-                Notes note = new Notes(id, name, noteOrigin, dateStr, labelStr);
+                String datestring = dateNote.getText().toString();
+                Date date = new Date();
+                DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+                try {
+                    date = df.parse(datestring);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                DateFormat dfy = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
+                assert date != null;
+                datestring = dfy.format(date);
+
+                Notes note = new Notes(id, name, noteOrigin, datestring, labelStr);
                 database.notesDao().update(note);
                 FragmentEditDirections.ActionEditToInterpretation action2 =
                         FragmentEditDirections.actionEditToInterpretation(id);
@@ -104,16 +131,19 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         label.setText(notes.getLabelNote());
         recNote = noteOrigin;
         dateStr = notes.getDate();
-        dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
-        Date date = new Date();
-        date = calendar.getTime();
+       Date date = new Date();
+        DateFormat dfy = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
+        try {
+            date = dfy.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+        assert date != null;
         dateStr = df.format(date);
         dateNote.setText(dateStr);
        if (!name.equals("Без названия")) nameNote.setText(name);
             record.setText(recNote);
-        dateNote.setText(dateStr);
         dateNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,13 +153,7 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
-                                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
-                        Date date = new Date();
-                        date = calendar.getTime();
-                        final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-                        dateStr = df.format(date);
-                        dateNote.setText(dateStr);
+                        setDateNote();
                     }
                 };
                 DatePickerDialog dialog = new DatePickerDialog(getActivity(), dateChange,

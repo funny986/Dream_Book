@@ -20,6 +20,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.dreambook.MainActivity.*;
 
@@ -92,7 +98,7 @@ public class InterpretationFragment extends Fragment {
             note = database.notesDao() //запись от пользователя
                     .getNoteById(id);
             String noteOrigin = note.getNote();
-            Linker linker = new Interpretation(interpritate, noteOrigin, gender).getLinker();
+            Linker linker = new Interpretation(interpritate, noteOrigin, gender, activity.getResources()).getLinker();
            linker.setListener(new LinkerListener() {
                @Override
                public void onLinkClick(String charSequenceClicked) {
@@ -111,9 +117,19 @@ public class InterpretationFragment extends Fragment {
         nameStr = note.getNameNote();
         if (nameStr.equals("")) nameStr = "Без названия";
         name.setText(nameStr);
-        TextView date = view.findViewById(R.id.date_tv);
+        TextView datetv = view.findViewById(R.id.date_tv);
         dateStr = note.getDate();
-        date.setText(dateStr);
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
+        try {
+            date = df.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DateFormat dfy = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
+        assert date != null;
+        String dateStr = dfy.format(date);
+        datetv.setText(dateStr);
         TextView label = view.findViewById(R.id.label_tv);
         labelStr = note.getLabelNote();
         label.setText(labelStr);

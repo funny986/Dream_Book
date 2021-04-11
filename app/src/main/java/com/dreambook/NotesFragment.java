@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
@@ -64,7 +63,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
                 .getInt(AUTOR_GENDER, 0);
         bottomNavigation.setVisibility(View.VISIBLE);
         searchList = new ArrayList<>();
-        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_record_dark,
+        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_record,
                 Objects.requireNonNull(getContext()).getTheme()));
         Menu menu = bottomNavigation.getMenu();
         MenuItem item = menu.getItem(0);
@@ -134,12 +133,12 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
 
     @NotNull
     private List<Notes> sortNewDateFirst(@NotNull List<Notes> list) {
-        List<Notes> tempList = new ArrayList<>();
+        List<Notes> templist = new ArrayList<>();
         int j = list.size() - 1;
         for (int i = j; i >= 0; i--) {
-            tempList.add(list.get(i));
+            templist.add(list.get(i));
         }
-        return tempList;
+        return templist;
     }
 
     private void showMenu() {
@@ -308,9 +307,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
             }
         });
         searchView = mainView.findViewById(R.id.search_in);
-        Drawable drawable = Objects.requireNonNull(getActivity()).getDrawable(R.drawable.search_background);
-        searchView.setBackground(drawable);
-        searchView.setQueryHint(getActivity().getResources().getString(R.string.search_hint));
+        searchView.setQueryHint(Objects.requireNonNull(getActivity()).getResources().getString(R.string.search_hint));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -325,7 +322,7 @@ public class NotesFragment extends Fragment implements View.OnClickListener, Rec
             @Override
             public boolean onQueryTextChange(String searchText) {
                 List<Notes> tempString = new ArrayList<>();
-                searchList.clear();
+                searchList = new ArrayList<>();
                 for (int i = 0; i < noteList.size(); i++) {
                     Notes tempCont = noteList.get(i);
                     String temp = tempCont.getNameNote();

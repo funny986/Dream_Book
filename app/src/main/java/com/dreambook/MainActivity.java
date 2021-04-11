@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     }
 
     public void startSetData(){
-        final Thread data = new Thread(new Runnable() {
+        data = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -82,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
             }
         });
         data.start();
-
     }
 
     protected void onStart() {
@@ -94,8 +94,13 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
             Intent intent = new Intent(MainActivity.this, Splash.class);
             MainActivity.this.startActivity(intent);
             requestRecordAudioPermission();
-        } else {
-            startSetData();
+        }
+        try {
+            Class.forName("dalvik.system.CloseGuard")
+                    .getMethod("setEnabled", boolean.class)
+                    .invoke(null, true);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -110,13 +115,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     protected void onResume() {
         super.onResume();
-        if (preferences.contains(AUTOR_GENDER)) {
-            autorgender = preferences.getInt(AUTOR_GENDER, 0);
-        }
-//        if (preferences.contains(THEME_DARK)) {
-//            darkTheme = preferences.getBoolean(THEME_DARK, false);
-//        }
-}
+    }
 
     @Override
     public void genderSet(int gender) {
@@ -128,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
 
     @Override
     public void themeSet(boolean theme) {
+        darkTheme = theme;
         getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE).edit()
                 .putBoolean(THEME_DARK, theme)
                 .apply();
@@ -138,31 +138,21 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
         return autorgender;
     }
 
-    @Override
-    public boolean getCustomTheme() {
-        return darkTheme;
-    }
 
     protected void onPause() {
         super.onPause();
         setPreferences();
     }
 
+    public Thread data;
+
     protected void onDestroy() {
         super.onDestroy();
-        if(database !=null){
-            if(database.isOpen()) {
-                database.close();
-            }
-            database = null;
-        }
-//        database.close();
     }
 
 
     protected void onRestart() {
         super.onRestart();
-        setPreferences();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -180,14 +170,13 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     }
 
     public void setUpNavigation() {
-//        bottomNavigationView = findViewById(R.id.bottom_navigation);
         hostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         assert hostFragment != null;
         NavigationUI.setupWithNavController(bottomNavigationView, hostFragment.getNavController());
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.navigate(R.id.nav_notes);
-    }
+            }
 
     public BottomNavigationView.OnNavigationItemSelectedListener listener() {
         return new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -223,21 +212,34 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         preferences = getSharedPreferences(APP_PREFERENCE, MODE_PRIVATE);
-//        setPreferences();
-//        darkTheme = preferences.getBoolean(THEME_DARK, false);
-//        if (darkTheme) setTheme(R.style.Theme_CustomThemeDark);
-//                else   setTheme(R.style.Theme_CustomTheme);
-//        this.onStart();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        database = App.getInstance().getDatabase();
+        if (preferences.contains(AUTOR_GENDER)) {
+            autorgender = preferences.getInt(AUTOR_GENDER, 0);
+        }
+        if (preferences.contains(THEME_DARK)) {
+            darkTheme = preferences.getBoolean(THEME_DARK, false);
+        }
+        if (savedInstanceState == null) {
+//                    // Ночной режим не активен
+                    if (darkTheme) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        recreate();
+                    }
+//                    // Ночной режим
+                    if (!darkTheme) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        recreate();
+                    }
+            database = App.getInstance().getDatabase();
+            startSetData();
+        }
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         setUpNavigation();
         setListnr(listener());
         listnr = listener();
         bottomNavigationView.setOnNavigationItemSelectedListener(listnr);
         fab = findViewById(R.id.fab);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -245,6 +247,20 @@ public class MainActivity extends AppCompatActivity implements PrefSets {
                 navController.navigate(R.id.nav_record);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        if (requestCode == 1){
+            data.interrupt();
+            database.close();
+            setPreferences();
+            this.finish();
+            Intent intent2 = new Intent(Intent.ACTION_MAIN);
+            intent2.addCategory(Intent.CATEGORY_HOME);
+            intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent2);
+        }
     }
 }
 

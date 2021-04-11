@@ -5,12 +5,6 @@
     <PreferenceCategory
               app:title="@string/messages_header">
 
-
-<!--        <EditTextPreference-->
-<!--                app:key="signature"-->
-<!--                app:title="@string/signature_title"-->
-<!--                app:useSimpleSummaryProvider="true"/>-->
-
         <ListPreference
                 app:key="gender"
                 app:title="@string/reply_title"
@@ -24,6 +18,15 @@
     <PreferenceCategory
             app:title="Разное">
 
+        <SwitchPreferenceCompat
+                app:key="darktheme"
+                android:checked="false"
+                android:summaryOff="ВЫКЛ."
+                android:summaryOn="ВКЛ."
+                android:switchTextOff="Выкл."
+                android:switchTextOn="Вкл."
+                app:title="@string/sync_title"/>
+
         <Preference
                 app:key="info"
                 android:title="Информация">
@@ -32,22 +35,6 @@
                 app:key="exit"
                 android:title="Закрыть приложение">
         </Preference>
-
-<!--        <SwitchPreferenceCompat-->
-<!--                app:key="darktheme"-->
-<!--                android:checked="false"-->
-<!--                android:summaryOff="Темная тема выкл."-->
-<!--                android:summaryOn="Темная тема вкл."-->
-<!--                android:switchTextOff="Выкл."-->
-<!--                android:switchTextOn="Вкл."-->
-<!--    app:title="@string/sync_title"/>-->
-
-<!--        <SwitchPreferenceCompat-->
-<!--                app:key="attachment"-->
-<!--                app:title="@string/attachment_title"-->
-<!--                app:summaryOn="@string/attachment_summary_on"-->
-<!--                app:summaryOff="@string/attachment_summary_off"-->
-<!--                app:dependency="sync"/>-->
 
     </PreferenceCategory>
 
