@@ -15,7 +15,7 @@
 
     <!-- Редактирование и сохранение записи Paddings-->
     <dimen name="marg_l_r">50dip</dimen>
-    <dimen name="height_view">40dp</dimen>
+    <dimen name="height_view">48dp</dimen>
     <dimen name="padd_text">10dp</dimen>
     <dimen name="padd_text_top">9dp</dimen>
     <dimen name="padd_text_start">20dp</dimen>

@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+>
 
-        <fragment
-                android:id="@+id/nav_host_fragment"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                app:navGraph="@navigation/nav_graph"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="FragmentTagUsage,NotSibling"
-                app:layout_constraintBottom_toBottomOf="@+id/bottom_navigation"/>
+    <include layout="@layout/fragment_container"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -47,11 +35,71 @@
             app:itemIconTint="@color/bottom_navigation_item_background_colors"
             app:itemTextColor="@color/bottom_navigation_item_background_colors"
             app:labelVisibilityMode="unlabeled"
-            android:layout_alignParentBottom="true"
             app:menu="@menu/menu_bottom_navigation"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
             app:layout_anchorGravity="bottom|center"
-            app:layout_anchor="@+id/nav_host_fragment"/>
+            app:layout_anchor="@+id/nav_host_fragment"
+            android:fitsSystemWindows="true"
+    />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+<!--<androidx.coordinatorlayout.widget.CoordinatorLayout-->
+<!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--        xmlns:tools="http://schemas.android.com/tools"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        >-->
+
+<!--        <fragment-->
+<!--                android:id="@+id/nav_host_fragment"-->
+<!--                android:name="androidx.navigation.fragment.NavHostFragment"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:defaultNavHost="true"-->
+<!--                app:navGraph="@navigation/nav_graph"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                tools:ignore="FragmentTagUsage,NotSibling"-->
+
+<!--                app:layout_constraintBottom_toBottomOf="@+id/bottom_navigation"/>-->
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/fab"-->
+<!--            style="@style/MyFloat"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:srcCompat="@drawable/ic_record"-->
+<!--            android:contentDescription="@string/disc_new_record"-->
+<!--            app:fabSize="mini"-->
+<!--            app:backgroundTint="?android:colorPrimary"-->
+<!--            android:layout_gravity="bottom|end"-->
+<!--            android:layout_marginTop="@dimen/fab_margin"-->
+<!--            android:layout_marginStart="@dimen/fab_margin"-->
+<!--            android:layout_marginEnd="19dp"-->
+<!--            android:layout_marginBottom="80dp"-->
+<!--            android:layout_above="@+id/bottom_navigation"-->
+<!--            android:layout_alignParentEnd="true">-->
+
+<!--    </com.google.android.material.floatingactionbutton.FloatingActionButton>-->
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--            android:id="@+id/bottom_navigation"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:itemBackground="?android:colorPrimary"-->
+<!--            app:itemIconTint="@color/bottom_navigation_item_background_colors"-->
+<!--            app:itemTextColor="@color/bottom_navigation_item_background_colors"-->
+<!--            app:labelVisibilityMode="unlabeled"-->
+<!--            android:layout_alignParentBottom="true"-->
+
+<!--            android:clipToPadding="true"-->
+<!--            android:fitsSystemWindows="false"-->
+
+<!--    app:menu="@menu/menu_bottom_navigation"-->
+<!--            app:layout_anchorGravity="bottom|center"-->
+<!--            app:layout_anchor="@+id/nav_host_fragment"/>-->
+<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
 <!--        android:clipToPadding="true"-->
 <!--        android:fitsSystemWindows="false"-->
+<!--        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"-->
+

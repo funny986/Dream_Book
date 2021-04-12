@@ -62,18 +62,16 @@ public class FragmentEdit extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private  String year;
-
     private void setDateNote(){
         String dateStr = DateUtils.formatDateTime(getContext(), calendar.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
-        year = dateStr;
+//        String year = dateStr;
         Date date = new Date();
         date = calendar.getTime();
         final DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
-        DateFormat dfYear = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
+//        DateFormat dfYear = new SimpleDateFormat("yy.MM.dd", Locale.getDefault());
         dateStr = df.format(date);
-        year = dfYear.format(date);
+//        year = dfYear.format(date);
         dateNote.setText(dateStr);
     }
 

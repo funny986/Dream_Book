@@ -14,7 +14,7 @@
               android:orientation="horizontal"
               android:layout_gravity="center_horizontal"
               android:layout_marginTop="@dimen/toolbar_down"
-              android:background="?android:colorBackground"
+              android:background="@drawable/toolbar_background"
              >
 
     <SearchView
@@ -27,9 +27,6 @@
             android:queryHint="@string/search_hint"
             android:contentDescription="@string/disc_search_note"
             android:iconifiedByDefault="false"
-            android:gravity="center_horizontal"
-            android:searchIcon="@drawable/ic_search_24"
-            android:closeIcon="@drawable/ic_clear_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -41,12 +38,13 @@
             android:id="@+id/button_sort"
             android:contentDescription="@string/streamline"
             android:background="@color/transparent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="7dp"
             android:src="@drawable/ic_sort"
     />
 
 </LinearLayout>
+
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +71,5 @@
                  android:layout_gravity="center"
     >
     </FrameLayout>
-
-
 </LinearLayout>
 

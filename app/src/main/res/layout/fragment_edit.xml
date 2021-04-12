@@ -58,7 +58,6 @@
                         android:maxLines="1"
                         android:autofillHints="@string/name_note"
                         android:hint="@string/name_note"
-                        android:contentDescription="@string/disc_edit_name_dream"
                         style="@style/TextEditStyle"
                         android:backgroundTint="@android:color/transparent"
                         tools:ignore="SpUsage"/>
@@ -67,7 +66,7 @@
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:background="@drawable/ramka_top"
-                          android:layout_weight="0.5">
+                          android:layout_weight="1">
 
                 <ImageView android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
@@ -78,11 +77,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/date_note_edit"
-                        style="@style/TextRecordEditStyle"
-                        android:clickable="true"
+                        android:gravity="center"
+                        android:paddingEnd="10dp"
+                        tools:ignore="RtlSymmetry,SpUsage,TextFields"
+                        style="@style/TextEditStyle"
                         android:backgroundTint="@android:color/transparent"
-                        tools:ignore="SpUsage,TextFields"
-                        android:focusable="true"/>
+                        android:focusable="false"/>
 
             </LinearLayout>
         </LinearLayout>
@@ -103,7 +103,6 @@
                     android:id="@+id/label_edit_et"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:autofillHints="@string/labels"
                     android:hint="@string/labels"
                     style="@style/TextEditStyle"
                     android:backgroundTint="@android:color/transparent"
@@ -111,17 +110,21 @@
         </LinearLayout>
 
     </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  android:layout_marginTop="162dp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+    >
+
     <ScrollView android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/scroll_edit"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                android:layout_marginTop="152dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="4dp">
+                android:layout_gravity="center_horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+                tools:ignore="UselessParent">
 
         <EditText android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -131,9 +134,9 @@
                   android:layout_gravity="center_horizontal"
                   android:autofillHints="@string/contents"
                   android:hint="@string/contents"
-                  android:contentDescription="@string/disc_edit_dream"
                   android:textSize="@dimen/sizeText"
                   android:inputType="textCapSentences|textMultiLine"
         />
     </ScrollView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

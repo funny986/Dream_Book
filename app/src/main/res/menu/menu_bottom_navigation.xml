@@ -3,13 +3,16 @@
     <item
             android:id="@+id/action_notes"
             android:icon="@drawable/ic_crescent"
+            android:contentDescription="@string/disc_gotodreams"
             android:title="@string/my_dreams"/>
     <item
             android:id="@+id/action_means"
             android:icon="@drawable/ic_book"
+            android:contentDescription="@string/disc_gotomeans"
             android:title="@string/dream_means" />
     <item
             android:id="@+id/action_setting"
             android:icon="@drawable/ic_settings_24"
+            android:contentDescription="@string/disc_gotosettings"
             android:title="@string/setting" />
 </menu>

@@ -43,27 +43,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="4dp"/>
 
-    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            tools:context=".WordMeanFragment"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toBottomOf="@+id/button_exit"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="4dp">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  android:layout_marginTop="62dp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-                android:id="@+id/mean_tv"
-                android:paddingStart="10sp"
-                android:paddingTop="@dimen/padd_text_top"
-                android:layout_gravity="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sizeText"
-                tools:ignore="RtlSymmetry"/>
-    </ScrollView>
+        <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                tools:context=".WordMeanFragment"
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+                tools:ignore="UselessParent">
+
+            <TextView
+                    android:id="@+id/mean_tv"
+                    android:paddingTop="@dimen/padd_text_top"
+                    android:layout_gravity="start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sizeText"
+                    tools:ignore="RtlSymmetry"/>
+        </ScrollView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

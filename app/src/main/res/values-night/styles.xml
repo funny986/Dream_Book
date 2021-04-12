@@ -6,7 +6,8 @@
         <item name="colorPrimaryDark">@color/black_overlay</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="colorControlNormal">?android:colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
+
         <item name="android:editTextColor">@color/primaryDarkColor</item>
         <item name="searchViewStyle">@style/MySearchStyle</item>
         <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
@@ -23,7 +24,8 @@
         <style name="MySearchStyle" parent="Widget.AppCompat.SearchView">
             <item name="android:editTextColor">@color/primaryDarkColor</item>
             <item name="android:background">@drawable/search_background</item>
-
+<!--            <item name="android:searchIcon">@drawable/ic_search_24</item>-->
+<!--            <item name="android:closeIcon">@drawable/ic_clear_24</item>-->
         </style>
 
         <style name="MyFloat" parent="Widget.MaterialComponents.FloatingActionButton">

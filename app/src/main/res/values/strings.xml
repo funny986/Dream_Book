@@ -105,13 +105,18 @@
     <string name="disc_back">Назад</string>
     <string name="disc_choise_date">Выбор даты</string>
     <string name="disc_del_note">Удаление записи</string>
+    <string name="disc_del_note_bottom">Удалить запись</string>
     <string name="disc_edit_note">Править запись</string>
+    <string name="disc_edit_note_bottom">Изменить запись</string>
     <string name="disc_new_record">Записать новый сон</string>
     <string name="disc_search_note">Поиск по записям</string>
     <string name="disc_search_means">Поиск по справочнику</string>
     <string name="disc_dream_note">Что вам приснилось</string>
     <string name="disc_edit_dream">Редакирование содержания сна</string>
     <string name="disc_name_inter">Введите название записи</string>
-    <string name="disc_edit_name_dream">Изменить название сна</string>
+    <string name="disc_rename">Изменить название сна</string>
+    <string name="disc_gotodreams">Перейти к записям снов</string>
+    <string name="disc_gotomeans">Перейти в справочник толкований</string>
+    <string name="disc_gotosettings">Перейти в настройки</string>
 
 </resources>

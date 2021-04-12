@@ -60,7 +60,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
     public void onPause() {
         super.onPause();
         nameNote.clearFocus();
-        hideSoftInput();
+//        hideSoftInput();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                                if (actionId == EditorInfo.IME_ACTION_NEXT) {
                                    record.requestFocus();
-                                   setSoftInput();
+//                                   setSoftInput();
                                    return true;
                                }
                                return false;
@@ -242,11 +242,11 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void hideSoftInput() {
-        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
-    }
+//    public void hideSoftInput() {
+//        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+//                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(nameNote.getWindowToken(), 0);
+//    }
 
     @Override
     public void onDestroy() {
@@ -254,10 +254,10 @@ public class RecordingFragment extends Fragment implements View.OnClickListener,
         super.onDestroy();
     }
 
-    public void setSoftInput(){
-        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
-    }
+//    public void setSoftInput(){
+//        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Activity.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(nameNote, InputMethodManager.SHOW_FORCED);
+//    }
 
 
     public void changeFabIcon(){

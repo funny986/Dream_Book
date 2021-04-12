@@ -28,8 +28,6 @@
             android:contentDescription="@string/disc_search_means"
             android:id="@+id/search_in"
             android:iconifiedByDefault="false"
-            android:searchIcon="@drawable/ic_search_24"
-            android:closeIcon="@drawable/ic_clear_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>

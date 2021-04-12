@@ -19,14 +19,15 @@
 
     <SearchView
             style="@style/MySearchStyle"
+            android:queryHint="@string/search_hint"
+            android:contentDescription="@string/disc_search_means"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:imeOptions="actionSearch"
             android:id="@+id/search_in"
             android:iconifiedByDefault="false"
-            android:searchIcon="@drawable/ic_search_24"
-            android:closeIcon="@drawable/ic_clear_24"
+
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>

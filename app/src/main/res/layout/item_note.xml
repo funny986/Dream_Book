@@ -17,7 +17,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:background="#FF0000"
-                android:contentDescription="@string/disc_del_note"
+                android:contentDescription="@string/disc_del_note_bottom"
                 android:src="@drawable/ic_delete"
                 android:layout_toStartOf="@+id/action"
                 />
@@ -29,7 +29,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
-                android:contentDescription="@string/disc_edit_note"
+                android:contentDescription="@string/disc_edit_note_bottom"
                 android:background="#FF8000"
                 android:src="@drawable/ic_record"
                 tools:ignore="RtlHardcoded"/>

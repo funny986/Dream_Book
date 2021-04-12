@@ -162,7 +162,7 @@ public class MeansFragment extends Fragment implements SearchView.OnQueryTextLis
         RecyclerView recyclerView = mainView.findViewById(R.id.means_recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(1));
+        recyclerView.addItemDecoration(new NotesFragment.SpacesItemDecoration(0));
             adapter = new RecycleViewAdptr(getContext(), wordList);
             adapter.setmData(wordList);
         recyclerView.setHasFixedSize(true);
